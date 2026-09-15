@@ -11,8 +11,23 @@ config_version=5
 [application]
 
 config/name="Echoes of the Celestial Staff"
+run/main_scene="res://scenes/core/bootstrap.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
+
+[autoload]
+
+DebugManager="*res://scripts/core/debug_manager.gd"
+EventBus="*res://scripts/core/event_bus.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+InputManager="*res://scripts/core/input_manager.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
+SceneManager="*res://scripts/core/scene_manager.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
 
 [display]
 

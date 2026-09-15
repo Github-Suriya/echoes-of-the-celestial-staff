@@ -23,71 +23,91 @@
 
 ## 2. Global Autoloads (Singletons)
 
-All singletons are registered in `project.godot` under `[autoload]`. They remain persistent across scene reloads.
+All singletons are registered in `project.godot` under `[autoload]` in strict dependency order. They remain persistent across scene reloads.
 
 ```mermaid
 graph TD
-    GameManager[GameManager] --> SceneManager[SceneManager]
-    GameManager --> SaveManager[SaveManager]
-    GameManager --> InputManager[InputManager]
-    GameManager --> AudioManager[AudioManager]
-    GameManager --> EventBus[EventBus]
+    DebugManager[1. DebugManager] --> EventBus[2. EventBus]
+    EventBus --> GameManager[3. GameManager]
+    GameManager --> InputManager[4. InputManager]
+    GameManager --> AudioManager[5. AudioManager]
+    GameManager --> SceneManager[6. SceneManager]
+    GameManager --> SaveManager[7. SaveManager]
     
     EventBus -. Broadcasts .-> UI[UI Subsystems]
     EventBus -. Broadcasts .-> Audio[Audio Subsystems]
     EventBus -. Broadcasts .-> Camera[Camera Subsystems]
 ```
 
-### 2.1 `GameManager.gd` (`res://scripts/core/game_manager.gd`)
+### 2.1 `DebugManager` (`res://scripts/core/debug_manager.gd`)
+- **Order:** Autoload #1 (Zero dependencies; provides categorized logging for all subsequent singletons).
 - **Responsibilities:**
-  - Manages global game states: `TITLE_SCREEN`, `PLAYING`, `PAUSED`, `CUTSCENE`, `GAME_OVER`.
-  - Coordinates game timescale for hitstop and cinematic slowdowns (`Engine.time_scale`).
-  - Manages pause menu toggles and input state suppression.
+  - Categorized console logging: `log_info()`, `log_warn()`, `log_error()`, `log_debug()`.
+  - Compile-time debug mode toggle (`is_debug_enabled = OS.is_debug_build()`) to suppress console overhead in release builds.
+  - Performance telemetry queries: `get_fps()`, `get_static_memory_mb()`, `get_draw_calls()`.
 
-### 2.2 `EventBus.gd` (`res://scripts/core/event_bus.gd`)
+### 2.2 `EventBus` (`res://scripts/core/event_bus.gd`)
+- **Order:** Autoload #2.
 - **Responsibilities:**
   - High-traffic, zero-coupling event broker.
   - Declares all global signals across combat, world, player, progression, and UI domains.
-  - Examples:
-    ```gdscript
-    signal player_health_changed(current: float, maximum: float)
-    signal player_stamina_changed(current: float, maximum: float)
-    signal player_spirit_changed(current: float, maximum: float)
-    signal player_stance_changed(new_stance_id: StringName)
-    signal enemy_damaged(enemy: Node2D, amount: float, is_crit: bool)
-    signal enemy_died(enemy: Node2D, bounty_qi: int)
-    signal boss_phase_changed(boss_name: String, phase_index: int)
-    signal screen_shake_requested(trauma: float, duration: float)
-    signal hitstop_requested(duration_frames: int)
-    signal room_transition_requested(target_scene_path: String, target_spawn_id: String)
-    ```
+  - Implemented signals:
+    - *Game Lifecycle:* `game_state_changed`, `game_paused`, `game_resumed`.
+    - *Player Domain:* `player_spawned`, `player_died`, `player_health_changed`, `player_stamina_changed`, `player_spirit_changed`, `player_stance_changed`.
+    - *Combat Domain:* `damage_dealt`, `damage_received`, `poise_broken`, `hitstop_requested`, `screen_shake_requested`.
+    - *Enemy & Boss Domain:* `enemy_died`, `boss_started`, `boss_phase_changed`, `boss_defeated`.
+    - *World & Progression:* `scene_loaded`, `scene_unloaded`, `checkpoint_activated`, `ability_unlocked`.
 
-### 2.3 `SceneManager.gd` (`res://scripts/core/scene_manager.gd`)
+### 2.3 `GameManager` (`res://scripts/core/game_manager.gd`)
+- **Order:** Autoload #3.
 - **Responsibilities:**
-  - Handles asynchronous room loading (`ResourceLoader.load_threaded_request`).
-  - Orchestrates screen fade-out/fade-in transitions.
-  - Spawns the player at designated `SpawnPoint2D` markers upon room entry.
+  - Coordinates global game state enum: `BOOT`, `MENU`, `PLAYING`, `PAUSED`, `CUTSCENE`, `LOADING`, `GAME_OVER`.
+  - Pause state coordination (`set_paused()`, `toggle_pause()`).
+  - Engine timescale management (`set_time_scale()`, `reset_time_scale()`) for hitstop and cinematic slowdowns.
+  - Strictly lightweight; contains zero gameplay or combat logic.
 
-### 2.4 `InputManager.gd` (`res://scripts/core/input_manager.gd`)
+### 2.4 `InputManager` (`res://scripts/core/input_manager.gd`)
+- **Order:** Autoload #4.
 - **Responsibilities:**
-  - Abstraction layer over Godot's `Input` event system.
-  - Implements an **Input Buffer Queue** (stores buffered attack/dodge inputs for 8 frames).
-  - Handles gamepad and keyboard deadzones, remapping profiles, and input device detection.
+  - Centralizes 15 standard action names: `move_left`, `move_right`, `jump`, `light_attack`, `heavy_attack`, `dodge`, `parry`, `ability_1`, `ability_2`, `ability_3`, `ability_4`, `stance_switch`, `interact`, `map`, `pause`.
+  - Typed input queries: `is_action_just_pressed()`, `is_action_pressed()`, `is_action_just_released()`, `get_movement_axis()`.
+  - Global pause intercept via unhandled input.
+  - Input suppression toggle (`set_gameplay_input_enabled()`) for cutscenes/loading.
+  - Dynamic fallback action registration in `InputMap` ensuring headless test and standalone stability.
 
-### 2.5 `AudioManager.gd` (`res://scripts/core/audio_manager.gd`)
+### 2.5 `AudioManager` (`res://scripts/core/audio_manager.gd`)
+- **Order:** Autoload #5.
 - **Responsibilities:**
-  - Manages global audio buses: `Master`, `Music`, `Ambience`, `SFX`, `PlayerSFX`, `EnemySFX`, `UI`.
-  - Audio stream pooling for high-frequency SFX (preventing allocation hitches).
-  - Crossfades dynamic combat and ambient music layers.
-  - Applies dynamic low-pass bus filters during pause and hitstop events.
+  - Manages audio routing across 6 dedicated buses: `Master`, `Music`, `SFX`, `Ambience`, `UI`, `Voice`.
+  - Dedicated players for music, ambience, and UI sounds.
+  - SFX pooling (8 pre-allocated `AudioStreamPlayer` instances) to eliminate runtime allocation hitches.
+  - Methods: `play_music()`, `stop_music()`, `play_sfx()`, `play_ui_sound()`, `play_ambience()`, `set_bus_volume_db()`.
+  - Safe error handling: gracefully logs warnings on null/missing audio streams without crashing.
 
-### 2.6 `SaveManager.gd` (`res://scripts/core/save_manager.gd`)
+### 2.6 `SceneManager` (`res://scripts/core/scene_manager.gd`)
+- **Order:** Autoload #6.
 - **Responsibilities:**
-  - Encapsulates player progression serialization (`user://save_slot_1.json`).
-  - Manages save slots, autosaves at Spirit Shrines, and safe backup writing.
-  - Serializes: unlocked abilities, world flags (opened doors, defeated bosses), collected relics, player stats.
+  - Centralizes scene switching: `change_scene_to_file()`, `change_scene_to_packed()`, `reload_current_scene()`.
+  - Tracks `current_scene_path` and guards against concurrent transitions via `is_transitioning`.
+  - Emits `scene_unloaded` and `scene_loaded` lifecycle events through `EventBus`.
+
+### 2.7 `SaveManager` (`res://scripts/core/save_manager.gd`)
+- **Order:** Autoload #7.
+- **Responsibilities:**
+  - Slot-based JSON persistence (`user://save_slot_%d.json`).
+  - Schema versioning: `CURRENT_SAVE_VERSION = 1`.
+  - Core schema: `save_version: int`, `timestamp: String`.
+  - Robust validation and corruption fallback: gracefully returns empty dictionary on corrupted JSON or invalid structure without crashes.
 
 ---
+
+### 2.8 Bootstrap & Entry Lifecycle (`res://scenes/core/bootstrap.tscn`)
+- Configured as engine `run/main_scene` in `project.godot`.
+- Boot sequence:
+  1. Engine initializes Autoload singletons 1 through 7.
+  2. `Bootstrap` verifies presence and readiness of all 7 singletons.
+  3. `Bootstrap` notifies `GameManager` (`BOOT -> MENU`).
+  4. `Bootstrap` delegates to `SceneManager` to transition cleanly to the initial menu or test scene (`scenes/core/test_scene.tscn`).
 
 ## 3. Entity & Component Architecture
 
