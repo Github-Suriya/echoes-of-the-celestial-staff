@@ -46,36 +46,41 @@ gantt
 
 ## 2. Detailed Milestone Specifications (Phases 0 - 18)
 
-### Phase 0: Architecture and Documentation (CURRENT)
+### Phase 0: Architecture and Documentation (COMPLETE)
 - **Objective:** Establish complete architectural, design, combat, world, and technical foundations before any gameplay code is written.
 - **Dependencies:** None.
+- **Status:** Complete (Commit `ab06e2a`).
 - **Key Deliverables:** `docs/GAME_DESIGN.md`, `docs/TECHNICAL_ARCHITECTURE.md`, `docs/COMBAT_DESIGN.md`, `docs/WORLD_DESIGN.md`, `docs/ART_DIRECTION.md`, `docs/AUDIO_DIRECTION.md`, `docs/PERFORMANCE_TARGETS.md`, `docs/DEVELOPMENT_RULES.md`, `PROJECT_PLAN.md`, `PHASE_0_REPORT.md`.
 - **Exit Criteria:** All architecture documents verified, zero contradictions, clean git status, headless Godot check passes.
 
 ---
 
-### Phase 1: Godot Foundation
+### Phase 1: Godot Foundation (COMPLETE)
 - **Objective:** Establish the engine-level baseline, global autoloads, input action mappings, and core utility singletons.
 - **Dependencies:** Phase 0 complete.
+- **Status:** Complete (Commit `b57c892`, 45/45 automated unit tests passing).
 - **Key Deliverables:**
-  - `InputManager` with input buffering system.
-  - `EventBus` singleton declaring all domain signals.
-  - `GameManager` singleton managing game states (`TITLE`, `PLAYING`, `PAUSED`).
-  - Standardized input map configured in `project.godot` (Keyboard & Gamepad).
-- **Entry Criteria:** Phase 0 approved.
-- **Exit Criteria:** Autoloads run without errors; input buffer correctly records and expires buffered actions in headless tests.
+  - `DebugManager`, `EventBus`, `GameManager`, `InputManager`, `AudioManager`, `SceneManager`, `SaveManager`.
+  - 6-bus audio layout (`default_bus_layout.tres`).
+  - Bootstrap scene and telemetry test scene.
+- **Exit Criteria:** Autoloads run without errors; automated headless tests pass.
 
 ---
 
-### Phase 2: Player Controller
+### Phase 2: Player Controller (COMPLETE)
 - **Objective:** Implement responsive, fluid 2D kinematic locomotion for Yuan with zero input lag.
 - **Dependencies:** Phase 1 complete.
+- **Status:** Complete (48/48 automated unit tests passing).
 - **Key Deliverables:**
   - `PlayerController` (`CharacterBody2D`) with acceleration/friction physics.
-  - Locomotion states: Run, Jump, Fall, Coyote Time, Jump Buffering, Wall Cling/Slide, Wall Jump, Dash/Roll.
-  - State machine pattern handling transitions cleanly.
-- **Entry Criteria:** InputManager and EventBus active.
-- **Exit Criteria:** Platforming feels razor-sharp, responsive, zero floatiness; coyote time and jump buffering verified.
+  - Locomotion states: `Idle`, `Run`, `Jump`, `Fall`, `Land`.
+  - Data-driven `PlayerMovementConfig` resource.
+  - Coyote time (0.12s) and jump buffer (0.12s).
+  - Variable jump height and fall gravity multiplier.
+  - Facing direction tracking API and Camera2D look-ahead.
+  - Pit-fall boundary detection and respawn logic.
+  - Interactive test gym (`scenes/world/test_player_room.tscn`).
+- **Exit Criteria:** Platforming feels razor-sharp, responsive, zero floatiness; coyote time and jump buffering verified; 100% automated tests passing.
 
 ---
 

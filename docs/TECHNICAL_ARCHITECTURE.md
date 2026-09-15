@@ -111,38 +111,46 @@ graph TD
 
 ## 3. Entity & Component Architecture
 
-### 3.1 Base Actor Blueprint (`CharacterBody2D`)
-Actors never implement monolithic scripts. Instead, an actor is an orchestration node that links components.
+### 3.1 Base Actor Blueprint & Player Architecture (`scenes/player/player.tscn`)
+Actors never implement monolithic scripts. The Player is an orchestration node (`PlayerController`, `CharacterBody2D`) composed of specialized locomotion components, state machine, and presentation controllers:
 
 ```
 Player (CharacterBody2D) [scripts/player/player_controller.gd]
-├── CollisionShape2D
+├── CollisionShape2D (CapsuleShape2D: radius 9, height 46)
 ├── Visuals (Node2D)
-│   ├── AnimatedSprite2D / Sprite2D
-│   ├── AnimationPlayer
-│   └── VisualTrail (Line2D / Ghost)
+│   ├── Body (ColorRect: 18x46, jade #16A085)
+│   ├── Head (ColorRect: 14x14, dark #2C3E50)
+│   ├── Sash (ColorRect: 16x6, celestial crimson #E74C3C)
+│   └── Eye (ColorRect: 3x3, celestial gold #F1C40F)
+├── Camera2D (Position smoothing enabled, look-ahead lead)
 ├── Components (Node)
-│   ├── HealthComponent [scripts/combat/health_component.gd]
-│   ├── StaminaComponent [scripts/combat/stamina_component.gd]
-│   ├── SpiritComponent [scripts/combat/spirit_component.gd]
-│   ├── StaggerComponent [scripts/combat/stagger_component.gd]
-│   ├── StanceManager [scripts/player/stance_manager.gd]
-│   ├── AbilityManager [scripts/player/ability_manager.gd]
-│   └── HurtboxComponent [scripts/combat/hurtbox_component.gd]
-├── Hitboxes (Node2D)
-│   └── HitboxComponent [scripts/combat/hitbox_component.gd]
-│       └── CollisionShape2D
-├── StateMachine [scripts/systems/state_machine.gd]
-│   ├── IdleState
-│   ├── RunState
-│   ├── JumpState
-│   ├── AttackState
-│   ├── DodgeState
-│   └── StaggerState
-└── Raycasts (Node2D)
-    ├── FloorRays
-    └── LedgeRays
+│   ├── PlayerMovement [scripts/player/player_movement.gd]
+│   ├── PlayerAnimationController [scripts/player/player_animation_controller.gd]
+│   └── PlayerRespawn [scripts/player/player_respawn.gd]
+├── StateMachine (Node) [scripts/systems/state_machine.gd]
+│   ├── Idle (Node) [scripts/player/states/player_idle_state.gd]
+│   ├── Run (Node) [scripts/player/states/player_run_state.gd]
+│   ├── Jump (Node) [scripts/player/states/player_jump_state.gd]
+│   ├── Fall (Node) [scripts/player/states/player_fall_state.gd]
+│   └── Land (Node) [scripts/player/states/player_land_state.gd]
+└── DebugOverlay (CanvasLayer) [scripts/player/player_debug_overlay.gd]
+    └── PanelContainer / DebugLabel (Toggleable via F3)
 ```
+
+#### Player Sub-Component Responsibilities:
+1. **`PlayerMovement` (`scripts/player/player_movement.gd`):**
+   - Driven by `PlayerMovementConfig` (`data/characters/player_movement_config.tres`).
+   - Handles horizontal acceleration, deceleration, and independent air control rates.
+   - Calculates gravity curves: rising gravity, falling gravity (`fall_gravity_multiplier = 1.4`), and variable jump cut (`low_jump_gravity_multiplier = 2.2`).
+   - Implements coyote time (0.12s) and jump buffering (0.12s).
+2. **`PlayerAnimationController` (`scripts/player/player_animation_controller.gd`):**
+   - Decouples visual presentation from physics; applies squash/stretch feedback to placeholder visuals.
+3. **`PlayerRespawn` (`scripts/player/player_respawn.gd`):**
+   - Tracks spawn position; resets velocity, position, and state upon falling below `fall_death_y = 1200.0`.
+4. **`PlayerController` (`scripts/player/player_controller.gd`):**
+   - Central facing API (`facing_direction`: +1 for Right, -1 for Left; `get_facing_direction()`, `is_facing_left()`, `is_facing_right()`).
+   - Camera look-ahead interpolation.
+   - Respects `GameManager.is_playing()` for pause and cutscene state suspension.
 
 ### 3.2 Core Component Specifications
 

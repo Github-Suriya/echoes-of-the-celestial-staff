@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PlayerMovementConfig" format=3 uid="uid://da8ob1jufuclg"]
+
+[ext_resource type="Script" path="res://scripts/player/player_movement_config.gd" id="1_pmc"]
+
+[resource]
+script = ExtResource("1_pmc")
+max_speed = 260.0
+acceleration = 1800.0
+deceleration = 2000.0
+air_acceleration = 1300.0
+air_deceleration = 800.0
+gravity = 1100.0
+jump_velocity = -420.0
+fall_gravity_multiplier = 1.4
+low_jump_gravity_multiplier = 2.2
+max_fall_speed = 650.0
+coyote_time = 0.12
+jump_buffer_time = 0.12
+land_duration = 0.08

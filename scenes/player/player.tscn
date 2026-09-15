@@ -1,0 +1,122 @@
+[gd_scene format=3 uid="uid://dakmsdllxvfyu"]
+
+[ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_controller"]
+[ext_resource type="Resource" path="res://data/characters/player_movement_config.tres" id="2_config"]
+[ext_resource type="Script" path="res://scripts/player/player_movement.gd" id="3_movement"]
+[ext_resource type="Script" path="res://scripts/player/player_animation_controller.gd" id="4_anim"]
+[ext_resource type="Script" path="res://scripts/player/player_respawn.gd" id="5_respawn"]
+[ext_resource type="Script" path="res://scripts/systems/state_machine.gd" id="6_sm"]
+[ext_resource type="Script" path="res://scripts/player/states/player_idle_state.gd" id="7_idle"]
+[ext_resource type="Script" path="res://scripts/player/states/player_run_state.gd" id="8_run"]
+[ext_resource type="Script" path="res://scripts/player/states/player_jump_state.gd" id="9_jump"]
+[ext_resource type="Script" path="res://scripts/player/states/player_fall_state.gd" id="10_fall"]
+[ext_resource type="Script" path="res://scripts/player/states/player_land_state.gd" id="11_land"]
+[ext_resource type="Script" path="res://scripts/player/player_debug_overlay.gd" id="12_debug"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
+radius = 9.0
+height = 46.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+floor_constant_speed = true
+floor_snap_length = 4.0
+script = ExtResource("1_controller")
+movement_config = ExtResource("2_config")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -23)
+shape = SubResource("CapsuleShape2D_player")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -9.0
+offset_top = -46.0
+offset_right = 9.0
+color = Color(0.0862745, 0.627451, 0.521569, 1)
+
+[node name="Head" type="ColorRect" parent="Visuals"]
+offset_left = -7.0
+offset_top = -44.0
+offset_right = 7.0
+offset_bottom = -30.0
+color = Color(0.172549, 0.243137, 0.313726, 1)
+
+[node name="Sash" type="ColorRect" parent="Visuals"]
+offset_left = -4.0
+offset_top = -28.0
+offset_right = 14.0
+offset_bottom = -22.0
+color = Color(0.905882, 0.298039, 0.235294, 1)
+
+[node name="Eye" type="ColorRect" parent="Visuals"]
+offset_left = 2.0
+offset_top = -40.0
+offset_right = 5.0
+offset_bottom = -37.0
+color = Color(0.945098, 0.768627, 0.0588235, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -28)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="Components" type="Node" parent="."]
+
+[node name="PlayerMovement" type="Node" parent="Components"]
+script = ExtResource("3_movement")
+config = ExtResource("2_config")
+
+[node name="PlayerAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root")]
+script = ExtResource("4_anim")
+visuals_root = NodePath("../../Visuals")
+
+[node name="PlayerRespawn" type="Node" parent="Components"]
+script = ExtResource("5_respawn")
+fall_death_y = 1200.0
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("6_sm")
+initial_state_name = &"Idle"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("7_idle")
+
+[node name="Run" type="Node" parent="StateMachine"]
+script = ExtResource("8_run")
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource("9_jump")
+
+[node name="Fall" type="Node" parent="StateMachine"]
+script = ExtResource("10_fall")
+
+[node name="Land" type="Node" parent="StateMachine"]
+script = ExtResource("11_land")
+
+[node name="DebugOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("12_debug")
+
+[node name="PanelContainer" type="PanelContainer" parent="DebugOverlay"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 200.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugOverlay/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="DebugLabel" type="Label" parent="DebugOverlay/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "[DEBUG OVERLAY]"
