@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/vfx_autofree.gd" id="1_af"]
+
+[node name="VFXDeathBurst" type="Node2D"]
+script = ExtResource("1_af")
+duration = 0.55
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 16
+one_shot = true
+explosiveness = 0.9
+lifetime = 0.5
+spread = 180.0
+gravity = Vector2(0, -60)
+initial_velocity_min = 60.0
+initial_velocity_max = 120.0
+scale_amount_min = 2.5
+scale_amount_max = 4.5
+color = Color(0.4, 0.9, 0.7, 0.8)

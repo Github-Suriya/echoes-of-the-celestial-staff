@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_slam"]
+
+[resource]
+script = ExtResource("1_slam")
+attack_id = &"forest_heart_heavy_slam"
+display_name = "Ancient Root Pulverize"
+damage = 28.0
+poise_damage = 35.0
+knockback_force = Vector2(240, -90)
+startup_time = 0.05
+active_time = 0.20
+recovery_time = 0.75
+forward_impulse = 30.0
+hitstop_duration = 0.12
+attack_priority = 3
+is_parryable = true
+is_dodgeable = true
+is_interruptible = false
+attack_range = 85.0
+cooldown = 2.8
+telegraph_duration = 0.70
+hitbox_size = Vector2(75, 48)
+hitbox_offset = Vector2(45, -24)
+telegraph_type = "slam"
+telegraph_shape_size = Vector2(75, 30)

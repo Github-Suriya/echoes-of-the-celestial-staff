@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RoomData" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/room_data.gd" id="1_rdata"]
+
+[resource]
+script = ExtResource("1_rdata")
+room_id = &"room_01_forest_entrance"
+display_name = "Forest Entrance"
+scene_path = "res://scenes/world/forbidden_forest/room_01_forest_entrance.tscn"
+room_bounds = Rect2(0, 0, 2400, 1080)
+spawn_point_ids = [&"spawn_start", &"spawn_from_grove"]
+connections = {
+"exit_to_grove": {
+"destination_room_id": &"room_02_ancient_grove",
+"destination_spawn_id": &"spawn_from_entrance"
+}
+}

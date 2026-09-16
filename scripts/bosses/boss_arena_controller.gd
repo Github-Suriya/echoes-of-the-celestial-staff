@@ -92,6 +92,9 @@ func complete_encounter() -> void:
 	
 	unlock_arena()
 	
+	if boss != null and boss.hitbox != null and boss.hitbox.is_active:
+		boss.hitbox.deactivate()
+	
 	if boss_hud != null:
 		boss_hud.visible = false
 	

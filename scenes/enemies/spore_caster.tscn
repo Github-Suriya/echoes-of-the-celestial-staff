@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/enemies/spore_caster_controller.gd" id="2_ctrl"]
+[ext_resource type="Resource" path="res://data/enemies/enemy_spore_caster.tres" id="3_data"]
+
+[node name="SporeCaster" instance=ExtResource("1_base")]
+script = ExtResource("2_ctrl")
+enemy_data = ExtResource("3_data")
+
+[node name="Body" parent="Visuals" index="0"]
+offset_left = -10.0
+offset_right = 10.0
+color = Color(0.35, 0.22, 0.45, 1)
+
+[node name="Eye" parent="Visuals" index="1"]
+color = Color(0.75, 0.25, 0.95, 1)
+
+[node name="Arm" parent="Visuals" index="2"]
+color = Color(0.28, 0.16, 0.38, 1)

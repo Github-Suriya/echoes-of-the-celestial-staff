@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_proj"]
+
+[resource]
+script = ExtResource("1_proj")
+attack_id = &"shrine_keeper_projectile"
+display_name = "Supernatural Spirit Wave"
+damage = 18.0
+poise_damage = 18.0
+knockback_force = Vector2(150, -50)
+startup_time = 0.05
+active_time = 0.18
+recovery_time = 0.60
+forward_impulse = 0.0
+hitstop_duration = 0.07
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 160.0
+cooldown = 2.6
+telegraph_duration = 0.60
+hitbox_size = Vector2(50, 36)
+hitbox_offset = Vector2(45, -20)
+telegraph_type = "projectile"
+telegraph_shape_size = Vector2(50, 24)

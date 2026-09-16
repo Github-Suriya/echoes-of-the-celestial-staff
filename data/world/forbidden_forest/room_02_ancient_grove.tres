@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RoomData" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/room_data.gd" id="1_rdata"]
+
+[resource]
+script = ExtResource("1_rdata")
+room_id = &"room_02_ancient_grove"
+display_name = "Ancient Grove"
+scene_path = "res://scenes/world/forbidden_forest/room_02_ancient_grove.tscn"
+room_bounds = Rect2(0, 0, 2560, 1080)
+spawn_point_ids = [&"spawn_from_entrance", &"spawn_from_bamboo"]
+connections = {
+"exit_to_entrance": {
+"destination_room_id": &"room_01_forest_entrance",
+"destination_spawn_id": &"spawn_from_grove"
+},
+"exit_to_bamboo": {
+"destination_room_id": &"room_03_bamboo_path",
+"destination_spawn_id": &"spawn_from_grove"
+}
+}

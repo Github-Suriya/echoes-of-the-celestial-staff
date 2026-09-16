@@ -1,0 +1,219 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/chapter_hud.gd" id="1_hud"]
+
+[node name="ChapterHUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="PlayerStatusPanel" type="PanelContainer" parent="."]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 320.0
+offset_bottom = 124.0
+
+[node name="Margin" type="MarginContainer" parent="PlayerStatusPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="PlayerStatusPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HealthHeader" type="HBoxContainer" parent="PlayerStatusPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="PlayerStatusPanel/Margin/VBox/HealthHeader"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "HP 100 / 100"
+
+[node name="HealthBar" type="ProgressBar" parent="PlayerStatusPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="SpiritBar" type="ProgressBar" parent="PlayerStatusPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="StatusFooter" type="HBoxContainer" parent="PlayerStatusPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="StanceBadge" type="Label" parent="PlayerStatusPanel/Margin/VBox/StatusFooter"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[C] STANCE: SWIFT"
+
+[node name="AwakeningBadge" type="Label" parent="PlayerStatusPanel/Margin/VBox/StatusFooter"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+text = "AWAKENING"
+
+[node name="BossHUDPanel" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 104.0
+grow_horizontal = 2
+
+[node name="Margin" type="MarginContainer" parent="BossHUDPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="BossHUDPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="BossHUDPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="BossNameLabel" type="Label" parent="BossHUDPanel/Margin/VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "BOSS NAME"
+
+[node name="BossPhaseLabel" type="Label" parent="BossHUDPanel/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9, 0.75, 0.3, 1)
+text = "PHASE 1"
+
+[node name="BossHealthBar" type="ProgressBar" parent="BossHUDPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+max_value = 300.0
+value = 300.0
+show_percentage = false
+
+[node name="BossPoiseBar" type="ProgressBar" parent="BossHUDPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+max_value = 60.0
+value = 60.0
+show_percentage = false
+
+[node name="NotificationBanner" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 120.0
+offset_right = 220.0
+offset_bottom = 160.0
+grow_horizontal = 2
+
+[node name="Margin" type="MarginContainer" parent="NotificationBanner"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 6
+
+[node name="NotificationLabel" type="Label" parent="NotificationBanner/Margin"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.3, 0.95, 0.75, 1)
+text = "SHRINE ACTIVATED"
+horizontal_alignment = 1
+
+[node name="DeathOverlay" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -60.0
+offset_right = 200.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="DeathOverlay"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="DeathOverlay/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="DeathOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.95, 0.25, 0.25, 1)
+text = "FALLEN"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="DeathOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Press [R] to Respawn at Shrine"
+horizontal_alignment = 1
+
+[node name="VictoryOverlay" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -90.0
+offset_right = 280.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="VictoryOverlay"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="VictoryOverlay/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="VictoryOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.85, 0.25, 1)
+text = "CHAPTER 1 COMPLETE"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VictoryOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.4, 0.95, 0.65, 1)
+text = "Forbidden Forest Cleared"
+horizontal_alignment = 1
+
+[node name="Prompt" type="Label" parent="VictoryOverlay/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Corrupted Forest Heart defeated. Chapter Slice verified."
+horizontal_alignment = 1

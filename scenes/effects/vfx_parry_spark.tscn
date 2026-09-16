@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/vfx_autofree.gd" id="1_af"]
+
+[node name="VFXParrySpark" type="Node2D"]
+script = ExtResource("1_af")
+duration = 0.40
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 16
+one_shot = true
+explosiveness = 0.95
+lifetime = 0.35
+spread = 180.0
+gravity = Vector2(0, 50)
+initial_velocity_min = 100.0
+initial_velocity_max = 180.0
+scale_amount_min = 2.5
+scale_amount_max = 4.0
+color = Color(0.95, 0.9, 0.35, 1)
+
+[node name="Flash" type="ColorRect" parent="."]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(1, 1, 0.9, 0.5)

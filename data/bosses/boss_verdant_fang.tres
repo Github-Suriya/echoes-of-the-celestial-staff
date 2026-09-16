@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_data.gd" id="1_boss"]
+[ext_resource type="Resource" path="res://data/bosses/phase_verdant_fang_p1.tres" id="2_p1"]
+
+[resource]
+script = ExtResource("1_boss")
+boss_id = &"verdant_fang"
+display_name = "Verdant Fang"
+max_health = 220.0
+max_poise = 45.0
+stagger_duration = 1.8
+poise_regen_delay = 2.5
+poise_regen_rate = 14.0
+movement_speed = 70.0
+chase_speed = 120.0
+acceleration = 450.0
+deceleration = 700.0
+preferred_combat_distance = 55.0
+detection_range = 380.0
+arena_bounds = Vector2(-280, 280)
+intro_duration = 1.2
+defeat_duration = 1.8
+phase_transition_duration = 1.5
+bounty_qi = 35
+phase_thresholds = [1.0]
+phases = [ExtResource("2_p1")]

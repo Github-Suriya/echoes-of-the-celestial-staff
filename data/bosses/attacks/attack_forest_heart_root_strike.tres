@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_root"]
+
+[resource]
+script = ExtResource("1_root")
+attack_id = &"forest_heart_root_strike"
+display_name = "Corrupted Root Strike"
+damage = 18.0
+poise_damage = 22.0
+knockback_force = Vector2(160, -40)
+startup_time = 0.05
+active_time = 0.16
+recovery_time = 0.50
+forward_impulse = 25.0
+hitstop_duration = 0.08
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 75.0
+cooldown = 1.8
+telegraph_duration = 0.45
+hitbox_size = Vector2(65, 40)
+hitbox_offset = Vector2(40, -22)
+telegraph_type = "sweep"
+telegraph_shape_size = Vector2(65, 26)

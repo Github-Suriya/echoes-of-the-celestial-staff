@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/enemies/attacks/attack_thorn_beast_slam.tres" id="2_attack"]
+
+[resource]
+script = ExtResource("1_data")
+enemy_id = &"thorn_beast"
+display_name = "Thorn Beast"
+max_health = 100.0
+max_poise = 45.0
+stagger_duration = 1.6
+poise_regen_delay = 3.0
+poise_regen_rate = 10.0
+patrol_speed = 35.0
+chase_speed = 65.0
+acceleration = 350.0
+deceleration = 600.0
+gravity = 980.0
+detection_range = 160.0
+lose_target_range = 240.0
+preferred_combat_distance = 40.0
+attack_range = 46.0
+alert_duration = 0.4
+patrol_distance = 70.0
+patrol_wait_time = 1.5
+attack_cooldown = 2.2
+bounty_qi = 15
+default_attack = ExtResource("2_attack")

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_claw"]
+
+[resource]
+script = ExtResource("1_claw")
+attack_id = &"verdant_fang_claw"
+display_name = "Verdant Claw"
+damage = 14.0
+poise_damage = 12.0
+knockback_force = Vector2(120, -30)
+startup_time = 0.05
+active_time = 0.12
+recovery_time = 0.35
+forward_impulse = 35.0
+hitstop_duration = 0.05
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 52.0
+cooldown = 1.2
+telegraph_duration = 0.30
+hitbox_size = Vector2(46, 30)
+hitbox_offset = Vector2(28, -16)
+telegraph_type = "sweep"
+telegraph_shape_size = Vector2(45, 20)

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_pounce"]
+
+[resource]
+script = ExtResource("1_pounce")
+attack_id = &"verdant_fang_pounce"
+display_name = "Verdant Pounce"
+damage = 18.0
+poise_damage = 18.0
+knockback_force = Vector2(160, -50)
+startup_time = 0.05
+active_time = 0.15
+recovery_time = 0.55
+forward_impulse = 110.0
+hitstop_duration = 0.07
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 85.0
+cooldown = 1.6
+telegraph_duration = 0.35
+hitbox_size = Vector2(52, 34)
+hitbox_offset = Vector2(32, -18)
+telegraph_type = "thrust"
+telegraph_shape_size = Vector2(50, 20)

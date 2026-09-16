@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_cleave"]
+
+[resource]
+script = ExtResource("1_cleave")
+attack_id = &"shrine_keeper_cleave"
+display_name = "Ancient Shrine Cleave"
+damage = 20.0
+poise_damage = 24.0
+knockback_force = Vector2(180, -45)
+startup_time = 0.05
+active_time = 0.16
+recovery_time = 0.55
+forward_impulse = 30.0
+hitstop_duration = 0.08
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 70.0
+cooldown = 1.8
+telegraph_duration = 0.50
+hitbox_size = Vector2(64, 38)
+hitbox_offset = Vector2(36, -20)
+telegraph_type = "sweep"
+telegraph_shape_size = Vector2(65, 24)

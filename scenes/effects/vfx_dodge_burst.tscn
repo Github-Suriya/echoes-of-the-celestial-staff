@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/vfx_autofree.gd" id="1_af"]
+
+[node name="VFXDodgeBurst" type="Node2D"]
+script = ExtResource("1_af")
+duration = 0.35
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 10
+one_shot = true
+explosiveness = 0.85
+lifetime = 0.3
+spread = 60.0
+gravity = Vector2(0, 40)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+scale_amount_min = 2.0
+scale_amount_max = 3.5
+color = Color(0.85, 0.9, 0.95, 0.6)

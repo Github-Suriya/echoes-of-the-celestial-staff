@@ -214,12 +214,22 @@ func set_active_checkpoint(room_id: StringName, spawn_point_id: StringName) -> v
 	active_checkpoint_spawn_id = spawn_point_id
 
 func respawn_player_at_checkpoint() -> bool:
-	if active_checkpoint_room_id.is_empty():
-		if not initial_room_id.is_empty():
-			return request_room_transition(initial_room_id, initial_spawn_id)
+	var dest_room: StringName = active_checkpoint_room_id if not active_checkpoint_room_id.is_empty() else initial_room_id
+	var dest_spawn: StringName = active_checkpoint_spawn_id if not active_checkpoint_spawn_id.is_empty() else initial_spawn_id
+	if dest_room.is_empty():
 		return false
 	
-	return request_room_transition(active_checkpoint_room_id, active_checkpoint_spawn_id)
+	var ok: bool = request_room_transition(dest_room, dest_spawn)
+	if ok and player != null:
+		if player.has_node("Components/HealthComponent"):
+			var hc: HealthComponent = player.get_node("Components/HealthComponent") as HealthComponent
+			if hc != null:
+				hc.heal(hc.max_health)
+		if player.has_node("Components/SpiritComponent"):
+			var sc: SpiritComponent = player.get_node("Components/SpiritComponent") as SpiritComponent
+			if sc != null:
+				sc.restore_spirit(sc.get_max_spirit())
+	return ok
 
 func save_world_state(slot: int = 1) -> bool:
 	var sm: Node = _get_save_manager()

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/enemies/attacks/attack_spore_caster_cast.tres" id="2_attack"]
+
+[resource]
+script = ExtResource("1_data")
+enemy_id = &"spore_caster"
+display_name = "Spore Caster"
+max_health = 45.0
+max_poise = 15.0
+stagger_duration = 1.4
+poise_regen_delay = 2.0
+poise_regen_rate = 12.0
+patrol_speed = 40.0
+chase_speed = 60.0
+acceleration = 400.0
+deceleration = 650.0
+gravity = 980.0
+detection_range = 220.0
+lose_target_range = 300.0
+preferred_combat_distance = 160.0
+attack_range = 190.0
+alert_duration = 0.3
+patrol_distance = 60.0
+patrol_wait_time = 1.5
+attack_cooldown = 2.4
+bounty_qi = 12
+default_attack = ExtResource("2_attack")

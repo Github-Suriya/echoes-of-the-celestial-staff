@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RoomData" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/room_data.gd" id="1_rdata"]
+
+[resource]
+script = ExtResource("1_rdata")
+room_id = &"room_04_forgotten_shrine"
+display_name = "Forgotten Shrine"
+scene_path = "res://scenes/world/forbidden_forest/room_04_forgotten_shrine.tscn"
+room_bounds = Rect2(0, 0, 2560, 1080)
+spawn_point_ids = [&"spawn_from_bamboo", &"spawn_from_heart"]
+connections = {
+"exit_to_bamboo": {
+"destination_room_id": &"room_03_bamboo_path",
+"destination_spawn_id": &"spawn_from_shrine"
+},
+"exit_to_heart": {
+"destination_room_id": &"room_05_forest_heart",
+"destination_spawn_id": &"spawn_from_shrine"
+}
+}

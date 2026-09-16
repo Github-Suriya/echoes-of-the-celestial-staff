@@ -1,0 +1,50 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/forbidden_forest_world.gd" id="1_ffw"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_01_forest_entrance.tres" id="2_r1"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_02_ancient_grove.tres" id="3_r2"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_03_bamboo_path.tres" id="4_r3"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_04_forgotten_shrine.tres" id="5_r4"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_05_forest_heart.tres" id="6_r5"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="7_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/chapter_hud.tscn" id="8_hud"]
+[ext_resource type="Script" path="res://scripts/effects/vfx_manager.gd" id="9_vfx"]
+
+[node name="ForbiddenForestWorld" type="Node2D"]
+script = ExtResource("1_ffw")
+room_1_data = ExtResource("2_r1")
+room_2_data = ExtResource("3_r2")
+room_3_data = ExtResource("4_r3")
+room_4_data = ExtResource("5_r4")
+room_5_data = ExtResource("6_r5")
+
+[node name="RoomsContainer" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("7_player")]
+position = Vector2(180, 960)
+
+[node name="ChapterHUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="VFXManager" type="Node2D" parent="."]
+script = ExtResource("9_vfx")
+
+[node name="DebugTelemetry" type="CanvasLayer" parent="."]
+layer = 11
+
+[node name="Panel" type="PanelContainer" parent="DebugTelemetry"]
+offset_left = 16.0
+offset_top = 135.0
+offset_right = 380.0
+offset_bottom = 375.0
+
+[node name="Margin" type="MarginContainer" parent="DebugTelemetry/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="TelemetryLabel" type="Label" parent="DebugTelemetry/Panel/Margin"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[CHAPTER 1 TELEMETRY]"

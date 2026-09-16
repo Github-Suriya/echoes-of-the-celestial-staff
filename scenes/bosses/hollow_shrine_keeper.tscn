@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/bosses/boss_base.tscn" id="1_base"]
+[ext_resource type="Resource" path="res://data/bosses/boss_hollow_shrine_keeper.tres" id="2_data"]
+
+[node name="HollowShrineKeeper" instance=ExtResource("1_base")]
+boss_data = ExtResource("2_data")
+
+[node name="Body" parent="Visuals" index="1"]
+offset_left = -20.0
+offset_top = -70.0
+offset_right = 20.0
+offset_bottom = 0.0
+color = Color(0.24, 0.28, 0.35, 1)
+
+[node name="Crest" parent="Visuals" index="2"]
+offset_left = -6.0
+offset_top = -62.0
+offset_right = 6.0
+offset_bottom = -44.0
+color = Color(0.3, 0.85, 0.95, 1)

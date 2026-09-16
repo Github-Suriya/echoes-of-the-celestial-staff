@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BossPhaseData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_phase_data.gd" id="1_phase"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_shrine_keeper_slam.tres" id="2_slam"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_shrine_keeper_cleave.tres" id="3_cleave"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_shrine_keeper_projectile.tres" id="4_proj"]
+
+[resource]
+script = ExtResource("1_phase")
+phase_id = 1
+phase_name = "Shrine Resonator"
+health_threshold_ratio = 1.0
+movement_speed_multiplier = 1.0
+attack_speed_multiplier = 1.0
+damage_multiplier = 1.0
+poise_damage_multiplier = 1.0
+attacks = [ExtResource("2_slam"), ExtResource("3_cleave"), ExtResource("4_proj")]
+attack_weights = [1.0, 1.2, 0.8]
+telegraph_color = Color(0.3, 0.7, 0.9, 0.85)
+aura_color = Color(0.2, 0.4, 0.6, 0.3)

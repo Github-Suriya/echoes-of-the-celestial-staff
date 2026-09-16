@@ -1,0 +1,260 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/room_2d.gd" id="1_room"]
+[ext_resource type="Resource" path="res://data/world/forbidden_forest/room_03_bamboo_path.tres" id="2_data"]
+[ext_resource type="Script" path="res://scripts/world/room_exit.gd" id="3_exit"]
+[ext_resource type="Script" path="res://scripts/world/checkpoint.gd" id="4_cp"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/thorn_beast.tscn" id="5_thorn"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/spore_caster.tscn" id="6_spore"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_arena_controller.gd" id="7_arena"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/bamboo_warden.tscn" id="8_bwarden"]
+[ext_resource type="PackedScene" path="res://scenes/effects/vfx_forest_mist.tscn" id="9_mist"]
+[ext_resource type="PackedScene" path="res://scenes/effects/vfx_forest_particles.tscn" id="10_part"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(2880, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(260, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_barrier"]
+size = Vector2(40, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(80, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(60, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cp"]
+size = Vector2(80, 100)
+
+[node name="CursedBambooPath" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"room_03_bamboo_path"
+room_data = ExtResource("2_data")
+default_camera_bounds = Rect2(0, 0, 2880, 1080)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1440, 1040)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -1440.0
+offset_top = -40.0
+offset_right = 1440.0
+offset_bottom = 40.0
+color = Color(0.12, 0.18, 0.12, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 540)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/LeftWall"]
+offset_left = -20.0
+offset_top = -540.0
+offset_right = 20.0
+offset_bottom = 540.0
+color = Color(0.08, 0.14, 0.1, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2860, 540)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/RightWall"]
+offset_left = -20.0
+offset_top = -540.0
+offset_right = 20.0
+offset_bottom = 540.0
+color = Color(0.08, 0.14, 0.1, 1)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1440, 20)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ceiling"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="BambooPlat1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(700, 840)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BambooPlat1"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/BambooPlat1"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 12.0
+color = Color(0.24, 0.38, 0.22, 1)
+
+[node name="BambooPlat2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1050, 720)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BambooPlat2"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/BambooPlat2"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 12.0
+color = Color(0.24, 0.38, 0.22, 1)
+
+[node name="BambooPlat3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1400, 840)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/BambooPlat3"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/BambooPlat3"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 12.0
+color = Color(0.24, 0.38, 0.22, 1)
+
+[node name="CameraBounds" type="ReferenceRect" parent="."]
+offset_right = 2880.0
+offset_bottom = 1080.0
+border_color = Color(0.15, 0.7, 0.4, 0.5)
+editor_only = false
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="spawn_from_grove" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(150, 960)
+
+[node name="spawn_from_shrine" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(2750, 960)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="ExitToGrove" type="Area2D" parent="Exits"]
+position = Vector2(40, 920)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_exit")
+destination_room_id = &"room_02_ancient_grove"
+destination_spawn_id = &"spawn_from_bamboo"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ExitToGrove"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="ExitToShrine" type="Area2D" parent="Exits"]
+position = Vector2(2840, 920)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("3_exit")
+destination_room_id = &"room_04_forgotten_shrine"
+destination_spawn_id = &"spawn_from_bamboo"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/ExitToShrine"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="cp_bamboo" type="Area2D" parent="Checkpoints"]
+position = Vector2(380, 950)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_cp")
+checkpoint_id = &"cp_bamboo"
+room_id = &"room_03_bamboo_path"
+spawn_point_id = &"spawn_from_grove"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoints/cp_bamboo"]
+shape = SubResource("RectangleShape2D_cp")
+
+[node name="VisualIndicator" type="ColorRect" parent="Checkpoints/cp_bamboo"]
+offset_left = -20.0
+offset_top = -50.0
+offset_right = 20.0
+offset_bottom = 50.0
+color = Color(0.2, 0.6, 0.5, 0.6)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="ThornBeast" parent="Enemies" instance=ExtResource("5_thorn")]
+position = Vector2(720, 960)
+
+[node name="SporeCaster" parent="Enemies" instance=ExtResource("6_spore")]
+position = Vector2(1050, 696)
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="PersistentObjects" type="Node2D" parent="."]
+
+[node name="BambooWardenArena" type="Node2D" parent="PersistentObjects" node_paths=PackedStringArray("boss", "entry_trigger", "left_barrier", "right_barrier")]
+script = ExtResource("7_arena")
+boss = NodePath("BambooWarden")
+entry_trigger = NodePath("EntryTrigger")
+left_barrier = NodePath("LeftBarrier")
+right_barrier = NodePath("RightBarrier")
+boss_defeat_flag = &"bamboo_warden_defeated"
+
+[node name="LeftBarrier" type="StaticBody2D" parent="PersistentObjects/BambooWardenArena"]
+position = Vector2(1600, 880)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PersistentObjects/BambooWardenArena/LeftBarrier"]
+shape = SubResource("RectangleShape2D_barrier")
+
+[node name="ColorRect" type="ColorRect" parent="PersistentObjects/BambooWardenArena/LeftBarrier"]
+offset_left = -20.0
+offset_top = -120.0
+offset_right = 20.0
+offset_bottom = 120.0
+color = Color(0.3, 0.8, 0.3, 0.4)
+
+[node name="RightBarrier" type="StaticBody2D" parent="PersistentObjects/BambooWardenArena"]
+position = Vector2(2650, 880)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PersistentObjects/BambooWardenArena/RightBarrier"]
+shape = SubResource("RectangleShape2D_barrier")
+
+[node name="ColorRect" type="ColorRect" parent="PersistentObjects/BambooWardenArena/RightBarrier"]
+offset_left = -20.0
+offset_top = -120.0
+offset_right = 20.0
+offset_bottom = 120.0
+color = Color(0.3, 0.8, 0.3, 0.4)
+
+[node name="EntryTrigger" type="Area2D" parent="PersistentObjects/BambooWardenArena"]
+position = Vector2(1750, 880)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PersistentObjects/BambooWardenArena/EntryTrigger"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="BambooWarden" parent="PersistentObjects/BambooWardenArena" instance=ExtResource("8_bwarden")]
+position = Vector2(2250, 960)
+
+[node name="Atmosphere" type="Node2D" parent="."]
+
+[node name="VFXForestMist" parent="Atmosphere" instance=ExtResource("9_mist")]
+position = Vector2(1440, 960)
+
+[node name="VFXForestParticles" parent="Atmosphere" instance=ExtResource("10_part")]
+position = Vector2(1440, 600)

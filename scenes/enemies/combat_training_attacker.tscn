@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cx618k4mb7x3p"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/enemies/combat_training_attacker.gd" id="1_attacker"]
 [ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]

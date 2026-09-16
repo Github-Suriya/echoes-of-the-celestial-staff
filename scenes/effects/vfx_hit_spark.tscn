@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/vfx_autofree.gd" id="1_af"]
+
+[node name="VFXHitSpark" type="Node2D"]
+script = ExtResource("1_af")
+duration = 0.35
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 12
+one_shot = true
+explosiveness = 0.95
+lifetime = 0.3
+spread = 180.0
+gravity = Vector2(0, 100)
+initial_velocity_min = 80.0
+initial_velocity_max = 140.0
+scale_amount_min = 2.0
+scale_amount_max = 3.5
+color = Color(1, 0.85, 0.25, 1)

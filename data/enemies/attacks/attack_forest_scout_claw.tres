@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_attack_data.gd" id="1_claw"]
+
+[resource]
+script = ExtResource("1_claw")
+attack_id = &"forest_scout_claw"
+display_name = "Scout Claw"
+damage = 12.0
+poise_damage = 8.0
+knockback_force = Vector2(100, -40)
+startup_time = 0.3
+active_time = 0.12
+recovery_time = 0.3
+hitstop_duration = 0.05
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 38.0
+cooldown = 1.4
+telegraph_duration = 0.3
+hitbox_size = Vector2(32, 28)
+hitbox_offset = Vector2(20, -18)

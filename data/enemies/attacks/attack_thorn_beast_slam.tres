@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_attack_data.gd" id="1_slam"]
+
+[resource]
+script = ExtResource("1_slam")
+attack_id = &"thorn_beast_slam"
+display_name = "Thorn Slam"
+damage = 22.0
+poise_damage = 25.0
+knockback_force = Vector2(180, -90)
+startup_time = 0.5
+active_time = 0.15
+recovery_time = 0.55
+hitstop_duration = 0.08
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = false
+attack_range = 46.0
+cooldown = 2.2
+telegraph_duration = 0.5
+hitbox_size = Vector2(48, 38)
+hitbox_offset = Vector2(26, -20)

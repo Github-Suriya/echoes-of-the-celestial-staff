@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_rupture"]
+
+[resource]
+script = ExtResource("1_rupture")
+attack_id = &"forest_heart_ground_rupture"
+display_name = "Corrupted Ground Rupture"
+damage = 32.0
+poise_damage = 40.0
+knockback_force = Vector2(260, -110)
+startup_time = 0.05
+active_time = 0.22
+recovery_time = 0.55
+forward_impulse = 0.0
+hitstop_duration = 0.14
+attack_priority = 3
+is_parryable = true
+is_dodgeable = true
+is_interruptible = false
+attack_range = 110.0
+cooldown = 2.4
+telegraph_duration = 0.50
+hitbox_size = Vector2(100, 50)
+hitbox_offset = Vector2(50, -25)
+telegraph_type = "slam"
+telegraph_shape_size = Vector2(100, 35)

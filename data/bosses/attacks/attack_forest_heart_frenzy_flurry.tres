@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_flurry"]
+
+[resource]
+script = ExtResource("1_flurry")
+attack_id = &"forest_heart_frenzy_flurry"
+display_name = "Unstable Root Flurry"
+damage = 22.0
+poise_damage = 26.0
+knockback_force = Vector2(190, -50)
+startup_time = 0.04
+active_time = 0.14
+recovery_time = 0.35
+forward_impulse = 60.0
+hitstop_duration = 0.08
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 75.0
+cooldown = 1.4
+telegraph_duration = 0.35
+hitbox_size = Vector2(68, 42)
+hitbox_offset = Vector2(40, -22)
+telegraph_type = "combo"
+telegraph_shape_size = Vector2(68, 24)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8qy4guard"]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
 [ext_resource type="Resource" path="res://data/enemies/enemy_celestial_guard.tres" id="2_data"]

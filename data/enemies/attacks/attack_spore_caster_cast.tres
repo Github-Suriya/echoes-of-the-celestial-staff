@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_attack_data.gd" id="1_cast"]
+
+[resource]
+script = ExtResource("1_cast")
+attack_id = &"spore_caster_cast"
+display_name = "Spore Cast"
+damage = 15.0
+poise_damage = 10.0
+knockback_force = Vector2(120, -50)
+startup_time = 0.5
+active_time = 0.15
+recovery_time = 0.6
+hitstop_duration = 0.05
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 190.0
+cooldown = 2.4
+telegraph_duration = 0.55
+hitbox_size = Vector2(24, 24)
+hitbox_offset = Vector2(20, -18)
