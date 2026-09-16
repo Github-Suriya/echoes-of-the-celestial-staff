@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://b2danimprev14c"]
+
+[ext_resource type="Script" path="res://tests/destined_one_animation/DestinedOne2DAnimationPreview.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/destined_one/spriteframes/destined_one_retarget_512_spriteframes.tres" id="2_sf"]
+
+[node name="DestinedOne2DAnimationPreview" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.12, 0.13, 0.16, 1)
+
+[node name="CenterReference" type="Line2D" parent="."]
+points = PackedVector2Array(640, 100, 640, 620)
+width = 1.0
+default_color = Color(0.3, 0.35, 0.4, 0.5)
+
+[node name="GroundLine" type="Line2D" parent="."]
+points = PackedVector2Array(200, 560, 1080, 560)
+width = 2.0
+default_color = Color(0.4, 0.45, 0.55, 0.8)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(640, 360)
+sprite_frames = ExtResource("2_sf")
+animation = &"idle"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -140.0
+offset_right = -30.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "FPS: -- | Memory: -- MB"
+
+[node name="AnimLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Animation: idle"
+
+[node name="FrameLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Frame: 1 / 4"
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
