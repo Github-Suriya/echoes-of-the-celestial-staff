@@ -13,13 +13,13 @@ func enter(_from_state: State = null) -> void:
 	_timer = duration
 	
 	if boss != null:
-		boss.velocity = Vector2.ZERO
+		boss.velocity.x = 0.0
 		if boss.anim_controller != null:
 			boss.anim_controller.play_intro(duration)
 		if boss.perception != null and boss.perception.has_target():
 			boss.face_target()
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -35,3 +35,6 @@ func physics_process_state(delta: float) -> void:
 			state_machine.change_state(&"Combat")
 		else:
 			state_machine.change_state(&"Idle")
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)

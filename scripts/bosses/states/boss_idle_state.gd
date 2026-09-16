@@ -8,7 +8,7 @@ func enter(_from_state: State = null) -> void:
 	if boss != null:
 		boss.velocity.x = 0.0
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -17,3 +17,6 @@ func physics_process_state(delta: float) -> void:
 	
 	if boss.perception != null and boss.perception.has_target():
 		state_machine.change_state(&"Combat")
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)

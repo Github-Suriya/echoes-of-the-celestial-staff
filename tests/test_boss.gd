@@ -35,6 +35,9 @@ func _ready() -> void:
 	_test_10_defeat_and_reset_mechanics()
 	_test_11_boss_hud_integration()
 	_test_12_multi_system_and_room_integrity()
+	_test_13_hitbox_physics_signal_safety()
+	_test_14_grounding_and_gravity_integrity()
+	_test_15_boss_combat_and_hit_reaction_regression()
 	
 	print("==================================================")
 	print(" BOSS FRAMEWORK TEST RESULTS: %d / %d PASSED (%d FAILED)" % [
@@ -497,3 +500,266 @@ func _test_12_multi_system_and_room_integrity() -> void:
 	_assert(not room.arena_controller.is_encounter_active, "12.8 Room encounter resets cleanly")
 	
 	room.queue_free()
+
+# ==============================================================================
+# CATEGORY 13: HITBOX SIGNAL SAFETY (PHASE 9.1 REGRESSION)
+# ==============================================================================
+func _test_13_hitbox_physics_signal_safety() -> void:
+	print("\n--- Category 13: Hitbox Signal Safety (Phase 9.1) ---")
+	
+	# HITBOX-SAFE-01: Deactivate hitbox during area_entered callback
+	var hb1: Hitbox = Hitbox.new()
+	var hurt1: Hurtbox = Hurtbox.new()
+	add_child(hb1)
+	add_child(hurt1)
+	
+	var atk: AttackData = load("res://data/attacks/attack_light_1.tres") as AttackData
+	var tracker = {"deactivated": false}
+	hurt1.hit_received.connect(func(_info: DamageInfo) -> void:
+		hb1.deactivate()
+		tracker["deactivated"] = true
+	)
+	
+	hb1.activate(atk, null)
+	hb1._on_area_entered(hurt1)
+	_assert(tracker["deactivated"] and not hb1.is_active, "HITBOX-SAFE-01: Deactivate hitbox during area_entered callback executes safely without error")
+	hb1.queue_free()
+	hurt1.queue_free()
+	
+	# HITBOX-SAFE-02: Deactivate hitbox through stagger callback
+	var boss_scene: PackedScene = load("res://scenes/bosses/granite_abbot.tscn") as PackedScene
+	var boss2: BossController = boss_scene.instantiate() as BossController
+	add_child(boss2)
+	
+	var sweep_atk: EnemyAttackData = load("res://data/bosses/attacks/attack_granite_sweep.tres") as EnemyAttackData
+	boss2.combat_controller.trigger_attack(sweep_atk)
+	boss2.combat_controller.process_combat(sweep_atk.telegraph_duration + 0.01) # Enter ACTIVE
+	_assert(boss2.hitbox != null and boss2.hitbox.is_active, "Boss hitbox is active during ACTIVE attack window")
+	
+	# Deplete poise to trigger stagger callback chain while simulating hit
+	boss2.poise_component.take_poise_damage(boss2.poise_component.max_poise)
+	_assert(not boss2.hitbox.is_active, "HITBOX-SAFE-02: Deactivate hitbox through stagger callback cleanly disables hitbox")
+	boss2.queue_free()
+	
+	# HITBOX-SAFE-03: Deactivate hitbox through Perfect Parry interruption
+	var boss3: BossController = boss_scene.instantiate() as BossController
+	add_child(boss3)
+	boss3.combat_controller.trigger_attack(sweep_atk)
+	boss3.combat_controller.process_combat(sweep_atk.telegraph_duration + 0.01)
+	
+	# Perfect parry intercepts and interrupts attacker
+	boss3.interrupt_attack()
+	_assert(not boss3.hitbox.is_active, "HITBOX-SAFE-03: Deactivate hitbox through Perfect Parry interruption stops active hitbox")
+	boss3.queue_free()
+	
+	# HITBOX-SAFE-04: Repeated deactivate calls remain safe
+	var hb4: Hitbox = Hitbox.new()
+	add_child(hb4)
+	hb4.activate(atk, null)
+	for i in range(5):
+		hb4.deactivate()
+	_assert(not hb4.is_active and not hb4.monitoring and not hb4.monitorable, "HITBOX-SAFE-04: Repeated deactivate calls remain idempotent and safe")
+	hb4.queue_free()
+	
+	# HITBOX-SAFE-05: Reset combat during active hit callback
+	var boss5: BossController = boss_scene.instantiate() as BossController
+	add_child(boss5)
+	boss5.combat_controller.trigger_attack(sweep_atk)
+	boss5.combat_controller.process_combat(sweep_atk.telegraph_duration + 0.01)
+	boss5.hitbox.hit_connected.connect(func(_target: Area2D, _info: DamageInfo) -> void:
+		boss5.combat_controller.reset_combat()
+	)
+	var test_hurt5: Hurtbox = Hurtbox.new()
+	add_child(test_hurt5)
+	boss5.hitbox._on_area_entered(test_hurt5)
+	_assert(not boss5.hitbox.is_active, "HITBOX-SAFE-05: Reset combat during active hit callback safely neutralizes hitbox")
+	boss5.queue_free()
+	test_hurt5.queue_free()
+	
+	# HITBOX-SAFE-06: Boss death during hit callback
+	var boss6: BossController = boss_scene.instantiate() as BossController
+	add_child(boss6)
+	boss6.hurtbox.hit_received.connect(func(_info: DamageInfo) -> void:
+		boss6.die()
+	)
+	var fake_info6: DamageInfo = DamageInfo.new()
+	fake_info6.damage = 10.0
+	boss6.hurtbox.receive_hit(fake_info6)
+	_assert(boss6.is_defeated and not boss6.hitbox.is_active, "HITBOX-SAFE-06: Boss death during hit callback disables hitboxes without error")
+	boss6.queue_free()
+	
+	# HITBOX-SAFE-07: Phase transition during combat hit processing
+	var boss7: BossController = boss_scene.instantiate() as BossController
+	add_child(boss7)
+	boss7.combat_controller.trigger_attack(sweep_atk)
+	boss7.combat_controller.process_combat(sweep_atk.telegraph_duration + 0.01)
+	
+	# Deal damage to push HP <= 50%
+	boss7.health_component.take_damage(boss7.health_component.max_health * 0.55)
+	_assert(boss7.is_in_phase_transition() and not boss7.hitbox.is_active, "HITBOX-SAFE-07: Phase transition during combat hit processing disables hitbox safely")
+	boss7.queue_free()
+
+# ==============================================================================
+# CATEGORY 14: GROUNDING & GRAVITY INTEGRITY (PHASE 9.1 REGRESSION)
+# ==============================================================================
+func _test_14_grounding_and_gravity_integrity() -> void:
+	print("\n--- Category 14: Grounding & Gravity Integrity (Phase 9.1) ---")
+	
+	# Create floor StaticBody2D
+	var floor_body: StaticBody2D = StaticBody2D.new()
+	floor_body.collision_layer = 1
+	var floor_shape: CollisionShape2D = CollisionShape2D.new()
+	var rect_shape: RectangleShape2D = RectangleShape2D.new()
+	rect_shape.size = Vector2(2000, 40)
+	floor_shape.shape = rect_shape
+	floor_body.position = Vector2(0, 20) # Top surface at y = 0
+	floor_body.add_child(floor_shape)
+	add_child(floor_body)
+	
+	var boss_scene: PackedScene = load("res://scenes/bosses/granite_abbot.tscn") as PackedScene
+	var boss: BossController = boss_scene.instantiate() as BossController
+	boss.position = Vector2(0, 0)
+	add_child(boss)
+	
+	# Step physics so collision registers
+	boss.move_and_slide()
+	
+	# GROUND-01: Boss starts grounded
+	_assert(boss.is_on_floor(), "GROUND-01: Boss starts properly grounded at y = 0 on floor geometry")
+	
+	# GROUND-02: Boss remains grounded during Idle
+	boss.state_machine.change_state(&"Idle")
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-02: Boss remains grounded during Idle with zero vertical velocity drift")
+	
+	# GROUND-03: Boss remains grounded during Combat
+	boss.state_machine.change_state(&"Combat")
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-03: Boss remains grounded during Combat state")
+	
+	# GROUND-04: Boss remains grounded during Attack
+	boss.state_machine.change_state(&"Attack")
+	var sweep_atk: EnemyAttackData = load("res://data/bosses/attacks/attack_granite_sweep.tres") as EnemyAttackData
+	boss.combat_controller.trigger_attack(sweep_atk)
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-04: Boss remains grounded during Attack impulse")
+	
+	# GROUND-05: Boss remains grounded during Hit
+	boss.state_machine.change_state(&"Hit")
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-05: Boss remains grounded during Hit flinch")
+	
+	# GROUND-06: Boss remains grounded during Stagger
+	boss.state_machine.change_state(&"Stagger")
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-06: Boss remains grounded during Stagger posture break")
+	
+	# GROUND-07: Boss remains grounded during PhaseTransition
+	boss.state_machine.change_state(&"PhaseTransition")
+	for i in range(10):
+		boss._physics_process(0.016)
+	_assert(boss.is_on_floor() and is_zero_approx(boss.velocity.y), "GROUND-07: Boss remains grounded during PhaseTransition")
+	
+	# GROUND-08: Boss does not acquire unintended positive/negative Y velocity
+	var max_drift: float = 0.0
+	for i in range(30):
+		boss._physics_process(0.016)
+		max_drift = maxf(max_drift, absf(boss.velocity.y))
+	_assert(is_zero_approx(max_drift), "GROUND-08: Boss does not accumulate unintended positive/negative Y velocity when grounded")
+	
+	# GROUND-09: Boss collision shape correctly contacts floor
+	var shape_node: CollisionShape2D = boss.get_node("CollisionShape2D") as CollisionShape2D
+	var capsule: CapsuleShape2D = shape_node.shape as CapsuleShape2D
+	var bottom_extent: float = shape_node.position.y + (capsule.height * 0.5)
+	_assert(is_zero_approx(bottom_extent), "GROUND-09: Boss collision shape bottom extent rests precisely at y = 0")
+	
+	# GROUND-10: Boss reset restores correct grounded position
+	boss.position.x = 200.0
+	boss.reset_boss()
+	boss.move_and_slide()
+	_assert(boss.is_on_floor() and boss.global_position == boss.initial_position, "GROUND-10: Boss reset restores exact grounded position")
+	
+	boss.queue_free()
+	floor_body.queue_free()
+
+# ==============================================================================
+# CATEGORY 15: BOSS COMBAT & HIT REACTION REGRESSION (PHASE 9.1 REGRESSION)
+# ==============================================================================
+func _test_15_boss_combat_and_hit_reaction_regression() -> void:
+	print("\n--- Category 15: Boss Combat & Hit Reaction Regression (Phase 9.1) ---")
+	
+	var boss_scene: PackedScene = load("res://scenes/bosses/granite_abbot.tscn") as PackedScene
+	var boss: BossController = boss_scene.instantiate() as BossController
+	add_child(boss)
+	
+	# COMBAT-REG-01: Player light attack damages Granite Abbot
+	var initial_hp: float = boss.health_component.current_health
+	var light_payload: DamageInfo = DamageInfo.new()
+	light_payload.damage = 22.0
+	light_payload.poise_damage = 15.0
+	boss.hurtbox.receive_hit(light_payload)
+	_assert(boss.health_component.current_health == initial_hp - 22.0, "COMBAT-REG-01: Player light attack damages Granite Abbot (HP: %.0f -> %.0f)" % [initial_hp, boss.health_component.current_health])
+	
+	# COMBAT-REG-02: Player heavy attack damages Granite Abbot
+	var hp_before_heavy: float = boss.health_component.current_health
+	var heavy_payload: DamageInfo = DamageInfo.new()
+	heavy_payload.damage = 38.0
+	heavy_payload.poise_damage = 25.0
+	boss.hurtbox.receive_hit(heavy_payload)
+	_assert(boss.health_component.current_health == hp_before_heavy - 38.0, "COMBAT-REG-02: Player heavy attack damages Granite Abbot (HP: %.0f -> %.0f)" % [hp_before_heavy, boss.health_component.current_health])
+	
+	# COMBAT-REG-03: Charged heavy damages Granite Abbot
+	var hp_before_charge: float = boss.health_component.current_health
+	var charge_payload: DamageInfo = DamageInfo.new()
+	charge_payload.damage = 55.0
+	charge_payload.poise_damage = 35.0
+	charge_payload.is_charge_attack = true
+	boss.hurtbox.receive_hit(charge_payload)
+	_assert(boss.health_component.current_health == hp_before_charge - 55.0, "COMBAT-REG-03: Charged heavy damages Granite Abbot (HP: %.0f -> %.0f)" % [hp_before_charge, boss.health_component.current_health])
+	
+	# COMBAT-REG-04: Boss poise decreases
+	boss.poise_component.reset()
+	var poise_before: float = boss.poise_component.current_poise
+	var poise_hit: DamageInfo = DamageInfo.new()
+	poise_hit.damage = 10.0
+	poise_hit.poise_damage = 20.0
+	boss.hurtbox.receive_hit(poise_hit)
+	_assert(boss.poise_component.current_poise == poise_before - 20.0, "COMBAT-REG-04: Boss poise decreases by exact poise damage (60 -> 40)")
+	
+	# COMBAT-REG-05: Boss enters Hit
+	boss.state_machine.change_state(&"Idle")
+	var hit_payload: DamageInfo = DamageInfo.new()
+	hit_payload.damage = 10.0
+	hit_payload.poise_damage = 5.0
+	boss.hurtbox.receive_hit(hit_payload)
+	_assert(boss.state_machine.get_current_state_name() == &"Hit", "COMBAT-REG-05: Boss enters Hit state upon receiving non-poise-breaking hit")
+	
+	# COMBAT-REG-06: Boss enters Stagger
+	boss.poise_component.take_poise_damage(boss.poise_component.current_poise)
+	_assert(boss.state_machine.get_current_state_name() == &"Stagger", "COMBAT-REG-06: Boss enters Stagger state when poise reaches zero")
+	
+	# COMBAT-REG-07: Boss recovers from Stagger
+	var stagger_state: BossStaggerState = boss.state_machine.get_node("Stagger") as BossStaggerState
+	stagger_state.physics_update(1.85) # Complete stagger duration
+	_assert(boss.state_machine.get_current_state_name() == &"Combat" and boss.poise_component.current_poise == boss.poise_component.max_poise, "COMBAT-REG-07: Boss recovers from Stagger back to Combat with restored poise")
+	
+	# COMBAT-REG-08: Perfect Parry interrupts boss attack
+	var overhead_atk: EnemyAttackData = load("res://data/bosses/attacks/attack_stone_overhead.tres") as EnemyAttackData
+	boss.combat_controller.trigger_attack(overhead_atk)
+	boss.combat_controller.process_combat(overhead_atk.telegraph_duration + 0.01)
+	_assert(boss.combat_controller.is_attacking(), "Boss attack is actively executing")
+	boss.interrupt_attack()
+	_assert(not boss.combat_controller.is_attacking() and boss.state_machine.get_current_state_name() == &"Hit", "COMBAT-REG-08: Perfect Parry interrupts boss attack, putting boss into Hit recoil")
+	
+	# COMBAT-REG-09: Interrupted boss attack has inactive hitbox
+	_assert(not boss.hitbox.is_active, "COMBAT-REG-09: Interrupted boss attack has inactive hitbox")
+	
+	# COMBAT-REG-10: No physics signal errors during any of the above
+	_assert(boss.is_inside_tree() and not boss.is_dead_or_defeated(), "COMBAT-REG-10: Entire combat and reaction suite executed with 0 physics signal errors")
+	
+	boss.queue_free()

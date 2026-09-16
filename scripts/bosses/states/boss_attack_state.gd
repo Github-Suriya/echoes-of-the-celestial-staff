@@ -19,7 +19,7 @@ func enter(_from_state: State = null) -> void:
 			var atk: EnemyAttackData = boss.combat_controller.select_attack(dist)
 			boss.combat_controller.trigger_attack(atk)
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -39,6 +39,9 @@ func physics_process_state(delta: float) -> void:
 		# If attack completed, transition back to Combat
 		if boss.combat_controller.current_phase == BossCombatController.AttackPhase.COOLDOWN or boss.combat_controller.current_phase == BossCombatController.AttackPhase.READY:
 			state_machine.change_state(&"Combat")
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)
 
 func exit(_to_state: State = null) -> void:
 	if boss != null and boss.telegraph_controller != null:

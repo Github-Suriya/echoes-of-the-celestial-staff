@@ -17,3 +17,9 @@ func set_state_machine(sm: Node) -> void:
 
 func get_state_name() -> StringName:
 	return name
+
+func physics_update(delta: float) -> void:
+	physics_process_state(delta)
+
+func physics_process_state(_delta: float) -> void:
+	pass

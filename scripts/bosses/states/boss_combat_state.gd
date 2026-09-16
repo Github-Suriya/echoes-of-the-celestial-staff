@@ -6,7 +6,7 @@ extends BossState
 ## Moves toward preferred combat distance without crowding the player,
 ## maintains facing, and transitions to Attack state when openings arise.
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -57,3 +57,6 @@ func physics_process_state(delta: float) -> void:
 	else:
 		# Stable combat stance
 		boss.velocity.x = move_toward(boss.velocity.x, 0.0, decel * delta)
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)

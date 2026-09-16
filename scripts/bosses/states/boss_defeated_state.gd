@@ -9,7 +9,7 @@ func enter(_from_state: State = null) -> void:
 	if boss == null:
 		return
 	
-	boss.velocity = Vector2.ZERO
+	boss.velocity.x = 0.0
 	boss.is_defeated = true
 	
 	if boss.hitbox != null:
@@ -35,8 +35,11 @@ func enter(_from_state: State = null) -> void:
 			var bname: String = boss.boss_data.display_name if boss.boss_data != null else "Boss"
 			bus.boss_defeated.emit(bname)
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	boss.apply_gravity(delta)
 	boss.velocity.x = move_toward(boss.velocity.x, 0.0, 800.0 * delta)
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)

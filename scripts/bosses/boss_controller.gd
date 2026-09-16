@@ -133,6 +133,8 @@ func _physics_process(delta: float) -> void:
 	if not auto_start_ai:
 		return
 	
+	apply_gravity(delta)
+	
 	if is_dead_or_defeated():
 		move_and_slide()
 		return
@@ -146,9 +148,19 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_update_status_display()
 
+var _last_gravity_frame: int = -1
+
 func apply_gravity(delta: float) -> void:
+	var cur_frame: int = Engine.get_physics_frames()
+	if _last_gravity_frame == cur_frame:
+		return
+	_last_gravity_frame = cur_frame
+	
 	if not is_on_floor():
 		velocity.y += gravity * delta
+	else:
+		if velocity.y > 0.0:
+			velocity.y = 0.0
 
 func get_facing_direction() -> int:
 	return facing_direction
@@ -181,12 +193,17 @@ func interrupt_attack() -> void:
 	if anim_controller != null:
 		anim_controller.play_attack_interrupted()
 	
-	if state_machine != null and state_machine.get_current_state_name() == &"Attack":
-		state_machine.change_state(&"Hit")
+	if state_machine != null:
+		var cur_st: StringName = state_machine.get_current_state_name()
+		if cur_st != &"Stagger" and cur_st != &"Defeated" and cur_st != &"PhaseTransition":
+			state_machine.change_state(&"Hit")
 
 func receive_hit(_damage_info: DamageInfo) -> void:
 	if is_dead_or_defeated():
 		return
+	
+	if anim_controller != null:
+		anim_controller.play_hit_flash(0.15)
 	
 	# If poise broke or in phase transition, do not interrupt state
 	if poise_component != null and poise_component.is_staggered:
@@ -208,7 +225,7 @@ func die() -> void:
 		return
 	
 	is_defeated = true
-	velocity = Vector2.ZERO
+	velocity.x = 0.0
 	
 	if state_machine != null:
 		state_machine.change_state(&"Defeated")

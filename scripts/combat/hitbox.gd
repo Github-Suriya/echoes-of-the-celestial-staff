@@ -18,6 +18,9 @@ signal hit_connected(target_hurtbox: Area2D, damage_info: DamageInfo)
 
 var is_active: bool = false
 var _hit_hurtboxes: Array[Area2D] = []
+var _is_inside_physics_callback: bool = false
+var _desired_collision: bool = false
+var _has_deferred_sync: bool = false
 
 func _ready() -> void:
 	# Default layers: Layer 4 (PlayerHitbox, bit 3 -> 8), Mask Layer 7 (EnemyHurtbox, bit 6 -> 64)
@@ -29,6 +32,7 @@ func _ready() -> void:
 	monitoring = false
 	monitorable = false
 	is_active = false
+	_desired_collision = false
 	
 	area_entered.connect(_on_area_entered)
 	
@@ -42,17 +46,24 @@ func activate(attack_data: AttackData, actor: Node2D = null) -> void:
 	
 	_hit_hurtboxes.clear()
 	is_active = true
-	monitoring = true
-	monitorable = true
+	_desired_collision = true
+	
+	if _is_inside_physics_callback:
+		if not _has_deferred_sync:
+			_has_deferred_sync = true
+			call_deferred(&"_sync_collision_state")
+	else:
+		monitoring = true
+		monitorable = true
 	
 	# Immediately evaluate overlapping areas to avoid missing stationary targets
-	for area in get_overlapping_areas():
-		_on_area_entered(area)
+	if monitoring:
+		for area in get_overlapping_areas():
+			_on_area_entered(area)
 
 func deactivate() -> void:
 	is_active = false
-	monitoring = false
-	monitorable = false
+	_desired_collision = false
 	_hit_hurtboxes.clear()
 	damage_multiplier = 1.0
 	poise_multiplier = 1.0
@@ -61,8 +72,26 @@ func deactivate() -> void:
 	transformation_damage_multiplier = 1.0
 	transformation_poise_multiplier = 1.0
 	transformation_hitstop_multiplier = 1.0
+	
+	if _is_inside_physics_callback:
+		if not _has_deferred_sync:
+			_has_deferred_sync = true
+			call_deferred(&"_sync_collision_state")
+	else:
+		monitoring = false
+		monitorable = false
+
+func _sync_collision_state() -> void:
+	_has_deferred_sync = false
+	monitoring = _desired_collision
+	monitorable = _desired_collision
 
 func _on_area_entered(area: Area2D) -> void:
+	_is_inside_physics_callback = true
+	_handle_area_entered(area)
+	_is_inside_physics_callback = false
+
+func _handle_area_entered(area: Area2D) -> void:
 	if not is_active or current_attack_data == null:
 		return
 	

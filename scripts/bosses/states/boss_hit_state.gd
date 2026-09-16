@@ -13,7 +13,7 @@ func enter(_from_state: State = null) -> void:
 		if boss.anim_controller != null:
 			boss.anim_controller.play_hit_flash(_timer)
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -23,3 +23,6 @@ func physics_process_state(delta: float) -> void:
 	_timer -= delta
 	if _timer <= 0.0:
 		state_machine.change_state(&"Combat")
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)

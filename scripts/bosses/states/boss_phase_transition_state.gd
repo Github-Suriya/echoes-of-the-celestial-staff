@@ -33,7 +33,7 @@ func enter(_from_state: State = null) -> void:
 		if boss.anim_controller != null:
 			boss.anim_controller.play_phase_transition(aura_col, duration)
 
-func physics_process_state(delta: float) -> void:
+func physics_update(delta: float) -> void:
 	if boss == null:
 		return
 	
@@ -47,3 +47,6 @@ func physics_process_state(delta: float) -> void:
 			if boss.combat_controller != null and boss.phase_controller.current_phase_data != null:
 				boss.combat_controller.set_phase_data(boss.phase_controller.current_phase_data)
 		state_machine.change_state(&"Combat")
+
+func physics_process_state(delta: float) -> void:
+	physics_update(delta)
