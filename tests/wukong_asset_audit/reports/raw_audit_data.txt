@@ -1,0 +1,106 @@
+========================================================
+PHASE 14A: WUKONG ASSET DETAILED TECHNICAL AUDIT REPORT
+========================================================
+Root node class: Node3D, name: dasheng
+
+--- GENERAL SCENE STRUCTURE ---
+Total Node count: 6
+MeshInstance3D count: 2
+Skeleton3D count: 1
+AnimationPlayer count: 0
+  Node: dasheng (Node3D, parent: ROOT)
+  Node: SK_mgd_jsds_001 (Node3D, parent: dasheng)
+  Node: SK_Wukong_head_born_static (MeshInstance3D, parent: SK_mgd_jsds_001)
+  Node: SK_mgd_jsds (Node3D, parent: dasheng)
+  Node: Skeleton3D (Skeleton3D, parent: SK_mgd_jsds)
+  Node: SK_mgd_jsds_001 (MeshInstance3D, parent: Skeleton3D)
+
+--- MESH & GEOMETRY AUDIT ---
+
+MeshInstance: SK_Wukong_head_born_static (Parent: SK_mgd_jsds_001, SkeletonPath: )
+  Surfaces: 1
+  Surface 0: Verts=270429, Tris=227225, Mat=M_Hair_KajiyaKai_Inst, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=false/false
+  Mesh Subtotal: Verts=270429, Tris=227225
+
+MeshInstance: SK_mgd_jsds_001 (Parent: Skeleton3D, SkeletonPath: ..)
+  Surfaces: 19
+  Surface 0: Verts=5832, Tris=9820, Mat=M_Teeth_Inst, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 1: Verts=1921, Tris=1652, Mat=M_Invisible, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 2: Verts=7724, Tris=10046, Mat=M_wukong_dashengtao_touguanmao_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 3: Verts=36121, Tris=61757, Mat=M_wukong_dashengtao_touguan_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 4: Verts=12095, Tris=22129, Mat=M_wukong_dashengtao_yifu_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 5: Verts=61925, Tris=104808, Mat=M_wukong_dashengtao_jianjia_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 6: Verts=15462, Tris=29862, Mat=M_MGD_JSDS_01A_JSDS_Head_Layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 7: Verts=18753, Tris=31664, Mat=M_wukong_dashengtao_qunjia_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 8: Verts=1154, Tris=2240, Mat=MF_MGD_JSDS_Eye, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 9: Verts=548, Tris=972, Mat=MF_MGD_JSDS_EyeAO, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 10: Verts=78237, Tris=127108, Mat=M_wukong_dashengtao_xiongjia_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 11: Verts=24256, Tris=40728, Mat=M_wukong_dashengtao_yaojia_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 12: Verts=51602, Tris=88424, Mat=M_wukong_dashengtao_shoujiao_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 13: Verts=16826, Tris=29926, Mat=MF_MGD_JSDS_Body0, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 14: Verts=48674, Tris=54797, Mat=M_Wukong_Haircard_Inst, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 15: Verts=30146, Tris=37144, Mat=M_wukong_dashengtao_shengzi_layers, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 16: Verts=12765, Tris=13512, Mat=M_JSDS_weapon_fx, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 17: Verts=30724, Tris=40838, Mat=MF_Wukong_Weapon_DaSheng_Side, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Surface 18: Verts=21595, Tris=25646, Mat=MF_Wukong_Weapon_DaSheng_Main, Normals=true, Tangents=true, UV=true, Skinned(Bones/Weights)=true/true
+  Mesh Subtotal: Verts=476360, Tris=733073
+
+Total Scene Geometry: Surfaces=20, Vertices=746789, Triangles=960298
+Unique Materials count: 20
+
+--- MATERIAL & TEXTURE AUDIT TABLE ---
+| MATERIAL | SURFACE | TEXTURES | STATUS | NOTES |
+| --- | --- | --- | --- | --- |
+| M_Hair_KajiyaKai_Inst | SK_Wukong_head_born_static:S0 | None | INVESTIGATE | No textures assigned. Hair card material without albedo. |
+| M_Teeth_Inst | SK_mgd_jsds_001:S0 | Albedo:T_wukong_mouth_d.png, Normal:T_wukong_mouth_n.png | OK |  |
+| M_Invisible | SK_mgd_jsds_001:S1 | None | OK | No textures assigned. |
+| M_wukong_dashengtao_touguanmao_layers | SK_mgd_jsds_001:S2 | Albedo:T_wukong_dashengtao_touguanmao_d.png, Normal:T_wukong_dashengtao_touguanmao_n.png | OK | TransparencyMode=4 |
+| M_wukong_dashengtao_touguan_layers | SK_mgd_jsds_001:S3 | Albedo:T_wukong_dashengtao_touguan_d.png, Normal:T_wukong_dashengtao_touguan_n.png | OK | TransparencyMode=4 |
+| M_wukong_dashengtao_yifu_layers | SK_mgd_jsds_001:S4 | Albedo:T_wukong_dashengtao_yifu_d.png, Normal:T_wukong_dashengtao_yifu_n.png | OK |  |
+| M_wukong_dashengtao_jianjia_layers | SK_mgd_jsds_001:S5 | Albedo:T_wukong_dashengtao_jianjia_d.png, Normal:T_wukong_dashengtao_jianjia_n.png | OK | TransparencyMode=4 |
+| M_MGD_JSDS_01A_JSDS_Head_Layers | SK_mgd_jsds_001:S6 | Albedo:T_wukong_head_d.png, Normal:T_WuKong_Head_01_N.png | OK |  |
+| M_wukong_dashengtao_qunjia_layers | SK_mgd_jsds_001:S7 | Albedo:T_wukong_dashengtao_qunjia_d.png, Normal:T_wukong_dashengtao_qunjia_n.png | OK | TransparencyMode=4 |
+| MF_MGD_JSDS_Eye | SK_mgd_jsds_001:S8 | Albedo:eye_iris_clr.png, Normal:iris08_leftEye_nml.png | OK |  |
+| MF_MGD_JSDS_EyeAO | SK_mgd_jsds_001:S9 | None | OK | No textures assigned. |
+| M_wukong_dashengtao_xiongjia_layers | SK_mgd_jsds_001:S10 | Albedo:T_wukong_dashengtao_xiongjia_d.png, Normal:T_wukong_dashengtao_xiongjia_n.png | OK | TransparencyMode=4 |
+| M_wukong_dashengtao_yaojia_layers | SK_mgd_jsds_001:S11 | Albedo:T_wukong_dashengtao_yaojia_d.png, Normal:T_wukong_dashengtao_yaojia_n.png | OK | TransparencyMode=4 |
+| M_wukong_dashengtao_shoujiao_layers | SK_mgd_jsds_001:S12 | Albedo:T_wukong_dashengtao_shoujiao_d.png, Normal:T_wukong_dashengtao_shoujiao_n.png | OK | TransparencyMode=4 |
+| MF_MGD_JSDS_Body0 | SK_mgd_jsds_001:S13 | Albedo:T_wukong_body_d.png, Normal:T_wukong_body_n.png | OK |  |
+| M_Wukong_Haircard_Inst | SK_mgd_jsds_001:S14 | None | INVESTIGATE | No textures assigned. Hair card material without albedo. |
+| M_wukong_dashengtao_shengzi_layers | SK_mgd_jsds_001:S15 | Albedo:T_wukong_dashengtao_shengzi_d.png, Normal:T_wukong_dashengtao_shengzi_n.png | OK |  |
+| M_JSDS_weapon_fx | SK_mgd_jsds_001:S16 | None | OK | No textures assigned. |
+| MF_Wukong_Weapon_DaSheng_Side | SK_mgd_jsds_001:S17 | Albedo:JGB_B_D.png, Normal:JGB_B_N.png | OK |  |
+| MF_Wukong_Weapon_DaSheng_Main | SK_mgd_jsds_001:S18 | Albedo:JGB_A_D.png, Normal:JGB_A_N.png | OK |  |
+
+--- SKELETON AUDIT ---
+Skeleton: Skeleton3D
+  Bone Count: 466
+  Root Bones: ["root"]
+  Max Hierarchy Depth: 21
+  Essential Bone Chains Check:
+    Spine/Torso: ["pelvis", "Bip", "spine_01", "spine_02", "spine_03", "neck_01", "head"] (Found 7 of 7)
+    Left Arm: ["clavicle_l", "upperarm_l", "lowerarm_l", "hand_l"] (Found 4 of 4)
+    Right Arm: ["clavicle_r", "upperarm_r", "lowerarm_r", "hand_r"] (Found 4 of 4)
+    Left Leg: ["thigh_l", "calf_l", "foot_l"] (Found 3 of 4)
+    Right Leg: ["thigh_r", "calf_r", "foot_r"] (Found 3 of 4)
+    Weapon/Staff: ["weapon_r", "weapon_l"] (Found 2 of 5)
+  Sample Bone Rest Transforms:
+    Bone 'root' (idx 0): pos=(0.0, -0.0, 0.0), rot=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0)
+    Bone 'pelvis' (idx 1): pos=(0.0, 0.0, 2.050649), rot=(0.0, 0.0, 0.000001), scale=(1.0, 1.0, 1.0)
+    Bone 'spine_01' (idx 3): pos=(0.20848, 0.012027, 0.0), rot=(-0.000004, 0.000001, 0.000793), scale=(1.0, 1.0, 1.0)
+    Bone 'head' (idx 7): pos=(0.154694, 0.000001, 0.000001), rot=(-0.000001, -0.000019, -0.057154), scale=(1.0, 1.0, 1.0)
+    Bone 'upperarm_l' (idx 45): pos=(0.289927, -0.0, 0.000001), rot=(0.100444, 0.790288, 0.096758), scale=(1.0, 1.0, 1.0)
+    Bone 'upperarm_r' (idx 115): pos=(0.289927, 0.0, 0.000001), rot=(-0.100444, -0.790271, 0.09676), scale=(1.0, 1.0, 1.0)
+    Bone 'thigh_l' (idx 312): pos=(-0.000001, 0.0, 0.21596), rot=(-0.13436, -3.045604, 0.056287), scale=(1.0, 1.0, 1.0)
+    Bone 'thigh_r' (idx 353): pos=(0.000001, -0.0, -0.21596), rot=(0.134362, 3.045611, 0.056289), scale=(1.0, 1.0, 1.0)
+
+--- ANIMATION AUDIT ---
+AnimationPlayer count in imported scene: 0
+NOTE: No AnimationPlayer exists in imported FBX scene. The FBX contains a pure bind-pose skeletal mesh with skeleton and skinning weights, but no embedded animation takes.
+
+--- WEAPON / STAFF AUDIT ---
+Staff/Weapon geometry surface found: MeshInstance 'SK_mgd_jsds_001', Surface 16, Material 'M_JSDS_weapon_fx'
+Staff/Weapon geometry surface found: MeshInstance 'SK_mgd_jsds_001', Surface 17, Material 'MF_Wukong_Weapon_DaSheng_Side'
+Staff/Weapon geometry surface found: MeshInstance 'SK_mgd_jsds_001', Surface 18, Material 'MF_Wukong_Weapon_DaSheng_Main'
+Staff/Weapon mesh is part of character mesh: YES (Sub-surface of main MeshInstance)
+Staff/Weapon textures found: ["JGB_A_D.png", "JGB_A_N.png", "JGB_A_P.png", "JGB_B_D.png", "JGB_B_N.png", "JGB_B_P.png"]
