@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_data.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/enemies/attacks/attack_celestial_guard_slash.tres" id="2_attack"]
+
+[resource]
+script = ExtResource("1_data")
+enemy_id = &"celestial_guard"
+display_name = "Celestial Guard"
+max_health = 80.0
+max_poise = 30.0
+stagger_duration = 1.4
+poise_regen_delay = 2.5
+poise_regen_rate = 15.0
+patrol_speed = 50.0
+chase_speed = 110.0
+acceleration = 500.0
+deceleration = 700.0
+gravity = 980.0
+detection_range = 180.0
+lose_target_range = 260.0
+preferred_combat_distance = 34.0
+attack_range = 42.0
+alert_duration = 0.35
+patrol_distance = 90.0
+patrol_wait_time = 1.2
+attack_cooldown = 1.8
+bounty_qi = 10
+default_attack = ExtResource("2_attack")

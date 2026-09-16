@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://c8qy4airmtsc"]
+
+[ext_resource type="Script" path="res://scripts/world/test_enemy_ai_room.gd" id="1_room"]
+[ext_resource type="PackedScene" uid="uid://dakmsdllxvfyu" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://c8qy4guard" path="res://scenes/enemies/celestial_guard.tscn" id="3_guard"]
+[ext_resource type="PackedScene" uid="uid://df5spirithudsc" path="res://scenes/ui/spirit_hud.tscn" id="4_hud"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1800, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 600)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(240, 20)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_info_bg"]
+bg_color = Color(0.08, 0.1, 0.14, 0.85)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="TestEnemyAIRoom" type="Node2D"]
+script = ExtResource("1_room")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Environment"]
+offset_left = -450.0
+offset_top = -500.0
+offset_right = 1350.0
+offset_bottom = 200.0
+color = Color(0.05, 0.07, 0.1, 1)
+
+[node name="Floor" type="StaticBody2D" parent="Environment"]
+position = Vector2(450, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="ColorRect" parent="Environment/Floor"]
+offset_left = -900.0
+offset_top = -20.0
+offset_right = 900.0
+offset_bottom = 20.0
+color = Color(0.15, 0.18, 0.22, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(-450, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/LeftWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.1, 0.12, 0.15, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(1350, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/RightWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.1, 0.12, 0.15, 1)
+
+[node name="Platform1" type="StaticBody2D" parent="Environment"]
+position = Vector2(300, -80)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Visual" type="ColorRect" parent="Environment/Platform1"]
+offset_left = -120.0
+offset_top = -10.0
+offset_right = 120.0
+offset_bottom = 10.0
+color = Color(0.2, 0.24, 0.3, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(80, 0)
+
+[node name="CelestialGuard1" parent="." instance=ExtResource("3_guard")]
+position = Vector2(450, 0)
+
+[node name="CelestialGuard2" parent="." instance=ExtResource("3_guard")]
+position = Vector2(820, 0)
+
+[node name="SpiritHUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="InfoPanel" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -340.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 270.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_info_bg")
+
+[node name="Margin" type="MarginContainer" parent="CanvasLayer/InfoPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/InfoPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="CanvasLayer/InfoPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.7, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "PHASE 8: ENEMY AI TEST GYM"
+
+[node name="Sep" type="HSeparator" parent="CanvasLayer/InfoPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Controls" type="Label" parent="CanvasLayer/InfoPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.88, 0.92, 1)
+theme_override_font_sizes/font_size = 11
+text = "[A / D / Arrows]: Move Yuan
+[Space]: Jump
+[J] / [L-Click]: Light Combo (L -> L -> L)
+[K] / [R-Click]: Heavy / Hold to Charge
+[L] / [L-Shift]: Dodge (I-Frames)
+[I] / [Q]: Parry (Deflect / Interrupt)
+[1 / 2 / 3]: Spirit Abilities (Arc, Pulse, Step)
+[C]: Cycle Stances (Swift / Mountain / Storm)
+[F] / [V]: Celestial Awakening (Req: 100 SP)
+[T]: Maximize Spirit (100 SP)
+[R]: Reset Enemies & Player"

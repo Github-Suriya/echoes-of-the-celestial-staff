@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Game Design Document
 
-**Document Version:** 1.1.0  
-**Phase:** Phase 7 (Celestial Awakening / Transformation Foundation)  
+**Document Version:** 1.2.0  
+**Phase:** Phase 8 (Enemy AI Foundation)  
 **Target Engine:** Godot 4.7.2 Stable (GL Compatibility)  
 **Platform:** Windows PC  
 **Genre:** High-Quality 2D Action Metroidvania  
@@ -133,6 +133,12 @@ Yuan's pinnacle martial state, unlocked by channeling fully concentrated celesti
 - **Modifiers:** +15% movement speed/acceleration/deceleration, +20% attack speed, +30% attack damage, +35% poise damage, +25% spirit ability damage, +15% dodge velocity, and +15% faster dodge recovery.
 - **Tactical Identity:** Temporary power spike designed to turn the tide against elite guardians and dense enemy encounters without invalidating timing fundamentals (parry and dodge invulnerability windows remain strictly invariant).
 - **Decoupled Architecture:** Operates as a non-destructive runtime modifier layer with full state reversibility, stacking orthogonally with martial stances.
+
+### 4.5 Enemy AI Archetypes & The Celestial Guard
+The enemy ecosystem is built on a modular state machine architecture (`Idle`, `Patrol`, `Alert`, `Chase`, `Combat`, `Hit`, `Stagger`, `Dead`) with deterministic perception (detection radius, loss radius, line-of-sight raycasting):
+- **Telegraph Clarity:** All hostile attacks feature high-contrast visual windup cues (amber warning indicator) allowing deliberate parry or dodge responses.
+- **Defensive Interactivity:** Enemies react realistically to player defenses—strikes can be dodged with active I-frames or cleanly interrupted with Perfect Parries, staggering the attacker.
+- **Prototype Archetype — The Celestial Guard:** Sturdy frontline melee disciple automaton (80 HP, 30 Poise, 1.4s Stagger Duration, 50 px/s Patrol, 110 px/s Chase). Teaches fundamental combat pacing, posture breaking, and parry deflection.
 
 ---
 

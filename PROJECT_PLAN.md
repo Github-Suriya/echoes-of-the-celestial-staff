@@ -3,7 +3,7 @@
 **Project Version:** 1.0.0  
 **Target Engine:** Godot 4.7.2 Stable (GL Compatibility Renderer)  
 **Target Platform:** Windows PC (Intel Core i3, 12GB RAM, Intel UHD Graphics Baseline)  
-**Current Phase:** Phase 7 — Celestial Awakening (COMPLETE)  
+**Current Phase:** Phase 8 — Enemy AI System (COMPLETE)  
 
 ---
 
@@ -192,16 +192,25 @@ gantt
 
 ---
 
-### Phase 8: Enemy AI System
-- **Objective:** Implement a modular, readable, state-machine-driven enemy AI framework.
-- **Dependencies:** Phase 4 complete.
+### Phase 8: Enemy AI System (COMPLETE)
+- **Objective:** Implement the reusable foundation for enemy AI, modular state machine, perception system, combat integration, and data-driven enemy prototypes.
+- **Dependencies:** Phase 4 & Phase 7 complete.
+- **Status:** Complete (133/133 automated enemy AI tests passing, 540/540 regression passing -> 673/673 total tests passing).
 - **Key Deliverables:**
-  - `EnemyController` base class and `EnemyStateMachine`.
-  - Core AI states: Patrol, Alert, Chase, Windup (Telegraph), Attack, Recovery, Staggered, Death.
-  - High-contrast visual/audio telegraph cues (white flash for parryable, red glyph for perilous).
-  - 3 distinct enemy archetypes: Swift Scout, Shielded Sentinel, Flying Spectral Stalker.
-- **Entry Criteria:** Advanced player combat verified.
-- **Exit Criteria:** Enemies telegraph readable attacks, react correctly to player parries/dodges, and stagger upon poise depletion.
+  - `EnemyData` and `EnemyAttackData` custom `Resource` definitions.
+  - Canonical resources: `enemy_celestial_guard.tres` and `attack_celestial_guard_slash.tres`.
+  - `EnemyController` (`CharacterBody2D`, Layer 3) coordinator and `scenes/enemies/enemy_base.tscn`.
+  - `EnemyPerception` component with throttled checks (10-15 Hz), detection/loss ranges, and line-of-sight raycasting.
+  - `EnemyMovement` component handling 2D direct steering, acceleration, deceleration, patrol waypoints, and facing hysteresis.
+  - `EnemyCombatController` component governing attack lifecycle (`READY` -> `TELEGRAPH` -> `ACTIVE` -> `RECOVERY` -> `COOLDOWN`), hitbox synchronization, and `interrupt_attack()` parry hook.
+  - `EnemyAnimationController` procedural presentation for facing direction flips, flashes, telegraph warning indicators, and death fade.
+  - Reusable 8-state machine: `EnemyIdleState`, `EnemyPatrolState`, `EnemyAlertState`, `EnemyChaseState`, `EnemyCombatState`, `EnemyHitState`, `EnemyStaggerState`, `EnemyDeadState`.
+  - Full combat integration with existing `Hitbox` (Layer 5/16), `Hurtbox` (Layer 7/64), `DamageInfo`, `HealthComponent`, and `PoiseComponent`.
+  - Primary prototype: Celestial Guard (`scenes/enemies/celestial_guard.tscn`).
+  - Interactive gym: `scenes/world/test_enemy_ai_room.tscn`.
+  - Automated test runner: `tests/test_enemy_runner.tscn` (133 tests).
+- **Entry Criteria:** Advanced player combat and transformations verified.
+- **Exit Criteria:** Enemies telegraph readable attacks, react correctly to player parries/dodges, stagger upon poise depletion, die cleanly with zero errors/warnings, and 100% tests pass.
 
 ---
 

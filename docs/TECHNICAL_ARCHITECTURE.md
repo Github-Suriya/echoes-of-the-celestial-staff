@@ -325,6 +325,24 @@ The transformation framework introduces temporary supernatural empowerment layer
   - `transformation_ended(transformation_id)`
   - `transformation_state_changed(new_state)`
 
+### 4.6 Enemy AI Subsystem Architecture (`EnemyController`)
+The enemy architecture establishes a reusable, decoupled foundation for all non-boss hostiles, reusing the canonical combat pipeline without code duplication:
+- **`EnemyData` (`scripts/enemies/enemy_data.gd`):** Custom `Resource` defining vitality, posture, locomotion, perception, and attack parameters.
+- **`EnemyAttackData` (`scripts/enemies/enemy_attack_data.gd`):** Inherits `AttackData` directly, adding `attack_range`, `cooldown`, `telegraph_duration`, `hitbox_size`, and `hitbox_offset`. Polymorphic with `Hitbox` and `DamageInfo`.
+- **`EnemyController` (`scripts/enemies/enemy_controller.gd`):** `CharacterBody2D` coordinator on Layer 3 (`Enemies`, bitmask 4), scanning Layer 1 (`WorldGeometry`, bitmask 1). Coordinates child components.
+- **Component Hierarchy:**
+  - `EnemyPerception`: Throttled proximity and line-of-sight raycasting (~12.5 Hz) scanning for target (`PlayerController`).
+  - `EnemyMovement`: Direct horizontal steering with acceleration, deceleration, boundary patrol points, and hysteresis facing.
+  - `EnemyCombatController`: Governs the attack lifecycle (`READY` -> `TELEGRAPH` -> `ACTIVE` -> `RECOVERY` -> `COOLDOWN`) and hitbox toggling. Implements `interrupt_attack()` when parried.
+  - `EnemyAnimationController`: Procedural presentation for facing flips, telegraph warnings, attack flashes, deflection recoil, and death fade.
+- **Hierarchical State Machine (`StateMachine`):**
+  - States: `Idle`, `Patrol`, `Alert`, `Chase`, `Combat`, `Hit`, `Stagger`, `Dead`.
+  - Transitions communicate via components rather than manipulating external state.
+- **EventBus Integration:**
+  - `enemy_spawned(enemy: Node2D)`
+  - `enemy_staggered(enemy: Node2D)`
+  - `enemy_died(enemy: Node2D, bounty_qi: int)`
+
 ---
 
 ## 5. World & Room Architecture

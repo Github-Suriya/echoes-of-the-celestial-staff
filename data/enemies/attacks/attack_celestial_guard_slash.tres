@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_attack_data.gd" id="1_slash"]
+
+[resource]
+script = ExtResource("1_slash")
+attack_id = &"celestial_guard_slash"
+display_name = "Celestial Guard Slash"
+damage = 15.0
+poise_damage = 20.0
+knockback_force = Vector2(140, -60)
+startup_time = 0.4
+active_time = 0.12
+recovery_time = 0.4
+hitstop_duration = 0.06
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+attack_range = 42.0
+cooldown = 1.8
+telegraph_duration = 0.4
+hitbox_size = Vector2(36, 32)
+hitbox_offset = Vector2(24, -20)

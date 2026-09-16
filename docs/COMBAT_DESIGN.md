@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.5.0  
-**Phase Status:** Phase 7 — Celestial Awakening (Implemented)  
+**Document Version:** 1.6.0  
+**Phase Status:** Phase 8 — Enemy AI System (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
 
@@ -14,7 +14,8 @@
 > - **PHASE 5 COMPLETE:** Three Combat Stances (`SWIFT`, `MOUNTAIN`, `STORM`), `StanceData` resources, `StanceController` component, dynamic runtime multiplier pipeline (movement speed, acceleration, attack speed, damage, poise damage, dodge velocity, dodge recovery), strict parry window preservation (`1.00x`), state machine gatekeeping rules (safe switching during recovery/locomotion; blocked during startup/active/I-frames/heavy charge), zero base resource mutation, visual color flash & procedural squash/stretch feedback, `test_stance_room.tscn`.
 > - **PHASE 6 COMPLETE:** Data-driven Spirit Ability framework (`SpiritAbilityData`), `SpiritComponent` (100 max, transactional consumption, combat replenishment hooks: Light +4, Heavy +8, Parry +10), `SpiritAbilityController` (3 slots, cooldown timers, phase lifecycle), `PlayerSpiritAbilityState` (cancellable into dodge/parry during recovery), 3 prototype abilities (`Celestial Arc` projectile, `Heavenly Pulse` 64px AoE, `Cloud Step` 550 px/s mobility burst), `SpiritHUD`, `test_spirit_room.tscn`.
 > - **PHASE 7 COMPLETE:** Temporary supernatural transformation state (`TransformationController`, `TransformationData`), Celestial Awakening (`transformation_celestial_awakening.tres`), deterministic countdown duration (12.0s), 100 Spirit activation cost, complete multiplier pipeline (1.15x speed/accel/decel, 1.20x attack speed, 1.30x damage, 1.35x poise, 1.25x ability damage, 1.15x dodge velocity, 0.85x dodge recovery, 1.20x hitstop), defense timing invariance (I-frames and parry windows strictly 1.0x), atomic spirit consumption, state machine gatekeeping rules (allowed during locomotion and attack recovery; blocked during startup/active/I-frames/parry/charge/ability), idempotent deactivation and total state reversibility, visual gold/celestial aura tweens, extended Awakening HUD bar and live debug telemetry, interactive gym `scenes/world/test_transformation_room.tscn`, 113 automated unit tests.
-> - **FUTURE PHASES:** Full enemy AI, boss encounters, Metroidvania progression, world gameplay.
+> - **PHASE 8 COMPLETE:** Reusable Enemy AI architecture (`EnemyController`, `EnemyData`, `EnemyAttackData`), complete 8-state machine (`Idle`, `Patrol`, `Alert`, `Chase`, `Combat`, `Hit`, `Stagger`, `Dead`), throttled perception system (~12.5 Hz, detection and loss ranges, line-of-sight raycasting), direct 2D steering locomotion with patrol bounds, attack lifecycle (`READY` -> `TELEGRAPH` -> `ACTIVE` -> `RECOVERY` -> `COOLDOWN`), existing Hitbox/Hurtbox/DamageInfo reuse, player Perfect Parry interruption hook (`interrupt_attack()`), Health and Poise integration with Stagger state lockout, idempotent death sequence, Celestial Guard prototype, `test_enemy_ai_room.tscn`, 133 automated unit tests.
+> - **FUTURE PHASES:** Boss encounters, Metroidvania progression, world gameplay.
 
 ---
 

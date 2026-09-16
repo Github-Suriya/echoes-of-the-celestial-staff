@@ -34,6 +34,8 @@ signal perfect_parry(defender: Node2D, attacker: Node2D)
 signal attack_interrupted(target: Node2D, reason: StringName)
 
 # --- Enemy & Boss Domain Signals ---
+signal enemy_spawned(enemy: Node2D)
+signal enemy_staggered(enemy: Node2D)
 signal enemy_died(enemy: Node2D, bounty_qi: int)
 signal boss_started(boss_name: String)
 signal boss_phase_changed(boss_name: String, phase_index: int)
