@@ -62,20 +62,35 @@ func _update_input(delta: float) -> void:
 	_jump_buffer_timer = maxf(0.0, _jump_buffer_timer - delta)
 
 func _apply_horizontal_locomotion(delta: float) -> void:
-	var target_speed: float = current_move_axis * config.max_speed
+	var speed_mult: float = 1.0
+	var accel_mult: float = 1.0
+	var decel_mult: float = 1.0
+	
+	var stance: StanceController = _get_stance_controller()
+	if stance != null:
+		speed_mult = stance.get_movement_speed_multiplier()
+		accel_mult = stance.get_acceleration_multiplier()
+		decel_mult = stance.get_deceleration_multiplier()
+	
+	var target_speed: float = current_move_axis * config.max_speed * speed_mult
 	var is_grounded: bool = _player.is_on_floor()
 	
 	if is_grounded:
 		if absf(current_move_axis) > 0.01:
-			_player.velocity.x = move_toward(_player.velocity.x, target_speed, config.acceleration * delta)
+			_player.velocity.x = move_toward(_player.velocity.x, target_speed, config.acceleration * accel_mult * delta)
 		else:
-			_player.velocity.x = move_toward(_player.velocity.x, 0.0, config.deceleration * delta)
+			_player.velocity.x = move_toward(_player.velocity.x, 0.0, config.deceleration * decel_mult * delta)
 	else:
 		# Air control with separate acceleration and deceleration rates
 		if absf(current_move_axis) > 0.01:
-			_player.velocity.x = move_toward(_player.velocity.x, target_speed, config.air_acceleration * delta)
+			_player.velocity.x = move_toward(_player.velocity.x, target_speed, config.air_acceleration * accel_mult * delta)
 		else:
-			_player.velocity.x = move_toward(_player.velocity.x, 0.0, config.air_deceleration * delta)
+			_player.velocity.x = move_toward(_player.velocity.x, 0.0, config.air_deceleration * decel_mult * delta)
+
+func _get_stance_controller() -> StanceController:
+	if _player != null and _player.has_node("Components/StanceController"):
+		return _player.get_node("Components/StanceController") as StanceController
+	return null
 
 func _apply_gravity_and_vertical(delta: float) -> void:
 	if not _player.is_on_floor():

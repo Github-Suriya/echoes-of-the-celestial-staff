@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cx5stancetstrun"]
+
+[ext_resource type="Script" path="res://tests/test_combat_stances.gd" id="1_test_script"]
+
+[node name="TestStanceRunner" type="Node"]
+script = ExtResource("1_test_script")

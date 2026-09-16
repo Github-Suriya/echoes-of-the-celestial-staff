@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StanceData" format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/stance_data.gd" id="1_stance"]
+
+[resource]
+script = ExtResource("1_stance")
+stance_type = 2
+stance_id = &"storm"
+display_name = "Storm Stance"
+description = "Style of the Roaring Dragon: Relentless offensive flow, continuous pressure, and balanced martial rhythm."
+movement_speed_multiplier = 1.0
+acceleration_multiplier = 1.0
+deceleration_multiplier = 1.0
+attack_speed_multiplier = 1.05
+damage_multiplier = 1.08
+poise_damage_multiplier = 1.05
+dodge_distance_multiplier = 1.0
+dodge_recovery_multiplier = 1.0
+parry_window_multiplier = 1.0
+hitstop_multiplier = 1.0

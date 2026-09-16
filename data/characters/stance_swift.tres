@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StanceData" format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/stance_data.gd" id="1_stance"]
+
+[resource]
+script = ExtResource("1_stance")
+stance_type = 0
+stance_id = &"swift"
+display_name = "Swift Stance"
+description = "Style of the Falcon: Rapid staff flurries, enhanced mobility, and swift dodge recovery."
+movement_speed_multiplier = 1.1
+acceleration_multiplier = 1.1
+deceleration_multiplier = 1.05
+attack_speed_multiplier = 1.12
+damage_multiplier = 0.9
+poise_damage_multiplier = 0.9
+dodge_distance_multiplier = 1.12
+dodge_recovery_multiplier = 0.9
+parry_window_multiplier = 1.0
+hitstop_multiplier = 0.9

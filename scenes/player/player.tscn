@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://scripts/player/states/player_dodge_state.gd" id="21_dodge"]
 [ext_resource type="Script" path="res://scripts/player/states/player_parry_state.gd" id="22_parry"]
 [ext_resource type="Script" path="res://scripts/player/states/player_air_attack_state.gd" id="23_air"]
+[ext_resource type="Script" path="res://scripts/player/stance_controller.gd" id="24_stance"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -116,6 +117,9 @@ max_poise = 50.0
 
 [node name="DefenseController" type="Node" parent="Components"]
 script = ExtResource("20_defense")
+
+[node name="StanceController" type="Node" parent="Components"]
+script = ExtResource("24_stance")
 
 [node name="Combat" type="Node2D" parent="."]
 

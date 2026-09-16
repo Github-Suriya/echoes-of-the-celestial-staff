@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StanceData" format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/stance_data.gd" id="1_stance"]
+
+[resource]
+script = ExtResource("1_stance")
+stance_type = 1
+stance_id = &"mountain"
+display_name = "Mountain Stance"
+description = "Style of the Granite Sentinel: Crushing power, massive posture depletion, and committed defense."
+movement_speed_multiplier = 0.9
+acceleration_multiplier = 0.9
+deceleration_multiplier = 0.95
+attack_speed_multiplier = 0.88
+damage_multiplier = 1.18
+poise_damage_multiplier = 1.3
+dodge_distance_multiplier = 0.9
+dodge_recovery_multiplier = 1.1
+parry_window_multiplier = 1.0
+hitstop_multiplier = 1.15

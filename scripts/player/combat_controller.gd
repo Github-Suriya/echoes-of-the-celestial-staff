@@ -153,8 +153,16 @@ func release_heavy_attack() -> bool:
 	
 	var success: bool = _execute_attack(attack_data, 0)
 	if success and hitbox != null:
+		var stance_dmg: float = 1.0
+		var stance_poise: float = 1.0
+		var stance: StanceController = _get_stance_controller()
+		if stance != null:
+			stance_dmg = stance.get_damage_multiplier()
+			stance_poise = stance.get_poise_damage_multiplier()
 		hitbox.damage_multiplier = charge_multiplier
 		hitbox.poise_multiplier = poise_charge_multiplier
+		hitbox.stance_damage_multiplier = stance_dmg
+		hitbox.stance_poise_multiplier = stance_poise
 	return success
 
 func get_charge_ratio() -> float:
@@ -178,7 +186,17 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 	current_attack = attack_data
 	combo_index = next_combo_index
 	current_phase = AttackPhase.STARTUP
-	phase_timer = attack_data.startup_time
+	
+	var attack_speed: float = 1.0
+	var stance_dmg: float = 1.0
+	var stance_poise: float = 1.0
+	var stance: StanceController = _get_stance_controller()
+	if stance != null:
+		attack_speed = stance.get_attack_speed_multiplier()
+		stance_dmg = stance.get_damage_multiplier()
+		stance_poise = stance.get_poise_damage_multiplier()
+	
+	phase_timer = attack_data.startup_time / attack_speed
 	combo_timer = 0.0
 	has_buffered_attack = false
 	buffered_is_heavy = false
@@ -189,6 +207,8 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 		hitbox.deactivate()
 		hitbox.damage_multiplier = charge_multiplier
 		hitbox.poise_multiplier = poise_charge_multiplier
+		hitbox.stance_damage_multiplier = stance_dmg
+		hitbox.stance_poise_multiplier = stance_poise
 		_update_hitbox_facing()
 	
 	# Apply forward movement impulse
@@ -225,20 +245,31 @@ func process_combat(delta: float) -> bool:
 	# Handle phase transitions and time rollover
 	while is_attacking() and phase_timer <= 0.0:
 		var overflow: float = -phase_timer
+		var attack_speed: float = 1.0
+		var stance_dmg: float = 1.0
+		var stance_poise: float = 1.0
+		var stance: StanceController = _get_stance_controller()
+		if stance != null:
+			attack_speed = stance.get_attack_speed_multiplier()
+			stance_dmg = stance.get_damage_multiplier()
+			stance_poise = stance.get_poise_damage_multiplier()
+		
 		match current_phase:
 			AttackPhase.STARTUP:
 				current_phase = AttackPhase.ACTIVE
-				phase_timer = current_attack.active_time - overflow
+				phase_timer = (current_attack.active_time / attack_speed) - overflow
 				if hitbox != null:
 					_update_hitbox_facing()
 					hitbox.damage_multiplier = charge_multiplier
 					hitbox.poise_multiplier = poise_charge_multiplier
+					hitbox.stance_damage_multiplier = stance_dmg
+					hitbox.stance_poise_multiplier = stance_poise
 					hitbox.activate(current_attack, player)
 				attack_phase_changed.emit(current_phase)
 			
 			AttackPhase.ACTIVE:
 				current_phase = AttackPhase.RECOVERY
-				phase_timer = current_attack.recovery_time - overflow
+				phase_timer = (current_attack.recovery_time / attack_speed) - overflow
 				if hitbox != null:
 					hitbox.deactivate()
 				attack_phase_changed.emit(current_phase)
@@ -259,6 +290,11 @@ func process_combat(delta: float) -> bool:
 		return _consume_buffered_attack()
 	
 	return true
+
+func _get_stance_controller() -> StanceController:
+	if player != null and player.has_node("Components/StanceController"):
+		return player.get_node("Components/StanceController") as StanceController
+	return null
 
 func _consume_buffered_attack() -> bool:
 	has_buffered_attack = false

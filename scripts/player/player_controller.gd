@@ -15,6 +15,8 @@ var facing_direction: int = 1 # 1 = Right, -1 = Left
 @onready var animation_controller: PlayerAnimationController = $Components/PlayerAnimationController
 @onready var respawn_component: PlayerRespawn = $Components/PlayerRespawn
 @onready var combat_controller: CombatController = $Components/CombatController if has_node("Components/CombatController") else null
+@onready var defense_controller: DefenseController = $Components/DefenseController if has_node("Components/DefenseController") else null
+@onready var stance_controller: StanceController = $Components/StanceController if has_node("Components/StanceController") else null
 @onready var health_component: HealthComponent = $Components/HealthComponent if has_node("Components/HealthComponent") else null
 @onready var poise_component: PoiseComponent = $Components/PoiseComponent if has_node("Components/PoiseComponent") else null
 @onready var state_machine: StateMachine = $StateMachine

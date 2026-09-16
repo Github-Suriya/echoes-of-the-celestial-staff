@@ -48,6 +48,24 @@ func play_air_attack_animation() -> void:
 func play_charge_animation() -> void:
 	play_animation(&"charge_heavy")
 
+func play_stance_change_feedback(stance: int) -> void:
+	match stance:
+		StanceData.StanceType.SWIFT:
+			play_swift_feedback()
+		StanceData.StanceType.MOUNTAIN:
+			play_mountain_feedback()
+		StanceData.StanceType.STORM:
+			play_storm_feedback()
+
+func play_swift_feedback() -> void:
+	play_animation(&"stance_swift")
+
+func play_mountain_feedback() -> void:
+	play_animation(&"stance_mountain")
+
+func play_storm_feedback() -> void:
+	play_animation(&"stance_storm")
+
 func play_hit_reaction() -> void:
 	play_animation(&"hit_reaction")
 
@@ -137,6 +155,18 @@ func _apply_placeholder_feedback(anim_name: StringName) -> void:
 		&"charge_heavy":
 			var tween: Tween = create_tween()
 			visuals_root.scale = Vector2(facing_sign * 0.92, 1.1)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
+		&"stance_swift":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.10, 0.90)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
+		&"stance_mountain":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.18, 0.82)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.15)
+		&"stance_storm":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.92, 1.12)
 			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
 
 func _get_state_machine() -> StateMachine:

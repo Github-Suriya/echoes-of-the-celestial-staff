@@ -40,6 +40,10 @@ func _process(_delta: float) -> void:
 	if _player.has_node("Components/DefenseController"):
 		defense = _player.get_node("Components/DefenseController") as DefenseController
 	
+	var stance: StanceController = null
+	if _player.has_node("Components/StanceController"):
+		stance = _player.get_node("Components/StanceController") as StanceController
+	
 	var fps: float = Performance.get_monitor(Performance.TIME_FPS)
 	var pos: Vector2 = _player.global_position
 	var vel: Vector2 = _player.velocity
@@ -49,6 +53,19 @@ func _process(_delta: float) -> void:
 	var facing: String = "RIGHT (+1)" if _player.get("facing_direction") == 1 else "LEFT (-1)"
 	var coyote: float = movement.get_coyote_timer() if movement != null and movement.has_method("get_coyote_timer") else 0.0
 	var buffer: float = movement.get_jump_buffer_timer() if movement != null and movement.has_method("get_jump_buffer_timer") else 0.0
+	
+	# Stance metrics
+	var stance_info: String = "NONE"
+	var stance_mults: String = "Spd: 1.0x | Atk: 1.0x | Dmg: 1.0x | Pse: 1.0x"
+	if stance != null and stance.current_stance_data != null:
+		stance_info = stance.current_stance_data.display_name.to_upper()
+		stance_mults = "Spd: %.2fx | Atk: %.2fx | Dmg: %.2fx | Pse: %.2fx | Ddg: %.2fx" % [
+			stance.get_movement_speed_multiplier(),
+			stance.get_attack_speed_multiplier(),
+			stance.get_damage_multiplier(),
+			stance.get_poise_damage_multiplier(),
+			stance.get_dodge_distance_multiplier()
+		]
 	
 	# Combat metrics
 	var attack_id: String = "NONE"
@@ -88,9 +105,11 @@ func _process(_delta: float) -> void:
 		if gm != null and gm.has_method("is_in_hitstop"):
 			in_hitstop = gm.is_in_hitstop()
 	
-	_label.text = """[COMBAT & DEFENSE DEBUG (F3)]
+	_label.text = """[COMBAT & STANCE DEBUG (F3)]
 FPS: %.1f | Hitstop: %s
 State: %s | Facing: %s
+Stance: %s
+%s
 Attack: %s (Phase: %s, %.3fs) | Charge: %s
 Combo Index: %d | Hitbox: %s
 Dodge: %s | Parry: %s
@@ -98,6 +117,8 @@ Pos: (%.1f, %.1f) | Vel: (%.1f, %.1f)
 Grounded: %s | Coyote: %.3fs""" % [
 		fps, str(in_hitstop),
 		state_name, facing,
+		stance_info,
+		stance_mults,
 		attack_id, attack_phase, phase_timer_val, charge_info,
 		combo_idx, "ACTIVE" if hitbox_active else "OFF",
 		dodge_info, parry_info,

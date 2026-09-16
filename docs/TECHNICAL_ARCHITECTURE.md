@@ -130,6 +130,7 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
 │   ├── PlayerRespawn [scripts/player/player_respawn.gd]
 │   ├── CombatController [scripts/player/combat_controller.gd]
 │   ├── DefenseController [scripts/player/defense_controller.gd]
+│   ├── StanceController [scripts/player/stance_controller.gd]
 │   ├── HealthComponent [scripts/combat/health_component.gd]
 │   └── PoiseComponent [scripts/combat/poise_component.gd]
 ├── Combat (Node2D)
@@ -242,6 +243,28 @@ sequenceDiagram
         Defender->>EventBus: emit(player_damaged)
     end
 ```
+
+### 4.3 Combat Stance Architecture (`StanceData` & `StanceController`)
+Combat stances adhere strictly to the principle of **"One Combat System, Three Combat Identities"** without duplicating controllers, state machines, or collision logic:
+- **`StanceData` (`scripts/combat/stance_data.gd`):** Lightweight custom `Resource` defining:
+  - `stance_type`: Enum (`SWIFT`, `MOUNTAIN`, `STORM`).
+  - Movement multipliers: `movement_speed_multiplier`, `acceleration_multiplier`, `deceleration_multiplier`.
+  - Attack multipliers: `attack_speed_multiplier`, `damage_multiplier`, `poise_damage_multiplier`.
+  - Defense multipliers: `dodge_distance_multiplier`, `dodge_recovery_multiplier`, `parry_window_multiplier`.
+  - Hitstop and visual tint properties.
+- **Dynamic Multiplier Pipeline (Zero Base Mutation):**
+  - Canonical attack resources (`data/attacks/*.tres`) remain strictly constant and immutable.
+  - Multipliers are applied at evaluation time:
+    - Locomotion speed: `velocity.x = move_toward(..., max_speed * stance.get_movement_speed_multiplier())`.
+    - Attack phase timers: `phase_timer = base_duration / stance.get_attack_speed_multiplier()`.
+    - Damage payloads: `payload.damage = base_damage * charge_multiplier * hitbox.stance_damage_multiplier`.
+    - Poise damage: `payload.poise_damage = base_poise * poise_charge_multiplier * hitbox.stance_poise_multiplier`.
+    - Dodge impulse: `dodge_velocity = base_impulse * stance.get_dodge_distance_multiplier()`.
+    - Parry window: Maintained at `1.00x` baseline across all stances to safeguard precision timing and player muscle memory.
+- **Stance Switching Gatekeeping:**
+  - Stance switching is safely blocked during attack `STARTUP`, attack `ACTIVE`, heavy charge loops, mid-air attacks, and dodge I-frames.
+  - Stance switching is permitted during `IDLE`, `RUN`, `FALL`, and attack `RECOVERY` frames (enabling stance-cancel combo routing).
+  - Transition state persistence: Player health, poise, world position, and linear velocity are fully preserved across stance switches.
 
 ---
 

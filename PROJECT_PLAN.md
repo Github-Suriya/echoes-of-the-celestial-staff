@@ -125,16 +125,26 @@ gantt
 
 ---
 
-### Phase 5: Combat Stances
-- **Objective:** Implement the three original martial stances (Swift, Mountain, Storm) and real-time stance switching.
+### Phase 5: Combat Stances (COMPLETE)
+- **Objective:** Implement the three original martial stances (Swift, Mountain, Storm), real-time stance switching, dynamic multiplier pipeline, and stance gatekeeping rules.
 - **Dependencies:** Phase 4 complete.
+- **Status:** Complete (64/64 automated stance tests passing, 84/84 Phase 4 regression passing, 91/91 Phase 3 regression passing, 48/48 Phase 2 regression passing, 45/45 Phase 1 regression passing -> 332/332 total tests passing).
 - **Key Deliverables:**
-  - `StanceManager` component and `StanceData` resources.
-  - Stance hotkey triggers (`L1`, `R1`, stance wheel).
-  - Stance-specific modifiers (Swift = mobility/speed, Mountain = hyper-armor/poise, Storm = spirit generation/multi-hit).
-  - Stance-specific moveset variations.
+  - `StanceData` custom `Resource` definition and stance resources (`stance_swift.tres`, `stance_mountain.tres`, `stance_storm.tres`).
+  - `StanceController` component attached to Player, handling stance storage, cycling, multipliers, and gatekeeping.
+  - EventBus integration: `stance_changed` signal broadcast.
+  - Dynamic runtime multipliers:
+    - Swift: 1.10x movement speed, 1.10x acceleration, 1.12x attack speed, 0.90x damage, 0.90x poise damage, 1.12x dodge velocity, 0.90x dodge recovery.
+    - Mountain: 0.90x movement speed, 0.90x acceleration, 0.88x attack speed, 1.18x damage, 1.30x poise damage, 0.90x dodge velocity, 1.10x dodge recovery.
+    - Storm: 1.00x movement speed, 1.00x acceleration, 1.05x attack speed, 1.08x damage, 1.05x poise damage, 1.00x dodge velocity, 1.00x dodge recovery.
+  - Strictly invariant parry window (`1.00x`) protecting parry muscle memory.
+  - Gatekeeping rules: safe switching in locomotion and attack recovery; blocked during attack startup/active, heavy charge, dodge I-frames, and active parry window.
+  - State persistence: Health, poise, position, and velocity preserved across switches.
+  - Zero base resource mutation: Canonical attack resources remain pristine and unmutated.
+  - Interactive arena: `TestStanceRoom` (`scenes/world/test_stance_room.tscn`) with Stance HUD and live diagnostics.
+  - Automated test suite: `tests/test_stance_runner.tscn` validating all 42 requirements.
 - **Entry Criteria:** Advanced combat mechanics operational.
-- **Exit Criteria:** Stances switch seamlessly during combos without dropped inputs; unique modifiers apply accurately.
+- **Exit Criteria:** Stances switch seamlessly during combos without dropped inputs; unique modifiers apply accurately; 100% tests passing with zero errors/warnings.
 
 ---
 

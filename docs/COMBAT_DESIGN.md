@@ -1,16 +1,18 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.1.0  
-**Phase Status:** Phase 3 — Combat Foundation (Implemented)  
+**Document Version:** 1.3.0  
+**Phase Status:** Phase 5 — Combat Stances (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
 
 ---
 
 > [!NOTE]
-> **Phase 3 Implementation Status:**
-> - **COMPLETE:** Data-driven attacks (`AttackData`), 3-hit light combo (`L -> L -> L`), Heavy Attack foundation (`heavy_1`), Hitbox (`Area2D`, Layer 4), Hurtbox (`Area2D`, Layer 6/7), Damage payload (`DamageInfo`), HealthComponent, PoiseComponent / Stagger, Knockback, Hitstop (`GameManager.apply_hitstop`), Attack input buffering (350ms), Facing integration (+1 / -1 positioning), Combat test dummy, Combat test room.
-> - **FUTURE PHASES:** Charged strike, aerial combat, stances (Swift, Mountain, Storm), dodge / perfect dodge, parry / riposte, spirit arts, transformation, execution cinematics, full enemy AI.
+> **Implementation Status:**
+> - **PHASE 3 COMPLETE:** Data-driven attacks (`AttackData`), 3-hit light combo (`L -> L -> L`), Heavy Attack foundation (`heavy_1`), Hitbox (`Area2D`, Layer 4), Hurtbox (`Area2D`, Layer 6/7), Damage payload (`DamageInfo`), HealthComponent, PoiseComponent / Stagger, Knockback, Hitstop (`GameManager.apply_hitstop`), Attack input buffering (350ms), Facing integration (+1 / -1 positioning), Combat test dummy, Combat test room.
+> - **PHASE 4 COMPLETE:** Defensive components (`DefenseController`), ground dodge with active I-frames (`0.033s - 0.200s`), perfect dodge window (`0.033s - 0.100s`), ground parry with deflection window (`0.033s - 0.253s`), perfect parry with poise interruption (`25.0` poise damage), aerial light attack (`attack_air_1.tres`), charged heavy strike (`attack_heavy_1.tres`, 1.0x to 2.0x scaling), recovery cancellation framework (`can_cancel_attack()`), `CombatTrainingAttacker` enemy prototype, `test_defense_room.tscn`.
+> - **PHASE 5 COMPLETE:** Three Combat Stances (`SWIFT`, `MOUNTAIN`, `STORM`), `StanceData` resources, `StanceController` component, dynamic runtime multiplier pipeline (movement speed, acceleration, attack speed, damage, poise damage, dodge velocity, dodge recovery), strict parry window preservation (`1.00x`), state machine gatekeeping rules (safe switching during recovery/locomotion; blocked during startup/active/I-frames/heavy charge), zero base resource mutation, visual color flash & procedural squash/stretch feedback, `test_stance_room.tscn`.
+> - **FUTURE PHASES:** Spirit arts, transformation, full enemy AI, boss encounters, Metroidvania progression.
 
 ---
 
@@ -139,26 +141,36 @@ Yuan can switch stances seamlessly during neutral or combo recovery by pressing 
 [MOUNTAIN STANCE] <---> [STORM STANCE]
 ```
 
-### 5.1 Swift Stance (Style of the Falcon)
-- **Concept:** Agile, airborne, lightning-fast flurries.
-- **Weapon Form:** Lightweight, extended reach spirit staff with tapered ends.
-- **Passives:** +20% movement speed, +30% jump height, -25% dodge stamina cost.
-- **Signature Move — *Celestial Vault*:** Vaults over the enemy using the staff as a fulcrum, landing behind them while striking the spine.
-- **Ideal Against:** Fast, nimble enemies and aerial flying targets.
+### 5.1 Stance Multiplier Matrix
 
-### 5.2 Mountain Stance (Style of the Granite Sentinel)
-- **Concept:** Unmovable foundation, devastating overhead strikes, armor-crushing impacts.
-- **Weapon Form:** Dense, heavy stone-and-flame-encrusted staff.
-- **Passives:** Hyper-armor on heavy attacks (cannot be interrupted by standard attacks), +60% poise damage.
-- **Signature Move — *Earth Splitter*:** Yuan charges energy and leaps into a monumental downward hammer smash, splitting the ground and emitting a shockwave.
-- **Ideal Against:** Shielded enemies, heavy armored brutes, and bosses in defensive phases.
+| Parameter | Swift Stance | Mountain Stance | Storm Stance | Design Intent & Combat Feel |
+| :--- | :--- | :--- | :--- | :--- |
+| **Move Speed** | `1.10x` | `0.90x` | `1.00x` | Swift enables rapid spacing; Mountain enforces deliberate footing. |
+| **Acceleration** | `1.10x` | `0.90x` | `1.00x` | Swift bursts instantly into max velocity. |
+| **Deceleration** | `1.05x` | `0.95x` | `1.00x` | Mountain carries more grounded inertia. |
+| **Attack Speed** | `1.12x` | `0.88x` | `1.05x` | Swift compresses windup/active/recovery; Mountain strikes with heavy weight. |
+| **Attack Damage** | `0.90x` | `1.18x` | `1.08x` | Swift trades burst for speed; Mountain delivers crushing individual blows. |
+| **Poise Damage** | `0.90x` | `1.30x` | `1.05x` | Mountain is the premier stance for breaking heavy armor and postures. |
+| **Dodge Velocity** | `1.12x` (`425.6 px/s`) | `0.90x` (`342.0 px/s`) | `1.00x` (`380.0 px/s`) | Swift covers extended ground on evasions. |
+| **Dodge Recovery** | `0.90x` | `1.10x` | `1.00x` | Swift recovers fast; Mountain has slight recovery penalty. |
+| **Parry Window** | `1.00x` | `1.00x` | `1.00x` | **Strictly invariant** across all stances to protect parry muscle memory. |
+| **Hitstop Factor** | `0.90x` | `1.15x` | `1.00x` | Mountain impacts freeze world time longer for tactile weight. |
+| **Visual Tint** | Cyan (`#4DEEEA`) | Amber/Gold (`#E67E22`) | Electric Blue (`#3498DB`)| Instant visual recognition for state tracking. |
 
-### 5.3 Storm Stance (Style of the Roaring Dragon)
-- **Concept:** Relentless martial rhythm, spinning sweeps, spiraling elemental vortices.
-- **Weapon Form:** Twin-tipped crackling lightning staff.
-- **Passives:** Attacks hit multiple times per swing; double Spirit generation rate.
-- **Signature Move — *Tempest Twirl*:** Yuan spins the staff in a continuous 360-degree shield of rotating strikes, deflecting weak projectiles and shredding surrounding crowds.
-- **Ideal Against:** Swarms of multiple enemies and punishing extended boss vulnerability windows.
+### 5.2 Stance Switching Gatekeeping Rules
+- **Allowed States:** `Idle`, `Run`, `Fall`, `Jump`, and attack `Recovery` frames. Stance switching during recovery acts as an agile stance-cancel technique.
+- **Blocked States:**
+  - Attack `Startup` and `Active` frames (must commit to swing).
+  - Heavy charge loop (`is_charging_heavy == true`).
+  - Dodge invulnerability window (prevents I-frame exploit buffering).
+  - Active parry deflection window (prevents parry abuse).
+  - Mid-air attack active frames.
+- **State Persistence:** Player health, poise, world position, and linear momentum are strictly preserved across stance switches.
+
+### 5.3 Implementation Architecture
+- Stances are represented by custom `Resource` assets: `data/characters/stance_swift.tres`, `stance_mountain.tres`, and `stance_storm.tres`.
+- Evaluated at runtime through `StanceController` (`scripts/player/stance_controller.gd`).
+- Base attack resources (`data/attacks/*.tres`) remain completely unmutated.
 
 ---
 

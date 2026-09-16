@@ -10,6 +10,8 @@ signal hit_connected(target_hurtbox: Area2D, damage_info: DamageInfo)
 @export var owner_actor: Node2D = null
 @export var damage_multiplier: float = 1.0
 @export var poise_multiplier: float = 1.0
+@export var stance_damage_multiplier: float = 1.0
+@export var stance_poise_multiplier: float = 1.0
 
 var is_active: bool = false
 var _hit_hurtboxes: Array[Area2D] = []
@@ -51,6 +53,8 @@ func deactivate() -> void:
 	_hit_hurtboxes.clear()
 	damage_multiplier = 1.0
 	poise_multiplier = 1.0
+	stance_damage_multiplier = 1.0
+	stance_poise_multiplier = 1.0
 
 func _on_area_entered(area: Area2D) -> void:
 	if not is_active or current_attack_data == null:
@@ -76,8 +80,8 @@ func _on_area_entered(area: Area2D) -> void:
 		hit_dir = 1 if area.global_position.x >= owner_actor.global_position.x else -1
 	
 	var payload: DamageInfo = DamageInfo.new()
-	payload.damage = current_attack_data.damage * damage_multiplier
-	payload.poise_damage = current_attack_data.poise_damage * poise_multiplier
+	payload.damage = current_attack_data.damage * damage_multiplier * stance_damage_multiplier
+	payload.poise_damage = current_attack_data.poise_damage * poise_multiplier * stance_poise_multiplier
 	payload.knockback_force = current_attack_data.knockback_force
 	payload.hit_direction = hit_dir
 	payload.attack_id = current_attack_data.attack_id

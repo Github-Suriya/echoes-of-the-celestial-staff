@@ -69,8 +69,13 @@ func start_dodge(move_axis: float, facing: int) -> void:
 		dodge_direction = 1 if facing >= 0 else -1
 	
 	# Set initial dodge velocity
+	var dist_mult: float = 1.0
+	var stance: StanceController = _get_stance_controller()
+	if stance != null:
+		dist_mult = stance.get_dodge_distance_multiplier()
+	
 	if player != null:
-		player.velocity.x = float(dodge_direction) * dodge_speed
+		player.velocity.x = float(dodge_direction) * dodge_speed * dist_mult
 	
 	# Visual / Animation hook
 	_notify_animation_dodge()
@@ -91,13 +96,21 @@ func process_dodge(delta: float) -> bool:
 	# Update combat invulnerability state
 	is_invulnerable_to_damage = (elapsed >= dodge_iframe_start and elapsed <= dodge_iframe_end)
 	
-	# Apply dodge velocity curve with smooth deceleration
+	# Apply dodge velocity curve with smooth deceleration and stance multiplier
+	var dist_mult: float = 1.0
+	var recovery_mult: float = 1.0
+	var stance: StanceController = _get_stance_controller()
+	if stance != null:
+		dist_mult = stance.get_dodge_distance_multiplier()
+		recovery_mult = stance.get_dodge_recovery_multiplier()
+	
 	if player != null:
 		var speed_factor: float = clampf(dodge_timer / dodge_duration, 0.2, 1.0)
-		player.velocity.x = float(dodge_direction) * dodge_speed * speed_factor
+		player.velocity.x = float(dodge_direction) * dodge_speed * dist_mult * speed_factor
 		player.move_and_slide()
 	
-	if dodge_timer <= 0.0:
+	var effective_duration: float = dodge_iframe_end + (dodge_duration - dodge_iframe_end) * recovery_mult
+	if elapsed >= effective_duration or dodge_timer <= 0.0:
 		finish_dodge()
 		return false
 	
@@ -214,7 +227,11 @@ func _execute_perfect_parry(damage_info: DamageInfo) -> void:
 	if attacker_node != null and attacker_node.has_node("Components/PoiseComponent"):
 		var enemy_poise: Node = attacker_node.get_node("Components/PoiseComponent")
 		if enemy_poise != null and enemy_poise.has_method("take_poise_damage"):
-			enemy_poise.take_poise_damage(perfect_parry_poise_damage)
+			var poise_mult: float = 1.0
+			var stance: StanceController = _get_stance_controller()
+			if stance != null:
+				poise_mult = stance.get_poise_damage_multiplier()
+			enemy_poise.take_poise_damage(perfect_parry_poise_damage * poise_mult)
 	
 	# Notify attacker to interrupt attack swing
 	if attacker_node != null and attacker_node.has_method("interrupt_attack"):
@@ -293,3 +310,8 @@ func _notify_animation_perfect_parry() -> void:
 		var anim: Node = player.get_node("Components/PlayerAnimationController")
 		if anim != null and anim.has_method("play_perfect_parry_feedback"):
 			anim.play_perfect_parry_feedback()
+
+func _get_stance_controller() -> StanceController:
+	if player != null and player.has_node("Components/StanceController"):
+		return player.get_node("Components/StanceController") as StanceController
+	return null
