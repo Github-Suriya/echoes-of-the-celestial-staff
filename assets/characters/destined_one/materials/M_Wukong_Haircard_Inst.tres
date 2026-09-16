@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/HairTexture_basecolor.png" id="1_xlqnf"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/HairTexture_normal.png" id="2_l31l1"]
+
+[resource]
+resource_name = "M_Wukong_Haircard_Inst"
+transparency = 2
+alpha_scissor_threshold = 0.25
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("1_xlqnf")
+roughness = 0.7
+normal_enabled = true
+normal_texture = ExtResource("2_l31l1")

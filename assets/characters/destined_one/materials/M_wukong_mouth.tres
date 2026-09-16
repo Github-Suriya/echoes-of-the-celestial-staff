@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_wukong_mouth_d.png" id="1_8wh3s"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_wukong_mouth_n.png" id="2_83uop"]
+
+[resource]
+resource_name = "M_wukong_mouth"
+albedo_texture = ExtResource("1_8wh3s")
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("2_83uop")

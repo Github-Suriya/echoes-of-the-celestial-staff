@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://e4x9destplayervistest1"]
+
+[ext_resource type="Script" path="res://tests/destined_one_integration/DestinedOnePlayerVisualTest.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1600, 40)
+
+[node name="DestinedOnePlayerVisualTest" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.08, 0.09, 0.12, 1)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(640, 520)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+offset_left = -800.0
+offset_top = -20.0
+offset_right = 800.0
+offset_bottom = 20.0
+color = Color(0.18, 0.22, 0.28, 1)
+
+[node name="GroundGuide" type="ColorRect" parent="Ground"]
+offset_left = -800.0
+offset_top = -20.0
+offset_right = 800.0
+offset_bottom = -18.0
+color = Color(0.35, 0.5, 0.7, 0.8)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(640, 500)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -180.0
+offset_right = 500.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="TitleLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.82, 0.35, 1)
+text = "Destined One — Player Visual Integration Test"
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "FPS: -- | Memory: -- MB"
+
+[node name="StateLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Gameplay State: Idle"
+
+[node name="AnimLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Animation: idle"
+
+[node name="FacingLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Facing Direction: RIGHT (+1)"

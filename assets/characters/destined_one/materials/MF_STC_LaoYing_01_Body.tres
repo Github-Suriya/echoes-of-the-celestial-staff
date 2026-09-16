@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_wukong_head_d.png" id="1_b5lt2"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_wukong_head_n.png" id="2_rup2r"]
+
+[resource]
+resource_name = "MF_STC_LaoYing_01_Body"
+albedo_texture = ExtResource("1_b5lt2")
+roughness = 0.65
+normal_enabled = true
+normal_texture = ExtResource("2_rup2r")

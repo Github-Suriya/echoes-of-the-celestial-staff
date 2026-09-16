@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_wukong_head_d.png" id="1_rfm41"]
+
+[resource]
+resource_name = "MF_WuKong_Eye_01"
+albedo_color = Color(0.88, 0.72, 0.28, 1)
+albedo_texture = ExtResource("1_rfm41")
+roughness = 0.1

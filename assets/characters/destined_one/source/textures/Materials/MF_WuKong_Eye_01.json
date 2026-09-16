@@ -1,0 +1,116 @@
+{
+  "Textures": {
+    "IBLReflectCubemap_01": "b1/Content/00MainHZ/Environment/SKY/HDR/Studio/Studio_Eye.Studio_Eye",
+    "Studio_Eye": "b1/Content/00MainHZ/Environment/SKY/HDR/Studio/Studio_Eye.Studio_Eye",
+    "LiuGuang_Base": "b1/Content/00MainHZ/VFXRes/Textures/Tile/Noise/T_Perlin_Noise_M.T_Perlin_Noise_M",
+    "T_Perlin_Noise_M": "b1/Content/00MainHZ/VFXRes/Textures/Tile/Noise/T_Perlin_Noise_M.T_Perlin_Noise_M"
+  },
+  "Parameters": {
+    "BlendMode": 1,
+    "ShadingModel": 14,
+    "Colors": {
+      "Mask_ColorMultiplier": {
+        "R": 0.0,
+        "G": 0.0,
+        "B": 0.0,
+        "A": 0.0,
+        "Hex": "000000"
+      },
+      "Dissolve_Edge_Color": {
+        "R": 0.958,
+        "G": 1.0,
+        "B": 1.0,
+        "A": 1.0,
+        "Hex": "FBFFFF"
+      },
+      "Color": {
+        "R": 31.908136,
+        "G": 66.737114,
+        "B": 100.0,
+        "A": 1.0,
+        "Hex": "FFFFFF"
+      },
+      "IBLRotateAxis": {
+        "R": -0.0,
+        "G": 0.65,
+        "B": 1.0,
+        "A": 1.0,
+        "Hex": "00D3FF"
+      },
+      "ScleraCornerDarkColor": {
+        "R": 0.744792,
+        "G": 0.344662,
+        "B": 0.300129,
+        "A": 1.0,
+        "Hex": "E09F95"
+      }
+    },
+    "Scalars": {
+      "Direct_Dissolve_Contrast": 0.5,
+      "Dissolve_Intensity": 1.0,
+      "Dissolve_Contrast": 0.336,
+      "Brightness": 0.0,
+      "Fake_Highlight_Radius_Far": 0.2,
+      "Fresnel_Scope_of_outer_ring": 2.0,
+      "Fresnel_Scope_of_center_ring": 0.0,
+      "IBLRotateAngle": 0.48,
+      "IBL_Desaturation": 0.0,
+      "IBL_ValueOffset_01": 0.0,
+      "IBLReflectIntensity_01": 0.0,
+      "IBL_EdgeDarkPosition": 1.0,
+      "IBL_EdgeDarkContrast": 0.296,
+      "AOinBaseColorPower": 0.3,
+      "DistortScale": 5.0,
+      "Iris Concavity Power": 0.5,
+      "Iris Concavity Scale": 0.111628,
+      "IrisBleedWidth": 0.035,
+      "IrisBorderWidth": 0.04,
+      "IrisBrightness": 1.170027,
+      "IrisMaskWidth": 0.221,
+      "IrisRoughness": 0.13,
+      "IrisUVRadius": 0.17,
+      "LimbusDarkPower": 4.0,
+      "LimbusDarkScale": 0.5,
+      "PupilScale": 1.01789,
+      "LiuGuang_Base U Tiling": 100.0,
+      "LiuGuang_Base V Tiling": 100.0,
+      "IoR": 1.336,
+      "POMCutoff": 0.1,
+      "POMHeightRatio": 0.308,
+      "FlattenNormal": 0.5,
+      "ScleraBrightness": 0.503081,
+      "ScleraCornerDarkHardness": -0.196078,
+      "ScleraCornerDarkRadius": 0.32,
+      "ScleraPower": 0.967508,
+      "ScleraRotate": 0.678002,
+      "VeinsOpacity": 0.873613,
+      "VeinsPower": 1.350008,
+      "VeinsRotate": 0.336,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {
+      "use_Directional_Dissolve": true,
+      "Use IBL Reflection": true
+    },
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "bOverride_BlendMode": true,
+        "BlendMode": "EBlendMode::BLEND_Masked",
+        "ShadingModel": "EMaterialShadingModel::MSM_FromMaterialExpression",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'SP_Eye_Inner'",
+        "ObjectPath": "b1/Content/SampleMetaHumans/Common/Face/LookDev/SubsurfaceProfiles/SP_Eye_Inner.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": false
+  }
+}

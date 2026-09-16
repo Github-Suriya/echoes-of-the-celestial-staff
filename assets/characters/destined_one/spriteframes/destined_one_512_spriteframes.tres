@@ -1,0 +1,170 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/stance_test/0000.png" id="1_bsnjp"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/stance_test/0001.png" id="2_pu3y7"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/stance_test/0002.png" id="3_xyh5t"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/stance_test/0003.png" id="4_eoru7"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/idle_test/0000.png" id="5_5ffju"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/idle_test/0001.png" id="6_h62lb"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/idle_test/0002.png" id="7_6bpxc"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/idle_test/0003.png" id="8_b3t15"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/movement_test/0000.png" id="9_8as74"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/movement_test/0001.png" id="10_2ajrj"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/movement_test/0002.png" id="11_6mu2f"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/generated/sprites/512/movement_test/0003.png" id="12_pyd1g"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bsnjp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pu3y7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xyh5t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eoru7")
+}],
+"loop": 1,
+"name": &"fall",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_5ffju")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_h62lb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_6bpxc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_b3t15")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_5ffju")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_h62lb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_6bpxc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_b3t15")
+}],
+"loop": 1,
+"name": &"idle_test",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bsnjp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pu3y7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xyh5t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eoru7")
+}],
+"loop": 1,
+"name": &"jump",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bsnjp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pu3y7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xyh5t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eoru7")
+}],
+"loop": 1,
+"name": &"land",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_8as74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2ajrj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_6mu2f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pyd1g")
+}],
+"loop": 1,
+"name": &"movement_test",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_8as74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2ajrj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_6mu2f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pyd1g")
+}],
+"loop": 1,
+"name": &"run",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bsnjp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pu3y7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xyh5t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_eoru7")
+}],
+"loop": 1,
+"name": &"stance_test",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_8as74")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2ajrj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_6mu2f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pyd1g")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 6.0
+}]

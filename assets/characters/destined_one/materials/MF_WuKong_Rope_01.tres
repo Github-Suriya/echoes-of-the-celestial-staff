@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_WuKong_Rope_01_D.png" id="1_c5jn3"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/textures/T_WuKong_Rope_01_N.png" id="2_iw32b"]
+
+[resource]
+resource_name = "MF_WuKong_Rope_01"
+albedo_texture = ExtResource("1_c5jn3")
+roughness = 0.75
+normal_enabled = true
+normal_texture = ExtResource("2_iw32b")

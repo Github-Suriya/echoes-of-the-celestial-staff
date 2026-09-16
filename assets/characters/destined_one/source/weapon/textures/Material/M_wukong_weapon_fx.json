@@ -1,0 +1,49 @@
+{
+  "Textures": {},
+  "Parameters": {
+    "BlendMode": 3,
+    "ShadingModel": 0,
+    "Colors": {
+      "C_Color": {
+        "R": 1.0,
+        "G": 0.291229,
+        "B": 0.104167,
+        "A": 1.0,
+        "Hex": "FF935B"
+      },
+      "D_Color": {
+        "R": 1.0,
+        "G": 0.073612,
+        "B": 0.041667,
+        "A": 1.0,
+        "Hex": "FF4C39"
+      }
+    },
+    "Scalars": {
+      "A_Power_intensity": 1.0,
+      "B_Power_intensity": 1.0,
+      "C_Power_intensity": 1.0,
+      "D_Brightness_intensity": 35.0,
+      "D_Power_intensity": 1.0,
+      "D_PositionOffset_intensity": 4.5,
+      "D_outer_ring": 1.0,
+      "LiuGuang_Base1 U Tiling": 6.0,
+      "Lerp": 1.0,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {},
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "BasePropertyOverrides": {
+        "BlendMode": "EBlendMode::BLEND_Additive",
+        "OpacityMaskClipValue": 0.3333
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": true
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "Textures": {
+    "PM_Normals": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_body_01_DN.T_WuKong_body_01_DN",
+    "Baked NormalMap": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_head_n.T_wukong_head_n",
+    "Detail Normal Map": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_body_01_DN.T_WuKong_body_01_DN",
+    "PM_Diffuse": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_head_d.T_wukong_head_d",
+    "BaseColor+DetailMask": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_head_d.T_wukong_head_d",
+    "RSAT Map": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_head_rsat.T_wukong_head_rsat",
+    "T_wukong_head_rsat": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_head_rsat.T_wukong_head_rsat"
+  },
+  "Parameters": {
+    "BlendMode": 1,
+    "ShadingModel": 5,
+    "Colors": {},
+    "Scalars": {
+      "IceAmount": 0.0,
+      "IceMask U Offset": 0.986956,
+      "IceMask U Tiling": 0.5,
+      "IceMask V Offset": -0.72,
+      "IceMask V Tiling": 1.0,
+      "Desaturation": 0.0,
+      "Specular Min": 0.2,
+      "Specular Max": 0.3,
+      "AOIntensity": 1.0,
+      "Specular Gamma": 0.0,
+      "SpecularMetallic": 0.0,
+      "Rougness Min": 0.0,
+      "Rougness Max": 1.0,
+      "Thickness Min": 0.0,
+      "Normal Strength": 1.2,
+      "Thickness Contrast": 0.0,
+      "Thickness Max": 0.5,
+      "Detail Tiling": 20.0,
+      "Thickness Gamma": 1.0,
+      "Detail Strength": 1.0,
+      "Brightness": 1.0,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {},
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "bOverrideSubsurfaceProfile": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "bOverride_BlendMode": true,
+        "BlendMode": "EBlendMode::BLEND_Masked",
+        "ShadingModel": "EMaterialShadingModel::MSM_SubsurfaceProfile",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'Emily_SSSProfile'",
+        "ObjectPath": "b1/Content/00MainHZ/Characters/Sunwukong/Materials/Base/Emily_SSSProfile.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": false
+  }
+}

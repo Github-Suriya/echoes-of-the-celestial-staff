@@ -1,0 +1,69 @@
+{
+  "Textures": {
+    "Mask": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/EnviormentMask/T_wukong_body_m.T_wukong_body_m",
+    "T_wukong_body_m": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/EnviormentMask/T_wukong_body_m.T_wukong_body_m",
+    "PM_Normals": "b1/Content/00MainHZ/Characters/STS/Texture/T_FTT_SaiTaiSui_Head_01_DN.T_FTT_SaiTaiSui_Head_01_DN",
+    "Baked NormalMap": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_body_n.T_wukong_body_n",
+    "Detail Normal Map": "b1/Content/00MainHZ/Characters/STS/Texture/T_FTT_SaiTaiSui_Head_01_DN.T_FTT_SaiTaiSui_Head_01_DN",
+    "PM_Diffuse": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_body_d.T_wukong_body_d",
+    "BaseColor+DetailMask": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_body_d.T_wukong_body_d",
+    "RSAT Map": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_body_rsat.T_wukong_body_rsat",
+    "T_wukong_body_rsat": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_body_rsat.T_wukong_body_rsat"
+  },
+  "Parameters": {
+    "BlendMode": 1,
+    "ShadingModel": 5,
+    "Colors": {},
+    "Scalars": {
+      "Liquid_maskA U Tiling": 1.0,
+      "Liquid_maskA V Tiling": 1.0,
+      "Liquid_maskA_U Offset": 0.3,
+      "Liquid_maskA_V Offset": 0.0,
+      "Liquid_maskB_U Offset": 0.1,
+      "Liquid_maskB_V Offset": 0.0,
+      "MaxSnowProgress": 0.5,
+      "SnowMaskContrast": 0.0,
+      "Desaturation": 0.0,
+      "Specular Min": 0.2,
+      "Specular Max": 0.3,
+      "AOIntensity": 1.0,
+      "Specular Gamma": 0.0,
+      "SpecularMetallic": 0.0,
+      "Rougness Min": 0.0,
+      "Rougness Max": 1.0,
+      "Thickness Min": 0.0,
+      "Normal Strength": 1.2,
+      "Thickness Contrast": 0.0,
+      "Thickness Max": 0.5,
+      "Detail Tiling": 15.0,
+      "Thickness Gamma": 1.0,
+      "Detail Strength": 0.5,
+      "Brightness": 1.0,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {
+      "UseMPC": true
+    },
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "bOverrideSubsurfaceProfile": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "bOverride_BlendMode": true,
+        "BlendMode": "EBlendMode::BLEND_Masked",
+        "ShadingModel": "EMaterialShadingModel::MSM_SubsurfaceProfile",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'WuKong02'",
+        "ObjectPath": "b1/Content/00MainHZ/Characters/Sunwukong/Materials/DZSF/WuKong02.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": false
+  }
+}

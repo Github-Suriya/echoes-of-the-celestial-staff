@@ -1,0 +1,72 @@
+{
+  "Textures": {
+    "PM_Normals": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_N.T_WuKong_Object_01_N",
+    "Base_NormalMap": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_N.T_WuKong_Object_01_N",
+    "Detail_Noraml": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_N_Detial.T_Base_Character_01_N_Detial",
+    "T_Base_Character_01_N_Detial": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_N_Detial.T_Base_Character_01_N_Detial",
+    "Detail_Noraml_Mask": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_N_Detial_M.T_Base_Character_01_N_Detial_M",
+    "T_Base_Character_01_N_Detial_M": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_N_Detial_M.T_Base_Character_01_N_Detial_M",
+    "Difuse_Map": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_D.T_WuKong_Object_01_D",
+    "PM_Diffuse": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_D.T_WuKong_Object_01_D",
+    "T_WuKong_Object_01_D": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_D.T_WuKong_Object_01_D",
+    "P_map": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_P.T_WuKong_Object_01_P",
+    "T_WuKong_Object_01_P": "b1/Content/00MainHZ/Characters/Sunwukong/Textures/T_WuKong_Object_01_P.T_WuKong_Object_01_P",
+    "PM_SpecularMasks": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_S.T_Base_Character_01_S",
+    "Specular_Map": "b1/Content/00MainHZ/Characters/Global/Base_M/Base_M_textures/T_Base_Character_01_S.T_Base_Character_01_S"
+  },
+  "Parameters": {
+    "BlendMode": 1,
+    "ShadingModel": 5,
+    "Colors": {
+      "Difuse_tint": {
+        "R": 1.0,
+        "G": 1.0,
+        "B": 1.0,
+        "A": 1.0,
+        "Hex": "FFFFFF"
+      }
+    },
+    "Scalars": {
+      "Difuse_Intensity": 1.0,
+      "Diffuse_Power": 1.0,
+      "Difuse_desaturation": 0.0,
+      "Diffuse_Edge": 0.0,
+      "M_Normal_Crop X": 1.0,
+      "M_Normal_Crop Y": 1.0,
+      "M_NormalTiling": 1.0,
+      "MicroNormalStrength": 0.25,
+      "NormalStrength": 1.0,
+      "Globle_Opacity": 1.0,
+      "Specular_amount": 0.792768,
+      "SpecularEdge": 0.0,
+      "Roughness_amount": 0.599999,
+      "RoughEdge": 0.0,
+      "AO_Power": 0.5,
+      "AOMax": 1.0,
+      "AOMin": 0.8,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {},
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "bOverride_BlendMode": true,
+        "bOverride_TwoSided": true,
+        "BlendMode": "EBlendMode::BLEND_Masked",
+        "ShadingModel": "EMaterialShadingModel::MSM_SubsurfaceProfile",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'Emily_SSSProfile'",
+        "ObjectPath": "b1/Content/00MainHZ/Characters/Sunwukong/Materials/Base/Emily_SSSProfile.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": false
+  }
+}

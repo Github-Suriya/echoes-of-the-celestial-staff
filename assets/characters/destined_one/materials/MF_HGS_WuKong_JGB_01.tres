@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/weapon/textures/T_HGS_WuKong_JGB_01_D.png" id="1_7eylj"]
+[ext_resource type="Texture2D" path="res://assets/characters/destined_one/source/weapon/textures/T_HGS_WuKong_JGB_01_N.png" id="2_eyxqe"]
+
+[resource]
+resource_name = "MF_HGS_WuKong_JGB_01"
+albedo_texture = ExtResource("1_7eylj")
+metallic = 0.85
+roughness = 0.35
+normal_enabled = true
+normal_texture = ExtResource("2_eyxqe")

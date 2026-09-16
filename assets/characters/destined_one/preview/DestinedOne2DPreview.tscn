@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://d1x8q4dest2d1"]
+
+[ext_resource type="Script" path="res://assets/characters/destined_one/preview/DestinedOne2DPreview.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/characters/destined_one/spriteframes/destined_one_512_spriteframes.tres" id="2_sf"]
+
+[node name="DestinedOne2DPreview" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.0941176, 0.101961, 0.12549, 1)
+
+[node name="GroundLine" type="ColorRect" parent="."]
+offset_left = 100.0
+offset_top = 530.0
+offset_right = 1180.0
+offset_bottom = 532.0
+color = Color(0.24, 0.28, 0.35, 1)
+
+[node name="GroundLabel" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 535.0
+offset_right = 260.0
+offset_bottom = 560.0
+text = "Ground Baseline (y = 530)"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(640, 360)
+sprite_frames = ExtResource("2_sf")
+animation = &"idle_test"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -150.0
+offset_right = 450.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="FPSLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "FPS: -- | Memory: -- MB"
+
+[node name="AnimLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Animation: idle_test (Facing: RIGHT)"
+
+[node name="FrameLabel" type="Label" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+text = "Frame: 0 / 4"
+
+[node name="HBox" type="HBoxContainer" parent="CanvasLayer/UI/VBox"]
+layout_mode = 2
+
+[node name="PrevBtn" type="Button" parent="CanvasLayer/UI/VBox/HBox"]
+layout_mode = 2
+text = "Prev"
+
+[node name="NextBtn" type="Button" parent="CanvasLayer/UI/VBox/HBox"]
+layout_mode = 2
+text = "Next"
+
+[node name="PauseBtn" type="Button" parent="CanvasLayer/UI/VBox/HBox"]
+layout_mode = 2
+text = "Play/Pause"
+
+[node name="StepBtn" type="Button" parent="CanvasLayer/UI/VBox/HBox"]
+layout_mode = 2
+text = "Step"
+
+[node name="FlipBtn" type="Button" parent="CanvasLayer/UI/VBox/HBox"]
+layout_mode = 2
+text = "Flip Direction"
+
+[connection signal="pressed" from="CanvasLayer/UI/VBox/HBox/PrevBtn" to="." method="prev_animation"]
+[connection signal="pressed" from="CanvasLayer/UI/VBox/HBox/NextBtn" to="." method="next_animation"]
+[connection signal="pressed" from="CanvasLayer/UI/VBox/HBox/PauseBtn" to="." method="toggle_pause"]
+[connection signal="pressed" from="CanvasLayer/UI/VBox/HBox/StepBtn" to="." method="step_frame"]
+[connection signal="pressed" from="CanvasLayer/UI/VBox/HBox/FlipBtn" to="." method="toggle_flip"]

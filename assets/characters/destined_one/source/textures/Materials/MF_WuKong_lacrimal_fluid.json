@@ -1,0 +1,45 @@
+{
+  "Textures": {},
+  "Parameters": {
+    "BlendMode": 2,
+    "ShadingModel": 0,
+    "Colors": {
+      "Param_3": {
+        "R": 0.028,
+        "G": 0.04,
+        "B": 0.042,
+        "A": 0.0,
+        "Hex": "2E383A"
+      }
+    },
+    "Scalars": {
+      "DetailAmount": 0.5,
+      "Metallic": 0.15,
+      "Roughness": 0.2,
+      "Specular": 0.008,
+      "ToggleTTTB": 0.0,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {
+      "use_Directional_Dissolve": true
+    },
+    "Properties": {
+      "bHasStaticPermutationResource": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "BlendMode": "EBlendMode::BLEND_Translucent",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'Emily_SSSProfile'",
+        "ObjectPath": "b1/Content/00MainHZ/Characters/Sunwukong/Materials/Base/Emily_SSSProfile.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": true,
+    "IsNull": true
+  }
+}

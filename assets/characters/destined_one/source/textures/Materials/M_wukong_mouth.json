@@ -1,0 +1,55 @@
+{
+  "Textures": {
+    "PM_Normals": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_n.T_wukong_mouth_n",
+    "Baked NormalMap": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_n.T_wukong_mouth_n",
+    "PM_Diffuse": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_d.T_wukong_mouth_d",
+    "BaseColor+DetailMask": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_d.T_wukong_mouth_d",
+    "RSAT Map": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_rsat.T_wukong_mouth_rsat",
+    "T_wukong_mouth_rsat": "b1/Content/00MainHZ/Characters/Wukong/Textures/Equip/Born/T_wukong_mouth_rsat.T_wukong_mouth_rsat"
+  },
+  "Parameters": {
+    "BlendMode": 1,
+    "ShadingModel": 5,
+    "Colors": {
+      "Base Color Tint": {
+        "R": 1.0,
+        "G": 1.0,
+        "B": 1.0,
+        "A": 1.0,
+        "Hex": "FFFFFF"
+      },
+      "AO Tint": {
+        "R": 0.046875,
+        "G": 0.02127,
+        "B": 0.018936,
+        "A": 1.0,
+        "Hex": "3D2825"
+      }
+    },
+    "Scalars": {
+      "Thickness Max": 0.8,
+      "Brightness": 1.0,
+      "RefractionDepthBias": 0.0
+    },
+    "Switches": {},
+    "Properties": {
+      "bOverrideSubsurfaceProfile": true,
+      "bMultiQualityUsed": true,
+      "BasePropertyOverrides": {
+        "BlendMode": "EBlendMode::BLEND_Masked",
+        "ShadingModel": "EMaterialShadingModel::MSM_SubsurfaceProfile",
+        "OpacityMaskClipValue": 0.3333
+      },
+      "SubsurfaceProfile": {
+        "ObjectName": "SubsurfaceProfile'Emily_SSSProfile_3'",
+        "ObjectPath": "b1/Content/00MainHZ/Characters/Sunwukong/Materials/Base/Emily_SSSProfile_3.0"
+      }
+    },
+    "HasTopDiffuse": false,
+    "HasTopNormals": false,
+    "HasTopSpecularMasks": false,
+    "HasTopEmissive": false,
+    "IsTranslucent": false,
+    "IsNull": false
+  }
+}

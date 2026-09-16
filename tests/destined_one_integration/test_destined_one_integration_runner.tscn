@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b7destonetestrunner1"]
+
+[ext_resource type="Script" path="res://tests/destined_one_integration/test_destined_one_integration.gd" id="1_test_script"]
+
+[node name="TestRunner" type="Node"]
+script = ExtResource("1_test_script")
