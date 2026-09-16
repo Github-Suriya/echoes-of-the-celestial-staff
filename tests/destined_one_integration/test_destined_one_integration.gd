@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 
 var total_tests: int = 0
 var passed_tests: int = 0
@@ -13,7 +13,7 @@ func assert_test(condition: bool, test_name: String, details: String = "") -> vo
 		failed_tests += 1
 		printerr("  [FAIL] %s - %s" % [test_name, details])
 
-func _init() -> void:
+func _ready() -> void:
 	print("==================================================")
 	print("STARTING DESTINED ONE INTEGRATION AUTOMATED TESTS")
 	print("==================================================")
@@ -31,9 +31,9 @@ func _init() -> void:
 	print("==================================================")
 	
 	if failed_tests > 0:
-		quit(1)
+		get_tree().quit(1)
 	else:
-		quit(0)
+		get_tree().quit(0)
 
 func test_source_integrity() -> void:
 	print("\n--- 1. Source Integrity Tests ---")

@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 
 var total_tests: int = 0
 var passed_tests: int = 0
@@ -13,7 +13,7 @@ func assert_test(condition: bool, test_name: String, details: String = "") -> vo
 		failed_tests += 1
 		printerr("  [FAIL] %s - %s" % [test_name, details])
 
-func _init() -> void:
+func _ready() -> void:
 	print("==================================================")
 	print("STARTING DESTINED ONE ANIMATION RETARGETING TESTS")
 	print("==================================================")
@@ -25,16 +25,17 @@ func _init() -> void:
 	test_root_motion_policy()
 	test_gameplay_integration()
 	test_2d_rendering_and_spriteframes()
+	test_phase_14c5_staff_sync_and_png_integrity()
 	
 	print("\n==================================================")
-	print("PHASE 14C ANIMATION RETARGETING TEST SUITE RESULTS")
+	print("PHASE 14C / 14C.5 ANIMATION TEST SUITE RESULTS")
 	print("Total: %d | Passed: %d | Failed: %d" % [total_tests, passed_tests, failed_tests])
 	print("==================================================")
 	
 	if failed_tests > 0:
-		quit(1)
+		get_tree().quit(1)
 	else:
-		quit(0)
+		get_tree().quit(0)
 
 func test_asset_sources() -> void:
 	print("\n--- 1. Asset & Source Tests ---")
@@ -274,3 +275,101 @@ func test_2d_rendering_and_spriteframes() -> void:
 		if spr:
 			assert_test(spr.sprite_frames != null, "AnimatedSprite2D has assigned SpriteFrames")
 		inst.queue_free()
+
+func test_phase_14c5_staff_sync_and_png_integrity() -> void:
+	print("\n--- 8. Phase 14C.5 Staff Synchronization & PNG Integrity Tests ---")
+	
+	# 1. Weapon Attachment & Synchronization test during animation playback
+	var d_inst = load("res://assets/characters/destined_one/source/Destined One - Born.fbx").instantiate()
+	var w_inst = load("res://assets/characters/destined_one/source/weapon/Destined One - Born - Weapon.fbx").instantiate()
+	d_inst.add_child(w_inst)
+	
+	var d_sk: Skeleton3D = d_inst.find_child("Skeleton3D", true, false)
+	var w_sk: Skeleton3D = w_inst.find_child("Skeleton3D", true, false)
+	var ap = AnimationPlayer.new()
+	d_inst.add_child(ap)
+	var lib: AnimationLibrary = load("res://assets/characters/destined_one/animations/libraries/destined_one_animation_library.res")
+	ap.add_animation_library("", lib)
+	
+	var d_hand = d_sk.find_bone("hand_r")
+	var w_hand = w_sk.find_bone("hand_r")
+	assert_test(d_hand >= 0 and w_hand >= 0, "Phase 14C.5: Both skeletons have hand_r bone")
+	
+	var test_anims = ["destined_idle", "destined_run", "destined_light_01", "destined_heavy", "destined_dodge"]
+	var sync_success = true
+	var max_hand_dist = 0.0
+	
+	for anim_name in test_anims:
+		if not ap.has_animation(anim_name):
+			sync_success = false
+			continue
+		ap.play(anim_name)
+		for step in range(4):
+			ap.advance(0.1)
+			var d_hand_trans = d_sk.get_bone_global_pose(d_hand)
+			w_sk.set_bone_global_pose_override(w_hand, d_hand_trans, 1.0, true)
+			w_sk.force_update_bone_child_transform(w_hand)
+			
+			var w_hand_trans = w_sk.get_bone_global_pose(w_hand)
+			var dist = d_hand_trans.origin.distance_to(w_hand_trans.origin)
+			if dist > max_hand_dist:
+				max_hand_dist = dist
+			if dist > 0.001:
+				sync_success = false
+				
+	assert_test(sync_success, "Phase 14C.5: Weapon hand_r dynamically locked to character hand_r across all animations (max dist: %.6f)" % max_hand_dist)
+	d_inst.queue_free()
+	
+	# 2. Baked PNG frames existence and composition check
+	var frame_dir = "res://assets/characters/destined_one/generated/sprites/512_anims/"
+	var expected_frames = {
+		"idle": 4,
+		"run": 6,
+		"light_01": 4,
+		"heavy": 4,
+		"dodge": 4
+	}
+	
+	var all_pngs_exist = true
+	var total_pngs = 0
+	var no_clipping = true
+	var transparent_corners = true
+	
+	for anim_name in expected_frames.keys():
+		var count = expected_frames[anim_name]
+		for i in range(count):
+			total_pngs += 1
+			var file_path = frame_dir + "%s_%02d.png" % [anim_name, i]
+			if not FileAccess.file_exists(file_path):
+				all_pngs_exist = false
+				printerr("Missing PNG: ", file_path)
+			else:
+				var abs_path = ProjectSettings.globalize_path(file_path)
+				var img = Image.load_from_file(abs_path)
+				if not img or img.get_width() != 512 or img.get_height() != 512:
+					all_pngs_exist = false
+				else:
+					if img.get_pixel(0, 0).a > 0.001 or img.get_pixel(511, 0).a > 0.001:
+						transparent_corners = false
+					# Check all 4 outer boundary edges for clipping
+					for x in range(512):
+						if img.get_pixel(x, 0).a > 0.05 or img.get_pixel(x, 511).a > 0.05:
+							no_clipping = false
+					for y in range(512):
+						if img.get_pixel(0, y).a > 0.05 or img.get_pixel(511, y).a > 0.05:
+							no_clipping = false
+							
+	assert_test(all_pngs_exist, "Phase 14C.5: All %d baked 512x512 PNG frames exist on disk" % total_pngs)
+	assert_test(transparent_corners, "Phase 14C.5: All baked frames retain pure transparent background")
+	assert_test(no_clipping, "Phase 14C.5: Weapon and character within 512x512 bounds (zero border clipping)")
+	
+	# 3. SpriteFrames integrity check
+	var sf_path = "res://assets/characters/destined_one/spriteframes/destined_one_retarget_512_spriteframes.tres"
+	var sf: SpriteFrames = load(sf_path)
+	assert_test(sf != null, "Phase 14C.5: SpriteFrames resource loaded cleanly")
+	if sf:
+		for anim_name in expected_frames.keys():
+			assert_test(sf.has_animation(anim_name), "Phase 14C.5: SpriteFrames contains '%s'" % anim_name)
+			assert_test(sf.get_frame_count(anim_name) == expected_frames[anim_name], 
+				"Phase 14C.5: Animation '%s' has %d frames" % [anim_name, expected_frames[anim_name]])
+

@@ -4,8 +4,8 @@ extends SceneTree
 const BASE_OUT_DIR := "res://assets/characters/destined_one/generated/sprites/512_anims/"
 const RESOLUTION := 512
 
-const CANONICAL_CAM_SIZE: float = 3.85
-const CANONICAL_CAM_POS: Vector3 = Vector3(-0.25, 1.25, 4.0)
+const CANONICAL_CAM_SIZE: float = 6.0
+const CANONICAL_CAM_POS: Vector3 = Vector3(-0.35, 0.35, 4.0)
 const CANONICAL_CHAR_ROT: Vector3 = Vector3(0, -20, 0)
 
 # Animations to bake into 2D sprite frames
@@ -145,15 +145,14 @@ func _render_all_animations() -> void:
 			var sample_t = i * time_step
 			ap.seek(sample_t, true)
 			
-			# Ensure weapon arm bones match character arm bones
-			if char_sk and weapon_sk:
-				for bname in arm_bones:
-					var di = char_sk.find_bone(bname)
-					var wi = weapon_sk.find_bone(bname)
-					if di >= 0 and wi >= 0:
-						weapon_sk.set_bone_pose_rotation(wi, char_sk.get_bone_pose_rotation(di))
-						
 			for f in range(3):
+				if char_sk and weapon_sk:
+					var d_hand = char_sk.find_bone("hand_r")
+					var w_hand = weapon_sk.find_bone("hand_r")
+					if d_hand >= 0 and w_hand >= 0:
+						var d_hand_global = char_sk.get_bone_global_pose(d_hand)
+						weapon_sk.set_bone_global_pose_override(w_hand, d_hand_global, 1.0, true)
+						weapon_sk.force_update_bone_child_transform(w_hand)
 				await process_frame
 				
 			var tex = vp.get_texture()

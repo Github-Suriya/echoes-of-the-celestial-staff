@@ -88,12 +88,12 @@ func play_animation(anim_name: String) -> void:
 func _sync_weapon_bones() -> void:
 	if not _destined_sk or not _weapon_sk:
 		return
-	var arm_bones = ["pelvis", "spine_01", "spine_02", "spine_03", "clavicle_r", "upperarm_r", "lowerarm_r", "hand_r"]
-	for bname in arm_bones:
-		var d_idx = _destined_sk.find_bone(bname)
-		var w_idx = _weapon_sk.find_bone(bname)
-		if d_idx >= 0 and w_idx >= 0:
-			_weapon_sk.set_bone_pose_rotation(w_idx, _destined_sk.get_bone_pose_rotation(d_idx))
+	var d_hand = _destined_sk.find_bone("hand_r")
+	var w_hand = _weapon_sk.find_bone("hand_r")
+	if d_hand >= 0 and w_hand >= 0:
+		var d_hand_global = _destined_sk.get_bone_global_pose(d_hand)
+		_weapon_sk.set_bone_global_pose_override(w_hand, d_hand_global, 1.0, true)
+		_weapon_sk.force_update_bone_child_transform(w_hand)
 
 func _create_ui_buttons() -> void:
 	if not anim_container:
