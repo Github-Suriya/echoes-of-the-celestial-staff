@@ -39,6 +39,11 @@ signal boss_started(boss_name: String)
 signal boss_phase_changed(boss_name: String, phase_index: int)
 signal boss_defeated(boss_name: String)
 
+# --- Transformation Domain Signals ---
+signal transformation_started(transformation_id: StringName, duration: float)
+signal transformation_ended(transformation_id: StringName)
+signal transformation_state_changed(new_state: int)
+
 # --- World & Progression Domain Signals ---
 signal scene_loaded(scene_path: String)
 signal scene_unloaded(scene_path: String)

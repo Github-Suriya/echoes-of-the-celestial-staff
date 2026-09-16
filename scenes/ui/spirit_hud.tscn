@@ -136,3 +136,22 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 11
 text = "READY"
 horizontal_alignment = 1
+
+[node name="AwakeningContainer" type="VBoxContainer" parent="HUDPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="AwakeningLabel" type="Label" parent="HUDPanel/MarginContainer/VBoxContainer/AwakeningContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[F] AWAKENING: READY"
+horizontal_alignment = 1
+
+[node name="AwakeningBar" type="ProgressBar" parent="HUDPanel/MarginContainer/VBoxContainer/AwakeningContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_bar_fill")
+value = 100.0
+show_percentage = false

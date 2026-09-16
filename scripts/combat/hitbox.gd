@@ -12,6 +12,9 @@ signal hit_connected(target_hurtbox: Area2D, damage_info: DamageInfo)
 @export var poise_multiplier: float = 1.0
 @export var stance_damage_multiplier: float = 1.0
 @export var stance_poise_multiplier: float = 1.0
+@export var transformation_damage_multiplier: float = 1.0
+@export var transformation_poise_multiplier: float = 1.0
+@export var transformation_hitstop_multiplier: float = 1.0
 
 var is_active: bool = false
 var _hit_hurtboxes: Array[Area2D] = []
@@ -55,6 +58,9 @@ func deactivate() -> void:
 	poise_multiplier = 1.0
 	stance_damage_multiplier = 1.0
 	stance_poise_multiplier = 1.0
+	transformation_damage_multiplier = 1.0
+	transformation_poise_multiplier = 1.0
+	transformation_hitstop_multiplier = 1.0
 
 func _on_area_entered(area: Area2D) -> void:
 	if not is_active or current_attack_data == null:
@@ -80,14 +86,14 @@ func _on_area_entered(area: Area2D) -> void:
 		hit_dir = 1 if area.global_position.x >= owner_actor.global_position.x else -1
 	
 	var payload: DamageInfo = DamageInfo.new()
-	payload.damage = current_attack_data.damage * damage_multiplier * stance_damage_multiplier
-	payload.poise_damage = current_attack_data.poise_damage * poise_multiplier * stance_poise_multiplier
+	payload.damage = current_attack_data.damage * damage_multiplier * stance_damage_multiplier * transformation_damage_multiplier
+	payload.poise_damage = current_attack_data.poise_damage * poise_multiplier * stance_poise_multiplier * transformation_poise_multiplier
 	payload.knockback_force = current_attack_data.knockback_force
 	payload.hit_direction = hit_dir
 	payload.attack_id = current_attack_data.attack_id
 	payload.attacker = owner_actor
 	payload.source_hitbox = self
-	payload.hitstop_duration = current_attack_data.hitstop_duration
+	payload.hitstop_duration = current_attack_data.hitstop_duration * transformation_hitstop_multiplier
 	payload.is_parryable = current_attack_data.is_parryable
 	payload.is_dodgeable = current_attack_data.is_dodgeable
 	payload.attack_data = current_attack_data

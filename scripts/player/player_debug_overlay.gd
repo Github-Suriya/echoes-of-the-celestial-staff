@@ -52,6 +52,10 @@ func _process(_delta: float) -> void:
 	if _player.has_node("Components/SpiritAbilityController"):
 		ability_ctrl = _player.get_node("Components/SpiritAbilityController") as SpiritAbilityController
 	
+	var trans_ctrl: TransformationController = null
+	if _player.has_node("Components/TransformationController"):
+		trans_ctrl = _player.get_node("Components/TransformationController") as TransformationController
+	
 	var fps: float = Performance.get_monitor(Performance.TIME_FPS)
 	var pos: Vector2 = _player.global_position
 	var vel: Vector2 = _player.velocity
@@ -123,15 +127,35 @@ func _process(_delta: float) -> void:
 			var p_perf: String = " [PERFECT]" if defense.is_in_perfect_parry_window() else ""
 			parry_info = "%s%s (t=%.2fs)" % [p_window, p_perf, defense.parry_timer]
 	
+	# Transformation metrics
+	var trans_str: String = "INACTIVE"
+	var trans_mults: String = "Spd: 1.0x | Atk: 1.0x | Dmg: 1.0x | Abi: 1.0x"
+	if trans_ctrl != null:
+		trans_str = "%s (%.1fs, %.0f%%)" % [
+			trans_ctrl.get_lifecycle_state_name(),
+			trans_ctrl.get_remaining_duration(),
+			trans_ctrl.get_duration_ratio() * 100.0
+		]
+		if trans_ctrl.is_active():
+			trans_mults = "Spd: %.2fx | Atk: %.2fx | Dmg: %.2fx | Pse: %.2fx | Abi: %.2fx" % [
+				trans_ctrl.get_movement_speed_multiplier(),
+				trans_ctrl.get_attack_speed_multiplier(),
+				trans_ctrl.get_damage_multiplier(),
+				trans_ctrl.get_poise_damage_multiplier(),
+				trans_ctrl.get_spirit_ability_damage_multiplier()
+			]
+	
 	if has_node("/root/GameManager"):
 		var gm: Node = get_node("/root/GameManager")
 		if gm != null and gm.has_method("is_in_hitstop"):
 			in_hitstop = gm.is_in_hitstop()
 	
-	_label.text = """[COMBAT, STANCE & SPIRIT DEBUG (F3)]
+	_label.text = """[COMBAT, STANCE & AWAKENING DEBUG (F3)]
 FPS: %.1f | Hitstop: %s
 State: %s | Facing: %s
 Stance: %s
+%s
+Awakening: %s
 %s
 Spirit: %s
 Ability: %s
@@ -145,6 +169,8 @@ Grounded: %s | Coyote: %.3fs""" % [
 		state_name, facing,
 		stance_info,
 		stance_mults,
+		trans_str,
+		trans_mults,
 		spirit_str,
 		ability_str,
 		cd_str,

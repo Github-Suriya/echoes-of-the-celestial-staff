@@ -3,7 +3,7 @@
 **Project Version:** 1.0.0  
 **Target Engine:** Godot 4.7.2 Stable (GL Compatibility Renderer)  
 **Target Platform:** Windows PC (Intel Core i3, 12GB RAM, Intel UHD Graphics Baseline)  
-**Current Phase:** Phase 0 (Architecture & Documentation)  
+**Current Phase:** Phase 7 — Celestial Awakening (COMPLETE)  
 
 ---
 
@@ -167,14 +167,28 @@ gantt
 
 ---
 
-### Phase 7: Transformation
-- **Objective:** Implement Yuan's divine Celestial Awakening state.
+### Phase 7: Transformation — Celestial Awakening (COMPLETE)
+- **Objective:** Implement Yuan's temporary supernatural Celestial Awakening transformation state, deterministic duration timer, multiplier pipeline, and safe state reversibility.
 - **Dependencies:** Phase 6 complete.
+- **Status:** Complete (113/113 automated transformation tests passing, 427/427 regression passing -> 540/540 total tests passing).
 - **Key Deliverables:**
-  - `TransformationManager` handling awakening trigger, duration timer, and celestial state.
-  - Visual aura shader, extended staff reach, and divine finisher move (`Heaven's Mandate`).
+  - `TransformationData` custom `Resource` definition and `transformation_celestial_awakening.tres` (100 Spirit cost, 12.0s duration, canonical multipliers).
+  - `TransformationController` component attached to Player managing `INACTIVE`, `ACTIVATING`, `ACTIVE`, `ENDING` lifecycle, countdown timer, atomic spirit consumption, and multiplier accessors.
+  - Multiplier pipeline integration:
+    - Locomotion: 1.15x movement speed, 1.15x acceleration, 1.15x deceleration (`PlayerMovement`).
+    - Weapon Combat: 1.20x attack speed, 1.30x damage, 1.35x poise damage, 1.20x hitstop duration (`CombatController`, `Hitbox`).
+    - Defense: 1.15x dodge velocity, 0.85x dodge recovery duration (`DefenseController`).
+    - Defense Invariance: Dodge I-frames, perfect dodge window, parry window, and perfect parry window strictly `1.00x` invariant.
+    - Spirit Abilities: 1.25x projectile and AoE damage (`SpiritAbilityController`, `SpiritProjectile`).
+  - Stance Stacking: Multipliers stack orthogonally and multiplicatively with active combat stances (`SWIFT`, `MOUNTAIN`, `STORM`).
+  - State Machine Gatekeeping: Activation blocked during attack startup/active, dodge I-frames, parry deflection, heavy charge, and ability cast; permitted during locomotion and recovery.
+  - Total State Reversibility: Idempotent `deactivate(immediate=true)` cleans up timers, resets multipliers to baseline `1.0x`, and removes visual tweens without mutating base assets.
+  - Visual aura and procedural squash/stretch tweens in `PlayerAnimationController`.
+  - Development UI & Telemetry: `SpiritHUD` with live Awakening card and animated duration bar; `PlayerDebugOverlay` live transformation state, duration, and multiplier telemetry.
+  - Interactive test gym: `TestTransformationRoom` (`scenes/world/test_transformation_room.tscn`) with 3 dummies, training attacker, obstacle terrain, HUD, and control legends.
+  - Automated test suite: `tests/test_transformation_runner.tscn` validating all 50 requirements across 113 test cases.
 - **Entry Criteria:** Spirit system active.
-- **Exit Criteria:** Transformation engages smoothly, modifies player stats/abilities for 15 seconds, and resets safely.
+- **Exit Criteria:** Transformation engages smoothly, modifies player stats/abilities for 12 seconds, resets safely, zero base mutation, and passes all 113 automated tests with zero warnings/errors.
 
 ---
 

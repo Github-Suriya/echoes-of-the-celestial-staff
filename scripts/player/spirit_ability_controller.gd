@@ -240,17 +240,27 @@ func _spawn_projectile() -> void:
 	if projectile_scene == null or player == null:
 		return
 	
+	var ability_dmg_mult: float = 1.0
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		ability_dmg_mult = trans.get_spirit_ability_damage_multiplier()
+	
 	var proj: SpiritProjectile = projectile_scene.instantiate() as SpiritProjectile
 	var facing: int = player.get_facing_direction() if player.has_method("get_facing_direction") else 1
 	var spawn_pos: Vector2 = player.global_position + Vector2(18.0 * float(facing), -22.0)
 	
 	var container: Node = player.get_parent() if player.get_parent() != null else player
 	container.add_child(proj)
-	proj.launch(current_ability, spawn_pos, facing, player)
+	proj.launch(current_ability, spawn_pos, facing, player, ability_dmg_mult)
 
 func _execute_area_shockwave() -> void:
 	if player == null:
 		return
+	
+	var ability_dmg_mult: float = 1.0
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		ability_dmg_mult = trans.get_spirit_ability_damage_multiplier()
 	
 	var space_state: PhysicsDirectSpaceState2D = player.get_world_2d().direct_space_state
 	var shape: CircleShape2D = CircleShape2D.new()
@@ -275,7 +285,7 @@ func _execute_area_shockwave() -> void:
 			var hit_dir: int = 1 if target_area.global_position.x >= player.global_position.x else -1
 			
 			var payload: DamageInfo = DamageInfo.new()
-			payload.damage = current_ability.damage
+			payload.damage = current_ability.damage * ability_dmg_mult
 			payload.poise_damage = current_ability.poise_damage
 			payload.knockback_force = current_ability.knockback_force
 			payload.hit_direction = hit_dir
@@ -368,6 +378,11 @@ func get_phase_name() -> String:
 func _get_spirit_component() -> SpiritComponent:
 	if player != null and player.has_node("Components/SpiritComponent"):
 		return player.get_node("Components/SpiritComponent") as SpiritComponent
+	return null
+
+func _get_transformation_controller() -> TransformationController:
+	if player != null and player.has_node("Components/TransformationController"):
+		return player.get_node("Components/TransformationController") as TransformationController
 	return null
 
 func _notify_animation_cast(ability_id: StringName) -> void:

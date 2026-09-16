@@ -192,9 +192,19 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 	var stance_poise: float = 1.0
 	var stance: StanceController = _get_stance_controller()
 	if stance != null:
-		attack_speed = stance.get_attack_speed_multiplier()
+		attack_speed *= stance.get_attack_speed_multiplier()
 		stance_dmg = stance.get_damage_multiplier()
 		stance_poise = stance.get_poise_damage_multiplier()
+	
+	var trans_dmg: float = 1.0
+	var trans_poise: float = 1.0
+	var trans_hitstop: float = 1.0
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		attack_speed *= trans.get_attack_speed_multiplier()
+		trans_dmg = trans.get_damage_multiplier()
+		trans_poise = trans.get_poise_damage_multiplier()
+		trans_hitstop = trans.get_hitstop_multiplier()
 	
 	phase_timer = attack_data.startup_time / attack_speed
 	combo_timer = 0.0
@@ -209,6 +219,9 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 		hitbox.poise_multiplier = poise_charge_multiplier
 		hitbox.stance_damage_multiplier = stance_dmg
 		hitbox.stance_poise_multiplier = stance_poise
+		hitbox.transformation_damage_multiplier = trans_dmg
+		hitbox.transformation_poise_multiplier = trans_poise
+		hitbox.transformation_hitstop_multiplier = trans_hitstop
 		_update_hitbox_facing()
 	
 	# Apply forward movement impulse
@@ -250,9 +263,19 @@ func process_combat(delta: float) -> bool:
 		var stance_poise: float = 1.0
 		var stance: StanceController = _get_stance_controller()
 		if stance != null:
-			attack_speed = stance.get_attack_speed_multiplier()
+			attack_speed *= stance.get_attack_speed_multiplier()
 			stance_dmg = stance.get_damage_multiplier()
 			stance_poise = stance.get_poise_damage_multiplier()
+		
+		var trans_dmg: float = 1.0
+		var trans_poise: float = 1.0
+		var trans_hitstop: float = 1.0
+		var trans: TransformationController = _get_transformation_controller()
+		if trans != null:
+			attack_speed *= trans.get_attack_speed_multiplier()
+			trans_dmg = trans.get_damage_multiplier()
+			trans_poise = trans.get_poise_damage_multiplier()
+			trans_hitstop = trans.get_hitstop_multiplier()
 		
 		match current_phase:
 			AttackPhase.STARTUP:
@@ -264,6 +287,9 @@ func process_combat(delta: float) -> bool:
 					hitbox.poise_multiplier = poise_charge_multiplier
 					hitbox.stance_damage_multiplier = stance_dmg
 					hitbox.stance_poise_multiplier = stance_poise
+					hitbox.transformation_damage_multiplier = trans_dmg
+					hitbox.transformation_poise_multiplier = trans_poise
+					hitbox.transformation_hitstop_multiplier = trans_hitstop
 					hitbox.activate(current_attack, player)
 				attack_phase_changed.emit(current_phase)
 			
@@ -294,6 +320,11 @@ func process_combat(delta: float) -> bool:
 func _get_stance_controller() -> StanceController:
 	if player != null and player.has_node("Components/StanceController"):
 		return player.get_node("Components/StanceController") as StanceController
+	return null
+
+func _get_transformation_controller() -> TransformationController:
+	if player != null and player.has_node("Components/TransformationController"):
+		return player.get_node("Components/TransformationController") as TransformationController
 	return null
 
 func _consume_buffered_attack() -> bool:

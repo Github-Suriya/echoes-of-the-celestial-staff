@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TransformationData" format=3]
+
+[ext_resource type="Script" path="res://scripts/player/transformation_data.gd" id="1_trans"]
+
+[resource]
+script = ExtResource("1_trans")
+transformation_id = &"celestial_awakening"
+display_name = "Celestial Awakening"
+description = "Channel divine celestial qi to enter an awakened state, empowering martial speed, damage, and mobility."
+spirit_cost = 100.0
+duration = 12.0
+move_speed_multiplier = 1.10
+acceleration_multiplier = 1.10
+deceleration_multiplier = 1.10
+attack_speed_multiplier = 1.10
+damage_multiplier = 1.15
+poise_damage_multiplier = 1.10
+hitstop_multiplier = 1.05
+dodge_velocity_multiplier = 1.05
+dodge_recovery_multiplier = 0.95
+spirit_ability_damage_multiplier = 1.10
+visual_profile_id = &"celestial_awakening"
+audio_profile_id = &"celestial_awakening"

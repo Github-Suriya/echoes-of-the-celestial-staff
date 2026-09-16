@@ -84,6 +84,15 @@ func play_cloud_step() -> void:
 func play_spirit_fail_feedback() -> void:
 	play_animation(&"ability_fail")
 
+func play_transformation_activate() -> void:
+	play_animation(&"transformation_activate")
+
+func play_transformation_active() -> void:
+	play_animation(&"transformation_active")
+
+func play_transformation_end() -> void:
+	play_animation(&"transformation_end")
+
 func _on_state_changed(_old_state: StringName, new_state: StringName) -> void:
 	match new_state:
 		&"Idle":
@@ -196,6 +205,16 @@ func _apply_placeholder_feedback(anim_name: StringName) -> void:
 			var tween: Tween = create_tween()
 			visuals_root.scale = Vector2(facing_sign * 0.92, 0.92)
 			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.10)
+		&"transformation_activate":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.35, 1.35)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.22)
+		&"transformation_active":
+			visuals_root.scale = Vector2(facing_sign, 1.0)
+		&"transformation_end":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.90, 1.10)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.15)
 
 func _get_state_machine() -> StateMachine:
 	if owner != null and owner.has_node("StateMachine"):

@@ -72,7 +72,10 @@ func start_dodge(move_axis: float, facing: int) -> void:
 	var dist_mult: float = 1.0
 	var stance: StanceController = _get_stance_controller()
 	if stance != null:
-		dist_mult = stance.get_dodge_distance_multiplier()
+		dist_mult *= stance.get_dodge_distance_multiplier()
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		dist_mult *= trans.get_dodge_velocity_multiplier()
 	
 	if player != null:
 		player.velocity.x = float(dodge_direction) * dodge_speed * dist_mult
@@ -96,13 +99,17 @@ func process_dodge(delta: float) -> bool:
 	# Update combat invulnerability state
 	is_invulnerable_to_damage = (elapsed >= dodge_iframe_start and elapsed <= dodge_iframe_end)
 	
-	# Apply dodge velocity curve with smooth deceleration and stance multiplier
+	# Apply dodge velocity curve with smooth deceleration, stance, and transformation multipliers
 	var dist_mult: float = 1.0
 	var recovery_mult: float = 1.0
 	var stance: StanceController = _get_stance_controller()
 	if stance != null:
-		dist_mult = stance.get_dodge_distance_multiplier()
-		recovery_mult = stance.get_dodge_recovery_multiplier()
+		dist_mult *= stance.get_dodge_distance_multiplier()
+		recovery_mult *= stance.get_dodge_recovery_multiplier()
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		dist_mult *= trans.get_dodge_velocity_multiplier()
+		recovery_mult *= trans.get_dodge_recovery_multiplier()
 	
 	if player != null:
 		var speed_factor: float = clampf(dodge_timer / dodge_duration, 0.2, 1.0)
@@ -314,4 +321,9 @@ func _notify_animation_perfect_parry() -> void:
 func _get_stance_controller() -> StanceController:
 	if player != null and player.has_node("Components/StanceController"):
 		return player.get_node("Components/StanceController") as StanceController
+	return null
+
+func _get_transformation_controller() -> TransformationController:
+	if player != null and player.has_node("Components/TransformationController"):
+		return player.get_node("Components/TransformationController") as TransformationController
 	return null

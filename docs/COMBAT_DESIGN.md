@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.4.0  
-**Phase Status:** Phase 6 — Spirit Abilities (Implemented)  
+**Document Version:** 1.5.0  
+**Phase Status:** Phase 7 — Celestial Awakening (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
 
@@ -13,7 +13,8 @@
 > - **PHASE 4 COMPLETE:** Defensive components (`DefenseController`), ground dodge with active I-frames (`0.033s - 0.200s`), perfect dodge window (`0.033s - 0.100s`), ground parry with deflection window (`0.033s - 0.253s`), perfect parry with poise interruption (`25.0` poise damage), aerial light attack (`attack_air_1.tres`), charged heavy strike (`attack_heavy_1.tres`, 1.0x to 2.0x scaling), recovery cancellation framework (`can_cancel_attack()`), `CombatTrainingAttacker` enemy prototype, `test_defense_room.tscn`.
 > - **PHASE 5 COMPLETE:** Three Combat Stances (`SWIFT`, `MOUNTAIN`, `STORM`), `StanceData` resources, `StanceController` component, dynamic runtime multiplier pipeline (movement speed, acceleration, attack speed, damage, poise damage, dodge velocity, dodge recovery), strict parry window preservation (`1.00x`), state machine gatekeeping rules (safe switching during recovery/locomotion; blocked during startup/active/I-frames/heavy charge), zero base resource mutation, visual color flash & procedural squash/stretch feedback, `test_stance_room.tscn`.
 > - **PHASE 6 COMPLETE:** Data-driven Spirit Ability framework (`SpiritAbilityData`), `SpiritComponent` (100 max, transactional consumption, combat replenishment hooks: Light +4, Heavy +8, Parry +10), `SpiritAbilityController` (3 slots, cooldown timers, phase lifecycle), `PlayerSpiritAbilityState` (cancellable into dodge/parry during recovery), 3 prototype abilities (`Celestial Arc` projectile, `Heavenly Pulse` 64px AoE, `Cloud Step` 550 px/s mobility burst), `SpiritHUD`, `test_spirit_room.tscn`.
-> - **FUTURE PHASES:** Transformation, full enemy AI, boss encounters, Metroidvania progression.
+> - **PHASE 7 COMPLETE:** Temporary supernatural transformation state (`TransformationController`, `TransformationData`), Celestial Awakening (`transformation_celestial_awakening.tres`), deterministic countdown duration (12.0s), 100 Spirit activation cost, complete multiplier pipeline (1.15x speed/accel/decel, 1.20x attack speed, 1.30x damage, 1.35x poise, 1.25x ability damage, 1.15x dodge velocity, 0.85x dodge recovery, 1.20x hitstop), defense timing invariance (I-frames and parry windows strictly 1.0x), atomic spirit consumption, state machine gatekeeping rules (allowed during locomotion and attack recovery; blocked during startup/active/I-frames/parry/charge/ability), idempotent deactivation and total state reversibility, visual gold/celestial aura tweens, extended Awakening HUD bar and live debug telemetry, interactive gym `scenes/world/test_transformation_room.tscn`, 113 automated unit tests.
+> - **FUTURE PHASES:** Full enemy AI, boss encounters, Metroidvania progression, world gameplay.
 
 ---
 
@@ -207,15 +208,39 @@ Powered by the 100-point Spirit Meter (`SpiritComponent`). Spirit does not passi
 - Allowed during locomotion (`Idle`, `Run`, `Jump`, `Fall`) and attack `Recovery` frames.
 - Ability recovery frames can be cancelled into Dodge or Parry for high-level evasion.
 
-### 6.2 Celestial Awakening (Transformation)
-- **Trigger:** When both Spirit and Awakening meters are maxed, press `L2 + R2` (or `Q + E`).
-- **Duration:** 15 seconds of divine ascension.
-- **State Properties:**
-  - Yuan manifests a radiant celestial aura and ethereal golden staff.
-  - Infinite stamina during transformation.
-  - Attacks gain extended cosmic reach and spatial slashes.
-  - Immune to stagger and flinching.
-  - Can be ended early by executing **Heaven's Mandate** (a full-screen celestial staff plunge).
+### 6.2 Celestial Awakening (Transformation Subsystem)
+
+The Celestial Awakening is Yuan's temporary, supernatural transformation state. Rather than spawning a duplicate character scene or branching the state machine, it is implemented as a deterministic runtime modifier layer over existing player systems.
+
+- **Trigger Command:** `ACTION_TRANSFORMATION_ACTIVATE` (`KEY_F`, `KEY_V`).
+- **Activation Cost:** 100.0 Spirit (atomically consumed from `SpiritComponent`). Cannot be activated with < 100.0 Spirit.
+- **Duration:** 12.0 seconds (`duration = 12.0`) deterministic countdown timer.
+- **Phase Lifecycle:** `INACTIVE` -> `ACTIVATING` -> `ACTIVE` -> `ENDING` -> `INACTIVE`.
+- **Multiplier Pipeline (`TransformationData`):**
+  - **Locomotion:**
+    - `movement_speed_multiplier`: `1.15x` (stacks multiplicatively with stance: Swift = 1.265x, Mountain = 1.035x, Storm = 1.15x).
+    - `acceleration_multiplier`: `1.15x`.
+    - `deceleration_multiplier`: `1.15x`.
+  - **Weapon Combat:**
+    - `attack_speed_multiplier`: `1.20x` (reduces windup, active, and recovery durations by dividing elapsed thresholds by 1.20).
+    - `damage_multiplier`: `1.30x` (applied to hitbox damage payload).
+    - `poise_damage_multiplier`: `1.35x` (amplifies posture break and stagger pressure).
+    - `hitstop_duration_multiplier`: `1.20x` (enhanced tactile impact freezes).
+  - **Defense & Evasion:**
+    - `dodge_velocity_multiplier`: `1.15x` (extends ground dodge distance).
+    - `dodge_recovery_multiplier`: `0.85x` (recovers faster out of dodge roll).
+    - **Defense Invariance:** Dodge I-frame window (`0.033s - 0.200s`), perfect dodge window (`0.033s - 0.100s`), parry deflection window (`0.033s - 0.253s`), and perfect parry window (`0.033s - 0.100s`) remain strictly `1.00x` invariant to preserve player muscle memory.
+  - **Spirit Abilities:**
+    - `spirit_ability_damage_multiplier`: `1.25x` (amplifies projectile impacts and radiating shockwaves).
+- **Gatekeeping Rules:**
+  - Blocked during weapon attack `Startup` and `Active` frames.
+  - Blocked during active Dodge I-frames and active Parry deflection windows.
+  - Blocked during Heavy Attack charging.
+  - Blocked during Spirit Ability `Startup` and `Active` phases.
+  - Blocked if already in `ACTIVATING`, `ACTIVE`, or `ENDING` state.
+  - Permitted during locomotion (`Idle`, `Run`, `Jump`, `Fall`) and attack `Recovery` frames.
+- **Stance Compatibility:** Fully orthogonal to Stances (`SWIFT`, `MOUNTAIN`, `STORM`). Stance switching remains operational during Awakening recovery and locomotion.
+- **Safe State Reversibility:** When the 12.0s timer expires or `deactivate(immediate=true)` is called upon death/room transition, all player attributes, timers, and multipliers immediately return to baseline `1.0x` with zero resource mutation or memory leaks.
 
 ---
 

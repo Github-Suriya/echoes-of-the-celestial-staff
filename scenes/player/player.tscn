@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://scripts/player/spirit_component.gd" id="25_spirit"]
 [ext_resource type="Script" path="res://scripts/player/spirit_ability_controller.gd" id="26_spirit_ctrl"]
 [ext_resource type="Script" path="res://scripts/player/states/player_spirit_ability_state.gd" id="27_spirit_state"]
+[ext_resource type="Script" path="res://scripts/player/transformation_controller.gd" id="28_trans"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -129,6 +130,9 @@ script = ExtResource("25_spirit")
 
 [node name="SpiritAbilityController" type="Node" parent="Components"]
 script = ExtResource("26_spirit_ctrl")
+
+[node name="TransformationController" type="Node" parent="Components"]
+script = ExtResource("28_trans")
 
 [node name="Combat" type="Node2D" parent="."]
 

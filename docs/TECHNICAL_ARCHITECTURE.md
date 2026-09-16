@@ -296,6 +296,35 @@ The Spirit Ability framework introduces active martial powers powered by combat-
   - `SpiritHUD` (`scripts/ui/spirit_hud.gd`): Real-time Spirit gauge, slot labels, and radial/fill cooldown overlays.
   - `PlayerDebugOverlay`: Real-time telemetry displaying current Spirit and cooldown timers.
 
+### 4.5 Transformation Subsystem (`TransformationController` & `TransformationData`)
+The transformation framework introduces temporary supernatural empowerment layered over the core character without duplicating systems or replacing the character entity:
+- **Design Invariant ("One Player, Layered Modifiers"):**
+  - Transformation is not a separate actor, duplicate state machine, or alternate character scene.
+  - Modifiers are mathematically stacked at runtime over base and stance multipliers.
+  - Base resources (`AttackData`, `StanceData`, `SpiritAbilityData`, `PlayerMovementConfig`) remain completely immutable and unmutated.
+- **`TransformationData` (`scripts/player/transformation_data.gd`):**
+  - Custom `Resource` defining:
+    - `transformation_id: StringName`, `display_name: String`, `description: String`.
+    - Resource & duration: `spirit_cost: float` (100.0), `duration: float` (12.0s).
+    - Locomotion multipliers: `move_speed_multiplier` (1.10x), `acceleration_multiplier` (1.10x), `deceleration_multiplier` (1.10x).
+    - Combat multipliers: `attack_speed_multiplier` (1.10x), `damage_multiplier` (1.15x), `poise_damage_multiplier` (1.10x), `hitstop_multiplier` (1.05x).
+    - Defense multipliers: `dodge_velocity_multiplier` (1.05x), `dodge_recovery_multiplier` (0.95x).
+    - Spirit Ability multipliers: `spirit_ability_damage_multiplier` (1.10x).
+    - Profile identifiers: `visual_profile_id`, `audio_profile_id`.
+- **`TransformationController` (`scripts/player/transformation_controller.gd`):**
+  - Lifecycle states: `INACTIVE`, `ACTIVATING`, `ACTIVE`, `ENDING`.
+  - Gatekeeping rules:
+    - **Permitted in:** Locomotion (`Idle`, `Run`, `Jump`, `Fall`, `Land`) and attack `Recovery` frames.
+    - **Blocked in:** Attack `Startup`, attack `Active`, heavy charge loop, dodge I-frames, active parry deflection window, active spirit ability cast, existing active transformation, or insufficient Spirit (< 100.0).
+  - Atomic transactions: Consumes 100 Spirit exactly once upon activation; fails safely without deduction if requirements are not met.
+  - Multiplicative pipeline: Multiplies locomotion speed, attack phase duration, hitbox damage/poise, dodge impulse, and spirit ability damage during `ACTIVE` state.
+  - Invariant timing windows: Parry deflection duration, perfect parry window, and dodge I-frame start/end durations are strictly preserved across transformations to protect muscle memory.
+  - Deactivation idempotency: Expiration or deactivation restores multipliers to 1.0x, cleans up visual/audio feedback, and preserves player health, poise, world position, velocity, and current stance.
+- **EventBus Broadcasts:**
+  - `transformation_started(transformation_id, duration)`
+  - `transformation_ended(transformation_id)`
+  - `transformation_state_changed(new_state)`
+
 ---
 
 ## 5. World & Room Architecture

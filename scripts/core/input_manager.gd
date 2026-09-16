@@ -17,6 +17,7 @@ const ACTION_ABILITY_2: StringName = &"ability_2"
 const ACTION_ABILITY_3: StringName = &"ability_3"
 const ACTION_ABILITY_4: StringName = &"ability_4"
 const ACTION_STANCE_SWITCH: StringName = &"stance_switch"
+const ACTION_TRANSFORMATION_ACTIVATE: StringName = &"transformation_activate"
 const ACTION_INTERACT: StringName = &"interact"
 const ACTION_MAP: StringName = &"map"
 const ACTION_PAUSE: StringName = &"pause"
@@ -34,6 +35,7 @@ const ALL_ACTIONS: Array[StringName] = [
 	ACTION_ABILITY_3,
 	ACTION_ABILITY_4,
 	ACTION_STANCE_SWITCH,
+	ACTION_TRANSFORMATION_ACTIVATE,
 	ACTION_INTERACT,
 	ACTION_MAP,
 	ACTION_PAUSE
@@ -103,6 +105,7 @@ func _ensure_default_action_mappings() -> void:
 		ACTION_ABILITY_3: [KEY_3],
 		ACTION_ABILITY_4: [KEY_4],
 		ACTION_STANCE_SWITCH: [KEY_TAB],
+		ACTION_TRANSFORMATION_ACTIVATE: [KEY_F, KEY_V],
 		ACTION_INTERACT: [KEY_E],
 		ACTION_MAP: [KEY_M],
 		ACTION_PAUSE: [KEY_ESCAPE]

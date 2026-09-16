@@ -68,9 +68,15 @@ func _apply_horizontal_locomotion(delta: float) -> void:
 	
 	var stance: StanceController = _get_stance_controller()
 	if stance != null:
-		speed_mult = stance.get_movement_speed_multiplier()
-		accel_mult = stance.get_acceleration_multiplier()
-		decel_mult = stance.get_deceleration_multiplier()
+		speed_mult *= stance.get_movement_speed_multiplier()
+		accel_mult *= stance.get_acceleration_multiplier()
+		decel_mult *= stance.get_deceleration_multiplier()
+	
+	var trans: TransformationController = _get_transformation_controller()
+	if trans != null:
+		speed_mult *= trans.get_movement_speed_multiplier()
+		accel_mult *= trans.get_acceleration_multiplier()
+		decel_mult *= trans.get_deceleration_multiplier()
 	
 	var target_speed: float = current_move_axis * config.max_speed * speed_mult
 	var is_grounded: bool = _player.is_on_floor()
@@ -90,6 +96,11 @@ func _apply_horizontal_locomotion(delta: float) -> void:
 func _get_stance_controller() -> StanceController:
 	if _player != null and _player.has_node("Components/StanceController"):
 		return _player.get_node("Components/StanceController") as StanceController
+	return null
+
+func _get_transformation_controller() -> TransformationController:
+	if _player != null and _player.has_node("Components/TransformationController"):
+		return _player.get_node("Components/TransformationController") as TransformationController
 	return null
 
 func _apply_gravity_and_vertical(delta: float) -> void:

@@ -19,6 +19,7 @@ var facing_direction: int = 1 # 1 = Right, -1 = Left
 @onready var stance_controller: StanceController = $Components/StanceController if has_node("Components/StanceController") else null
 @onready var spirit_component: SpiritComponent = $Components/SpiritComponent if has_node("Components/SpiritComponent") else null
 @onready var spirit_ability_controller: SpiritAbilityController = $Components/SpiritAbilityController if has_node("Components/SpiritAbilityController") else null
+@onready var transformation_controller: TransformationController = $Components/TransformationController if has_node("Components/TransformationController") else null
 @onready var health_component: HealthComponent = $Components/HealthComponent if has_node("Components/HealthComponent") else null
 @onready var poise_component: PoiseComponent = $Components/PoiseComponent if has_node("Components/PoiseComponent") else null
 @onready var state_machine: StateMachine = $StateMachine

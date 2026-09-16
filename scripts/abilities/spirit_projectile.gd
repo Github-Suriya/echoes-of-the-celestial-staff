@@ -14,6 +14,7 @@ signal projectile_expired()
 var direction: int = 1
 var ability_data: SpiritAbilityData = null
 var attacker: Node2D = null
+var damage_multiplier: float = 1.0
 
 var _lifetime_timer: float = 0.0
 var _hit_hurtboxes: Array[Area2D] = []
@@ -28,11 +29,12 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 	_lifetime_timer = max_lifetime
 
-func launch(data: SpiritAbilityData, start_pos: Vector2, facing_dir: int, source_actor: Node2D = null) -> void:
+func launch(data: SpiritAbilityData, start_pos: Vector2, facing_dir: int, source_actor: Node2D = null, dmg_mult: float = 1.0) -> void:
 	ability_data = data
 	global_position = start_pos
 	direction = 1 if facing_dir >= 0 else -1
 	attacker = source_actor
+	damage_multiplier = dmg_mult
 	_lifetime_timer = max_lifetime
 	_hit_hurtboxes.clear()
 	_is_active = true
@@ -72,7 +74,7 @@ func _on_area_entered(area: Area2D) -> void:
 	_hit_hurtboxes.append(area)
 	
 	var payload: DamageInfo = DamageInfo.new()
-	payload.damage = ability_data.damage
+	payload.damage = ability_data.damage * damage_multiplier
 	payload.poise_damage = ability_data.poise_damage
 	payload.knockback_force = ability_data.knockback_force
 	payload.hit_direction = direction
