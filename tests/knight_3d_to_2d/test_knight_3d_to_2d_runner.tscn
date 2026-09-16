@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/knight_3d_to_2d/test_knight_3d_to_2d.gd" id="1_test"]
+
+[node name="TestKnight3DTo2DRunner" type="Node"]
+script = ExtResource("1_test")

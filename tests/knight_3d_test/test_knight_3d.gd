@@ -26,8 +26,10 @@ func _ready() -> void:
 	
 	if failed_count > 0:
 		print("[FAIL] Knight 3D Direct Import test suite failed!")
+		get_tree().quit(1)
 	else:
 		print("[PASS] All Knight 3D Direct Import tests passed successfully!")
+		get_tree().quit(0)
 
 
 func _run_all_tests() -> void:
