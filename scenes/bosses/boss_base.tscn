@@ -1,0 +1,170 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_controller.gd" id="1_controller"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_telegraph_controller.gd" id="2_tele"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="3_hitbox"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="5_health"]
+[ext_resource type="Script" path="res://scripts/combat/poise_component.gd" id="6_poise"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_perception.gd" id="7_perception"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_combat_controller.gd" id="8_combat"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_phase_controller.gd" id="9_phase"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_animation_controller.gd" id="10_anim"]
+[ext_resource type="Script" path="res://scripts/systems/state_machine.gd" id="11_sm"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_intro_state.gd" id="12_intro"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_idle_state.gd" id="13_idle"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_combat_state.gd" id="14_combat_st"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_attack_state.gd" id="15_attack"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_hit_state.gd" id="16_hit"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_stagger_state.gd" id="17_stagger"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_phase_transition_state.gd" id="18_p_trans"]
+[ext_resource type="Script" path="res://scripts/bosses/states/boss_defeated_state.gd" id="19_defeated"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 16.0
+height = 64.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(56, 36)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 18.0
+height = 64.0
+
+[node name="BossBase" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_controller")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -32)
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Aura" type="ColorRect" parent="Visuals"]
+visible = false
+offset_left = -26.0
+offset_top = -74.0
+offset_right = 26.0
+offset_bottom = 6.0
+mouse_filter = 2
+color = Color(0.2, 0.8, 1, 0.35)
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -16.0
+offset_top = -64.0
+offset_right = 16.0
+mouse_filter = 2
+color = Color(0.32, 0.35, 0.38, 1)
+
+[node name="Crest" type="ColorRect" parent="Visuals"]
+offset_left = -4.0
+offset_top = -54.0
+offset_right = 4.0
+offset_bottom = -38.0
+mouse_filter = 2
+color = Color(0.8, 0.88, 0.95, 1)
+
+[node name="Staff" type="ColorRect" parent="Visuals"]
+offset_left = 14.0
+offset_top = -70.0
+offset_right = 20.0
+offset_bottom = 10.0
+mouse_filter = 2
+color = Color(0.45, 0.42, 0.38, 1)
+
+[node name="TelegraphIndicator" type="Node2D" parent="Visuals"]
+script = ExtResource("2_tele")
+
+[node name="Combat" type="Node2D" parent="."]
+
+[node name="BossHitbox" type="Area2D" parent="Combat"]
+position = Vector2(36, -18)
+collision_layer = 16
+collision_mask = 32
+monitoring = false
+monitorable = false
+script = ExtResource("3_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/BossHitbox"]
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="BossHurtbox" type="Area2D" parent="Combat" node_paths=PackedStringArray("health_component", "poise_component")]
+position = Vector2(0, -32)
+collision_layer = 64
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+health_component = NodePath("../../Components/HealthComponent")
+poise_component = NodePath("../../Components/PoiseComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/BossHurtbox"]
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="Components" type="Node" parent="."]
+
+[node name="HealthComponent" type="Node" parent="Components"]
+script = ExtResource("5_health")
+max_health = 300.0
+
+[node name="PoiseComponent" type="Node" parent="Components"]
+script = ExtResource("6_poise")
+max_poise = 60.0
+stagger_duration = 1.8
+
+[node name="BossPerception" type="Node2D" parent="Components"]
+script = ExtResource("7_perception")
+detection_range = 350.0
+
+[node name="BossCombatController" type="Node" parent="Components" node_paths=PackedStringArray("hitbox")]
+script = ExtResource("8_combat")
+hitbox = NodePath("../../Combat/BossHitbox")
+
+[node name="BossPhaseController" type="Node" parent="Components"]
+script = ExtResource("9_phase")
+
+[node name="BossTelegraphController" type="Node2D" parent="Components"]
+script = ExtResource("2_tele")
+
+[node name="BossAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root")]
+script = ExtResource("10_anim")
+visuals_root = NodePath("../../Visuals")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("11_sm")
+initial_state_name = &"Idle"
+
+[node name="Intro" type="Node" parent="StateMachine"]
+script = ExtResource("12_intro")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("13_idle")
+
+[node name="Combat" type="Node" parent="StateMachine"]
+script = ExtResource("14_combat_st")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("15_attack")
+
+[node name="Hit" type="Node" parent="StateMachine"]
+script = ExtResource("16_hit")
+
+[node name="Stagger" type="Node" parent="StateMachine"]
+script = ExtResource("17_stagger")
+
+[node name="PhaseTransition" type="Node" parent="StateMachine"]
+script = ExtResource("18_p_trans")
+
+[node name="Defeated" type="Node" parent="StateMachine"]
+script = ExtResource("19_defeated")
+
+[node name="StatusLabel" type="Label" parent="."]
+offset_left = -110.0
+offset_top = -110.0
+offset_right = 110.0
+offset_bottom = -80.0
+theme_override_font_sizes/font_size = 11
+text = "Phase 1 | HP: 300/300 | Poise: 60/60
+[IDLE]"
+horizontal_alignment = 1
+vertical_alignment = 1

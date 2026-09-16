@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BossPhaseData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_phase_data.gd" id="1_phase"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_granite_sweep.tres" id="2_sweep"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_stone_overhead.tres" id="3_slam"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_step_strike.tres" id="4_thrust"]
+
+[resource]
+script = ExtResource("1_phase")
+phase_id = 1
+phase_name = "Stone Discipline"
+health_threshold_ratio = 1.0
+movement_speed_multiplier = 1.0
+attack_speed_multiplier = 1.0
+damage_multiplier = 1.0
+poise_damage_multiplier = 1.0
+attacks = [ExtResource("2_sweep"), ExtResource("3_slam"), ExtResource("4_thrust")]
+attack_weights = [1.0, 0.8, 1.0]
+telegraph_color = Color(1, 0.75, 0.1, 0.85)
+aura_color = Color(0.7, 0.7, 0.75, 0.2)

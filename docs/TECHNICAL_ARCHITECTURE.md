@@ -343,6 +343,30 @@ The enemy architecture establishes a reusable, decoupled foundation for all non-
   - `enemy_staggered(enemy: Node2D)`
   - `enemy_died(enemy: Node2D, bounty_qi: int)`
 
+### 4.6 Boss Framework Architecture
+- **Composition & Inheritance:** Bosses inherit from `CharacterBody2D` (`BossController`), sharing Layer 3 (`Enemies`, bitmask 4) and scanning Layer 1 (`WorldGeometry`, bitmask 1). Completely reuses canonical combat pipeline: `HealthComponent`, `PoiseComponent`, `Hitbox` (Layer 5/16), `Hurtbox` (Layer 7/64), and `DamageInfo`.
+- **Data-Driven Configuration:**
+  - `BossData` (`scripts/bosses/boss_data.gd`): Top-level identity, vitality, posture, locomotion, phase thresholds, and timers.
+  - `BossPhaseData` (`scripts/bosses/boss_phase_data.gd`): Phase-specific stat multipliers (damage, speed, poise damage), attack sets, selection weights, telegraph and aura colors.
+  - `BossAttackData` (`scripts/bosses/boss_attack_data.gd`): Inherits `EnemyAttackData`, adding telegraph shape descriptors (`sweep`, `slam`, `thrust`, `shockwave`), ground marker radii, and screen shake trauma.
+- **Component Subsystems:**
+  - `BossCombatController`: Manages multi-attack sets, weighted pseudo-random selection with non-repetition heuristic, phase attack timing, hitbox activation with scaled damage multipliers, and `interrupt_attack()` on Perfect Parry.
+  - `BossPhaseController`: Subscribes to `HealthComponent.health_changed`, monitors threshold (e.g. 50% HP), guarantees idempotent transitions via boolean guards, pauses combat aggression, and applies Phase 2 modifiers.
+  - `BossTelegraphController`: Renders lightweight, readable procedural telegraphs (staff glows, warning arcs, ground markers, exclamation cues) with zero GPU particle overhead.
+  - `BossAnimationController`: Procedural stone presentation handling directional facing, squash/stretch, hit flashes, white deflection pulses, and awakened stone resonance auras.
+  - `BossArenaController`: Coordinates encounter entry detection via `Area2D`, raises physical barriers (`LeftBarrier`, `RightBarrier` on Layer 1), displays Boss HUD, unseals barriers on defeat, and supports iterative resets.
+- **Hierarchical State Machine (`StateMachine`):**
+  - States: `Intro`, `Idle`, `Combat`, `Attack`, `Hit`, `Stagger`, `PhaseTransition`, `Defeated`.
+  - Non-aggressive states (`Intro`, `Stagger`, `PhaseTransition`, `Defeated`) enforce attack lockout and hitbox deactivation.
+- **EventBus Boss Domain Signals:**
+  - `boss_started(boss_name: String)`
+  - `boss_phase_changed(boss_name: String, phase_index: int)`
+  - `boss_defeated(boss_name: String)`
+  - `boss_arena_locked()`
+  - `boss_arena_unlocked()`
+  - `boss_staggered(boss_name: String)`
+  - `boss_attack_interrupted(boss_name: String)`
+
 ---
 
 ## 5. World & Room Architecture

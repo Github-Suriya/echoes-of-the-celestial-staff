@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_asweep"]
+
+[resource]
+script = ExtResource("1_asweep")
+attack_id = &"awakened_sweep"
+display_name = "Awakened Sweep"
+damage = 25.0
+poise_damage = 30.0
+knockback_force = Vector2(190, -40)
+startup_time = 0.04
+active_time = 0.15
+recovery_time = 0.35
+combo_window_start = 0.05
+combo_window_end = 0.22
+next_attack_id = &""
+forward_impulse = 30.0
+hitstop_duration = 0.08
+attack_priority = 2
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+is_chargeable = false
+minimum_charge_time = 0.15
+maximum_charge_time = 0.75
+maximum_damage_multiplier = 2.0
+maximum_poise_multiplier = 2.0
+attack_range = 70.0
+cooldown = 1.5
+telegraph_duration = 0.38
+hitbox_size = Vector2(64, 40)
+hitbox_offset = Vector2(40, -18)
+telegraph_type = "sweep"
+telegraph_shape_size = Vector2(70, 30)
+ground_marker_radius = 0.0
+screen_shake_trauma = 0.10

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_thrust"]
+
+[resource]
+script = ExtResource("1_thrust")
+attack_id = &"step_strike"
+display_name = "Step Strike"
+damage = 16.0
+poise_damage = 18.0
+knockback_force = Vector2(140, -20)
+startup_time = 0.04
+active_time = 0.10
+recovery_time = 0.35
+combo_window_start = 0.05
+combo_window_end = 0.22
+next_attack_id = &""
+forward_impulse = 40.0
+hitstop_duration = 0.06
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+is_chargeable = false
+minimum_charge_time = 0.15
+maximum_charge_time = 0.75
+maximum_damage_multiplier = 2.0
+maximum_poise_multiplier = 2.0
+attack_range = 75.0
+cooldown = 1.6
+telegraph_duration = 0.35
+hitbox_size = Vector2(50, 24)
+hitbox_offset = Vector2(34, -18)
+telegraph_type = "thrust"
+telegraph_shape_size = Vector2(50, 16)
+ground_marker_radius = 0.0
+screen_shake_trauma = 0.0

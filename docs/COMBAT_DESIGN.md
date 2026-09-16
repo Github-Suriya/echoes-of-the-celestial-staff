@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.6.0  
-**Phase Status:** Phase 8 — Enemy AI System (Implemented)  
+**Document Version:** 1.7.0  
+**Phase Status:** Phase 9 — Boss Framework (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
 
@@ -15,7 +15,8 @@
 > - **PHASE 6 COMPLETE:** Data-driven Spirit Ability framework (`SpiritAbilityData`), `SpiritComponent` (100 max, transactional consumption, combat replenishment hooks: Light +4, Heavy +8, Parry +10), `SpiritAbilityController` (3 slots, cooldown timers, phase lifecycle), `PlayerSpiritAbilityState` (cancellable into dodge/parry during recovery), 3 prototype abilities (`Celestial Arc` projectile, `Heavenly Pulse` 64px AoE, `Cloud Step` 550 px/s mobility burst), `SpiritHUD`, `test_spirit_room.tscn`.
 > - **PHASE 7 COMPLETE:** Temporary supernatural transformation state (`TransformationController`, `TransformationData`), Celestial Awakening (`transformation_celestial_awakening.tres`), deterministic countdown duration (12.0s), 100 Spirit activation cost, complete multiplier pipeline (1.15x speed/accel/decel, 1.20x attack speed, 1.30x damage, 1.35x poise, 1.25x ability damage, 1.15x dodge velocity, 0.85x dodge recovery, 1.20x hitstop), defense timing invariance (I-frames and parry windows strictly 1.0x), atomic spirit consumption, state machine gatekeeping rules (allowed during locomotion and attack recovery; blocked during startup/active/I-frames/parry/charge/ability), idempotent deactivation and total state reversibility, visual gold/celestial aura tweens, extended Awakening HUD bar and live debug telemetry, interactive gym `scenes/world/test_transformation_room.tscn`, 113 automated unit tests.
 > - **PHASE 8 COMPLETE:** Reusable Enemy AI architecture (`EnemyController`, `EnemyData`, `EnemyAttackData`), complete 8-state machine (`Idle`, `Patrol`, `Alert`, `Chase`, `Combat`, `Hit`, `Stagger`, `Dead`), throttled perception system (~12.5 Hz, detection and loss ranges, line-of-sight raycasting), direct 2D steering locomotion with patrol bounds, attack lifecycle (`READY` -> `TELEGRAPH` -> `ACTIVE` -> `RECOVERY` -> `COOLDOWN`), existing Hitbox/Hurtbox/DamageInfo reuse, player Perfect Parry interruption hook (`interrupt_attack()`), Health and Poise integration with Stagger state lockout, idempotent death sequence, Celestial Guard prototype, `test_enemy_ai_room.tscn`, 133 automated unit tests.
-> - **FUTURE PHASES:** Boss encounters, Metroidvania progression, world gameplay.
+> - **PHASE 9 COMPLETE:** Reusable Boss Framework (`BossController`, `BossData`, `BossPhaseData`, `BossAttackData`), The Granite Abbot prototype, 2-phase combat system (Phase 1: "Stone Discipline", Phase 2: "Awakened Granite" at <= 50% HP), 8-state boss StateMachine, deterministic idempotent phase transitions, procedural readable telegraph system (`BossTelegraphController`), weighted pseudo-random attack selection, defense integration (Perfect Parry deflects boss attacks via `interrupt_attack()`, forces flinch recoil, and deals poise damage), physical arena locking and unlock upon victory (`BossArenaController`), `BossHealthBar` HUD, `test_granite_abbot_room.tscn`, 124 automated unit tests (797 total tests passing).
+> - **FUTURE PHASES:** Metroidvania progression, world gameplay.
 
 ---
 
@@ -264,3 +265,24 @@ const COMBAT_JUICE_TABLE = {
 1. **Hitstop Implementation:** `Engine.time_scale` is dialed to `0.0` for the designated frames, then restored cleanly without jitter.
 2. **Camera Trauma:** Camera shake uses a non-linear trauma formula: $Shake = Trauma^2 \times MaxOffset$, ensuring subtle hits feel gentle while heavy hits deliver visceral impact.
 3. **Impact Sparks:** 2D spark particles eject in a 30-degree cone perpendicular to the strike angle.
+
+---
+
+## 8. Boss Combat Design & The Granite Abbot Prototype
+
+### 8.1 Architectural Principles
+Boss encounters in *Echoes of the Celestial Staff* are direct specializations of the core combat architecture:
+- **Zero Parallel Combat Engines:** Bosses inherit and compose canonical `HealthComponent`, `PoiseComponent`, `Hitbox` (Layer 5/16), `Hurtbox` (Layer 7/64), and `DamageInfo`.
+- **Defensive Sincerity:** Boss attacks are subject to player dodging (I-frames, perfect dodge) and parrying. When Yuan executes a Perfect Parry, `DefenseController` directly calls `boss.interrupt_attack()`, terminating the active swing, disabling the hitbox, and dealing heavy posture damage.
+- **Telegraph Precedence:** Attack telegraph durations range from `0.35s` to `0.70s`, providing unambiguous visual and timing cues via `BossTelegraphController` for precision defense.
+
+### 8.2 The Granite Abbot Encounter Specification
+- **Identity:** Ancient stone monastic guardian wielding a massive ceremonial granite staff.
+- **Phase 1: "Stone Discipline" (100% - 50% HP):**
+  - Deliberate, rhythmic heavy attacks.
+  - Attacks: `Granite Sweep` (20 DMG, 25 Poise, 0.50s telegraph), `Stone Overhead` (30 DMG, 35 Poise, 0.70s telegraph), `Step Strike` (16 DMG, 18 Poise, 0.35s telegraph).
+- **Phase 2: "Awakened Granite" (<= 50% HP):**
+  - Awakened celestial resonance: +25% move speed, +20% attack speed, +25% damage, +30% poise damage.
+  - Expanded Attacks: `Awakened Sweep` (25 DMG, 30 Poise, 0.38s telegraph), `Granite Shockwave` (35 DMG, 45 Poise, 0.65s telegraph, ground impact marker, screen shake).
+- **Phase Transitions:** Idempotently triggered at $\le 50\%$ HP. The boss enters `PhaseTransition` state (non-aggressive, hitboxes disabled, attacks cancelled), displays an awakened stone aura, updates multipliers, and resumes combat smoothly.
+- **Arena Containment:** `BossArenaController` activates physical barriers (`StaticBody2D` on Layer 1) upon player entry trigger, binds the dedicated `BossHealthBar` HUD, and unseals the arena upon defeat.

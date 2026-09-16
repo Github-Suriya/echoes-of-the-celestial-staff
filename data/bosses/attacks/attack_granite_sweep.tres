@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="BossAttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_attack_data.gd" id="1_sweep"]
+
+[resource]
+script = ExtResource("1_sweep")
+attack_id = &"granite_sweep"
+display_name = "Granite Sweep"
+damage = 20.0
+poise_damage = 25.0
+knockback_force = Vector2(160, -30)
+startup_time = 0.05
+active_time = 0.15
+recovery_time = 0.45
+combo_window_start = 0.05
+combo_window_end = 0.22
+next_attack_id = &""
+forward_impulse = 20.0
+hitstop_duration = 0.08
+attack_priority = 1
+is_parryable = true
+is_dodgeable = true
+is_interruptible = true
+is_chargeable = false
+minimum_charge_time = 0.15
+maximum_charge_time = 0.75
+maximum_damage_multiplier = 2.0
+maximum_poise_multiplier = 2.0
+attack_range = 65.0
+cooldown = 2.0
+telegraph_duration = 0.50
+hitbox_size = Vector2(56, 36)
+hitbox_offset = Vector2(36, -18)
+telegraph_type = "sweep"
+telegraph_shape_size = Vector2(60, 24)
+ground_marker_radius = 0.0
+screen_shake_trauma = 0.0

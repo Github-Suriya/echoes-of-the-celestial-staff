@@ -214,16 +214,26 @@ gantt
 
 ---
 
-### Phase 9: Boss Framework
-- **Objective:** Create a multi-phase boss encounter controller with dynamic arenas and health gating.
+### Phase 9: Boss Framework (COMPLETE)
+- **Objective:** Create a reusable multi-phase boss encounter controller with dynamic arena locking, readable telegraph systems, boss HUD, and implement the first playable prototype encounter: The Granite Abbot.
 - **Dependencies:** Phase 8 complete.
+- **Status:** Complete (124/124 automated boss framework tests passing, 673/673 regression passing -> 797/797 total tests passing).
 - **Key Deliverables:**
-  - `BossController` supporting multi-phase transitions (Phase 1, Phase 2, Enrage).
-  - Arena locking mechanism (`ArenaDoor` sealing player inside).
-  - Prototype Boss encounter: *The Granite Abbot* (testing parries, posture break, and environmental slams).
-  - Dedicated Boss UI Health and Poise Bar.
+  - `BossData`, `BossPhaseData`, and `BossAttackData` data-driven custom Resources.
+  - 5 canonical boss attacks: `Granite Sweep`, `Stone Overhead`, `Step Strike`, `Awakened Sweep`, `Granite Shockwave`.
+  - Canonical boss configuration: `boss_granite_abbot.tres`.
+  - `BossController` (`CharacterBody2D`, Layer 3, Mask 1) reusing `HealthComponent`, `PoiseComponent`, `Hitbox`, and `Hurtbox`.
+  - `BossCombatController` governing weighted attack selection, attack lifecycles, phase multipliers, and `interrupt_attack()` parry deflection.
+  - `BossPhaseController` providing idempotent 50% HP Phase 2 threshold transitions and multiplier scaling.
+  - `BossTelegraphController` rendering procedural warning shapes, directional cues, and shockwave ground markers without GPU particles.
+  - `BossAnimationController` handling procedural stone postures, hit flashes, deflection cues, and radiant resonance auras.
+  - 8-state boss StateMachine: `Intro`, `Idle`, `Combat`, `Attack`, `Hit`, `Stagger`, `PhaseTransition`, `Defeated`.
+  - `BossArenaController` coordinating physical barrier locking (`LeftBarrier`, `RightBarrier`), player entry triggers, and defeat resolution.
+  - `BossHealthBar` HUD with boss display name, phase title badge, and smooth lerping damage catch-up bar.
+  - Interactive testing arena: `scenes/world/test_granite_abbot_room.tscn`.
+  - Automated test runner: `tests/test_boss_runner.tscn` (124 tests).
 - **Entry Criteria:** Enemy AI framework established.
-- **Exit Criteria:** Boss smoothly transitions phases at health thresholds, updates music, and triggers victory sequence.
+- **Exit Criteria:** Boss smoothly transitions phases at health thresholds, supports parry interruption and posture breaks, unlocks arena barriers upon defeat, and passes 100% automated tests with zero warnings or regressions.
 
 ---
 

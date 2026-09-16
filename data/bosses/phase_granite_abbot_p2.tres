@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BossPhaseData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/bosses/boss_phase_data.gd" id="1_phase"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_awakened_sweep.tres" id="2_asweep"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_granite_shockwave.tres" id="3_shockwave"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_stone_overhead.tres" id="4_slam"]
+[ext_resource type="Resource" path="res://data/bosses/attacks/attack_step_strike.tres" id="5_thrust"]
+
+[resource]
+script = ExtResource("1_phase")
+phase_id = 2
+phase_name = "Awakened Granite"
+health_threshold_ratio = 0.5
+movement_speed_multiplier = 1.25
+attack_speed_multiplier = 1.20
+damage_multiplier = 1.25
+poise_damage_multiplier = 1.30
+attacks = [ExtResource("2_asweep"), ExtResource("3_shockwave"), ExtResource("4_slam"), ExtResource("5_thrust")]
+attack_weights = [1.2, 1.0, 0.8, 1.0]
+telegraph_color = Color(1, 0.35, 0.1, 0.9)
+aura_color = Color(0.2, 0.8, 1.0, 0.45)

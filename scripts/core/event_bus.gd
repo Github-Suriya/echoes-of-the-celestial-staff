@@ -40,6 +40,10 @@ signal enemy_died(enemy: Node2D, bounty_qi: int)
 signal boss_started(boss_name: String)
 signal boss_phase_changed(boss_name: String, phase_index: int)
 signal boss_defeated(boss_name: String)
+signal boss_arena_locked()
+signal boss_arena_unlocked()
+signal boss_staggered(boss_name: String)
+signal boss_attack_interrupted(boss_name: String)
 
 # --- Transformation Domain Signals ---
 signal transformation_started(transformation_id: StringName, duration: float)

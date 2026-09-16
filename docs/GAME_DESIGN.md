@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Game Design Document
 
-**Document Version:** 1.2.0  
-**Phase:** Phase 8 (Enemy AI Foundation)  
+**Document Version:** 1.3.0  
+**Phase:** Phase 9 (Boss Framework & The Granite Abbot Prototype)  
 **Target Engine:** Godot 4.7.2 Stable (GL Compatibility)  
 **Platform:** Windows PC  
 **Genre:** High-Quality 2D Action Metroidvania  
@@ -139,6 +139,13 @@ The enemy ecosystem is built on a modular state machine architecture (`Idle`, `P
 - **Telegraph Clarity:** All hostile attacks feature high-contrast visual windup cues (amber warning indicator) allowing deliberate parry or dodge responses.
 - **Defensive Interactivity:** Enemies react realistically to player defenses—strikes can be dodged with active I-frames or cleanly interrupted with Perfect Parries, staggering the attacker.
 - **Prototype Archetype — The Celestial Guard:** Sturdy frontline melee disciple automaton (80 HP, 30 Poise, 1.4s Stagger Duration, 50 px/s Patrol, 110 px/s Chase). Teaches fundamental combat pacing, posture breaking, and parry deflection.
+
+### 4.6 Boss Encounters & The Granite Abbot
+Boss encounters establish peak combat challenges that test player mastery over defensive timing, spatial awareness, and stance optimization:
+- **Physical Arena Enclosure:** Entering the boss lair dynamically seals boundaries with impassable physical barriers (`BossArenaController`), focusing combat in an enclosed arena until resolution.
+- **Multi-Phase Transitions:** Bosses feature deterministic phase shifts at vital thresholds (e.g. 50% HP), expanding attack repertoires, accelerating movement, and increasing damage pressure. Transitions are idempotent and non-aggressive, ensuring fairness.
+- **Readable Telegraphs & Parry Interactivity:** Attacks feature procedural visual telegraphs (warning shapes, staff glows, ground shockwave rings). Perfect Parries directly interrupt swings (`interrupt_attack()`), deflecting blows and inflicting heavy poise damage.
+- **Prototype Boss — The Granite Abbot:** An ancient monastic stone guardian wielding a ceremonial granite staff (300 HP, 60 Poise, 1.8s Stagger). Tests parry rhythm in Phase 1 ("Stone Discipline") and evasive spacing against accelerated staff sweeps and radiating shockwaves in Phase 2 ("Awakened Granite").
 
 ---
 

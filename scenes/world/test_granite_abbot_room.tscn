@@ -1,0 +1,184 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/test_granite_abbot_room.gd" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/bosses/granite_abbot.tscn" id="3_abbot"]
+[ext_resource type="PackedScene" path="res://scenes/ui/boss_health_bar.tscn" id="4_b_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/spirit_hud.tscn" id="5_s_hud"]
+[ext_resource type="Script" path="res://scripts/bosses/boss_arena_controller.gd" id="6_arena"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1800, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 600)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_barrier"]
+size = Vector2(30, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(60, 300)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_info_bg"]
+bg_color = Color(0.08, 0.1, 0.14, 0.85)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="TestGraniteAbbotRoom" type="Node2D"]
+script = ExtResource("1_room")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Environment"]
+offset_left = -500.0
+offset_top = -500.0
+offset_right = 1400.0
+offset_bottom = 200.0
+color = Color(0.05, 0.06, 0.09, 1)
+
+[node name="Floor" type="StaticBody2D" parent="Environment"]
+position = Vector2(450, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="ColorRect" parent="Environment/Floor"]
+offset_left = -900.0
+offset_top = -20.0
+offset_right = 900.0
+offset_bottom = 20.0
+color = Color(0.14, 0.16, 0.2, 1)
+
+[node name="OuterLeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(-450, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/OuterLeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/OuterLeftWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.09, 0.1, 0.13, 1)
+
+[node name="OuterRightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(1350, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/OuterRightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/OuterRightWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.09, 0.1, 0.13, 1)
+
+[node name="LeftBarrier" type="StaticBody2D" parent="Environment"]
+position = Vector2(100, -200)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftBarrier"]
+shape = SubResource("RectangleShape2D_barrier")
+
+[node name="Visual" type="ColorRect" parent="Environment/LeftBarrier"]
+offset_left = -15.0
+offset_top = -200.0
+offset_right = 15.0
+offset_bottom = 200.0
+color = Color(0.85, 0.45, 0.15, 0.7)
+
+[node name="RightBarrier" type="StaticBody2D" parent="Environment"]
+position = Vector2(950, -200)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightBarrier"]
+shape = SubResource("RectangleShape2D_barrier")
+
+[node name="Visual" type="ColorRect" parent="Environment/RightBarrier"]
+offset_left = -15.0
+offset_top = -200.0
+offset_right = 15.0
+offset_bottom = 200.0
+color = Color(0.85, 0.45, 0.15, 0.7)
+
+[node name="EntryTrigger" type="Area2D" parent="Environment"]
+position = Vector2(250, -150)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/EntryTrigger"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(-20, 0)
+
+[node name="GraniteAbbot" parent="." instance=ExtResource("3_abbot")]
+position = Vector2(650, 0)
+
+[node name="BossArenaController" type="Node2D" parent="." node_paths=PackedStringArray("boss", "player", "entry_trigger", "left_barrier", "right_barrier", "boss_hud")]
+script = ExtResource("6_arena")
+boss = NodePath("../GraniteAbbot")
+player = NodePath("../Player")
+entry_trigger = NodePath("../Environment/EntryTrigger")
+left_barrier = NodePath("../Environment/LeftBarrier")
+right_barrier = NodePath("../Environment/RightBarrier")
+boss_hud = NodePath("../BossHealthBar")
+
+[node name="BossHealthBar" parent="." instance=ExtResource("4_b_hud")]
+visible = false
+
+[node name="SpiritHUD" parent="." instance=ExtResource("5_s_hud")]
+
+[node name="HUDCanvas" type="CanvasLayer" parent="."]
+
+[node name="ControlsPanel" type="PanelContainer" parent="HUDCanvas"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -310.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 210.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_info_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDCanvas/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUDCanvas/ControlsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="HUDCanvas/ControlsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "THE GRANITE ABBOT — PHASE 9"
+
+[node name="Desc" type="Label" parent="HUDCanvas/ControlsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Walk right past the trigger to seal the arena.
+Phase 1: Deliberate Staff Attacks
+Phase 2 (<= 50% HP): Awakened Shockwaves
+[J] Light Combo | [K] Heavy Attack
+[Shift] Dodge | [Space] Jump | [L] Parry
+[R] Reset | [T] Spirit | [C] Stance
+[F] Celestial Awakening
+[B] Force Phase 2 Transition"
