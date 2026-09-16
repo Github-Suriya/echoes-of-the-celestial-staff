@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/attack_data.gd" id="1_attack"]
+
+[resource]
+script = ExtResource("1_attack")
+attack_id = &"heavy_1"
+display_name = "Heavy Overhead Smash"
+damage = 25.0
+poise_damage = 35.0
+knockback_force = Vector2(240, -80)
+startup_time = 0.233
+active_time = 0.083
+recovery_time = 0.3
+combo_window_start = 0.0
+combo_window_end = 0.0
+next_attack_id = &""
+forward_impulse = 40.0
+hitstop_duration = 0.12
+attack_priority = 2

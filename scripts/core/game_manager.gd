@@ -18,6 +18,8 @@ var current_state: GameState = GameState.BOOT
 var previous_state: GameState = GameState.BOOT
 
 var _is_paused: bool = false
+var _is_in_hitstop: bool = false
+var _hitstop_id: int = 0
 var _event_bus: Node
 var _debug_manager: Node
 
@@ -95,6 +97,23 @@ func set_time_scale(scale: float) -> void:
 
 func reset_time_scale() -> void:
 	Engine.time_scale = 1.0
+
+func apply_hitstop(duration: float, time_scale_factor: float = 0.05) -> void:
+	if duration <= 0.0:
+		return
+	_hitstop_id += 1
+	var current_id: int = _hitstop_id
+	_is_in_hitstop = true
+	set_time_scale(time_scale_factor)
+	var timer: SceneTreeTimer = get_tree().create_timer(duration, true, false, true)
+	timer.timeout.connect(func() -> void:
+		if _hitstop_id == current_id:
+			_is_in_hitstop = false
+			reset_time_scale()
+	)
+
+func is_in_hitstop() -> bool:
+	return _is_in_hitstop
 
 func _get_state_name(state: GameState) -> String:
 	match state:

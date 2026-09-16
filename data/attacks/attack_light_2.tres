@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/attack_data.gd" id="1_attack"]
+
+[resource]
+script = ExtResource("1_attack")
+attack_id = &"light_2"
+display_name = "Staff Sweep"
+damage = 12.0
+poise_damage = 14.0
+knockback_force = Vector2(120, -40)
+startup_time = 0.083
+active_time = 0.05
+recovery_time = 0.133
+combo_window_start = 0.05
+combo_window_end = 0.24
+next_attack_id = &"light_3"
+forward_impulse = 35.0
+hitstop_duration = 0.05
+attack_priority = 1

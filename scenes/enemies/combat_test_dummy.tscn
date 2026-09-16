@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://ch8f0dm5awnig"]
+
+[ext_resource type="Script" path="res://scripts/enemies/combat_test_dummy.gd" id="1_dummy"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://scripts/combat/poise_component.gd" id="3_poise"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="4_hurtbox"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 10.0
+height = 48.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurt"]
+radius = 12.0
+height = 48.0
+
+[node name="CombatTestDummy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_dummy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -24)
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -10.0
+offset_top = -48.0
+offset_right = 10.0
+color = Color(0.75, 0.22, 0.22, 1)
+
+[node name="Band" type="ColorRect" parent="Visuals"]
+offset_left = -10.0
+offset_top = -30.0
+offset_right = 10.0
+offset_bottom = -24.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="Components" type="Node" parent="."]
+
+[node name="HealthComponent" type="Node" parent="Components"]
+script = ExtResource("2_health")
+max_health = 100.0
+
+[node name="PoiseComponent" type="Node" parent="Components"]
+script = ExtResource("3_poise")
+max_poise = 35.0
+stagger_duration = 1.5
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "poise_component")]
+position = Vector2(0, -24)
+collision_layer = 64
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+health_component = NodePath("../Components/HealthComponent")
+poise_component = NodePath("../Components/PoiseComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape2D_hurt")
+
+[node name="StatusLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -90.0
+offset_right = 60.0
+offset_bottom = -50.0
+theme_override_font_sizes/font_size = 11
+text = "HP: 100/100
+Poise: 35/35
+[READY]"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -112,7 +112,7 @@ graph TD
 ## 3. Entity & Component Architecture
 
 ### 3.1 Base Actor Blueprint & Player Architecture (`scenes/player/player.tscn`)
-Actors never implement monolithic scripts. The Player is an orchestration node (`PlayerController`, `CharacterBody2D`) composed of specialized locomotion components, state machine, and presentation controllers:
+Actors never implement monolithic scripts. The Player is an orchestration node (`PlayerController`, `CharacterBody2D`) composed of specialized locomotion components, combat components, state machine, and presentation controllers:
 
 ```
 Player (CharacterBody2D) [scripts/player/player_controller.gd]
@@ -121,18 +121,27 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
 │   ├── Body (ColorRect: 18x46, jade #16A085)
 │   ├── Head (ColorRect: 14x14, dark #2C3E50)
 │   ├── Sash (ColorRect: 16x6, celestial crimson #E74C3C)
-│   └── Eye (ColorRect: 3x3, celestial gold #F1C40F)
+│   ├── Eye (ColorRect: 3x3, celestial gold #F1C40F)
+│   └── Staff (ColorRect: celestial bronze/gold)
 ├── Camera2D (Position smoothing enabled, look-ahead lead)
 ├── Components (Node)
 │   ├── PlayerMovement [scripts/player/player_movement.gd]
 │   ├── PlayerAnimationController [scripts/player/player_animation_controller.gd]
-│   └── PlayerRespawn [scripts/player/player_respawn.gd]
+│   ├── PlayerRespawn [scripts/player/player_respawn.gd]
+│   ├── CombatController [scripts/player/combat_controller.gd]
+│   ├── HealthComponent [scripts/combat/health_component.gd]
+│   └── PoiseComponent [scripts/combat/poise_component.gd]
+├── Combat (Node2D)
+│   ├── PlayerHitbox (Area2D, Layer 4, Mask 7) [scripts/combat/hitbox.gd]
+│   └── PlayerHurtbox (Area2D, Layer 6, Mask 0) [scripts/combat/hurtbox.gd]
 ├── StateMachine (Node) [scripts/systems/state_machine.gd]
 │   ├── Idle (Node) [scripts/player/states/player_idle_state.gd]
 │   ├── Run (Node) [scripts/player/states/player_run_state.gd]
 │   ├── Jump (Node) [scripts/player/states/player_jump_state.gd]
 │   ├── Fall (Node) [scripts/player/states/player_fall_state.gd]
-│   └── Land (Node) [scripts/player/states/player_land_state.gd]
+│   ├── Land (Node) [scripts/player/states/player_land_state.gd]
+│   ├── Attack (Node) [scripts/player/states/player_attack_state.gd]
+│   └── HeavyAttack (Node) [scripts/player/states/player_heavy_attack_state.gd]
 └── DebugOverlay (CanvasLayer) [scripts/player/player_debug_overlay.gd]
     └── PanelContainer / DebugLabel (Toggleable via F3)
 ```
@@ -144,44 +153,39 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
    - Calculates gravity curves: rising gravity, falling gravity (`fall_gravity_multiplier = 1.4`), and variable jump cut (`low_jump_gravity_multiplier = 2.2`).
    - Implements coyote time (0.12s) and jump buffering (0.12s).
 2. **`PlayerAnimationController` (`scripts/player/player_animation_controller.gd`):**
-   - Decouples visual presentation from physics; applies squash/stretch feedback to placeholder visuals.
+   - Decouples visual presentation from physics; applies squash/stretch feedback to placeholder visuals preserving facing scale.
+   - Exposes combat hooks: `play_attack_animation(id)`, `play_hit_reaction()`, `play_stagger()`.
 3. **`PlayerRespawn` (`scripts/player/player_respawn.gd`):**
    - Tracks spawn position; resets velocity, position, and state upon falling below `fall_death_y = 1200.0`.
-4. **`PlayerController` (`scripts/player/player_controller.gd`):**
+4. **`CombatController` (`scripts/player/combat_controller.gd`):**
+   - Coordinates attack strings, combo window timing, input buffering (350ms window), and hitbox activation/deactivation during phases.
+5. **`PlayerController` (`scripts/player/player_controller.gd`):**
    - Central facing API (`facing_direction`: +1 for Right, -1 for Left; `get_facing_direction()`, `is_facing_left()`, `is_facing_right()`).
+   - Locks facing mid-swing to prevent hitbox jitter.
    - Camera look-ahead interpolation.
    - Respects `GameManager.is_playing()` for pause and cutscene state suspension.
 
 ### 3.2 Core Component Specifications
 
-#### `HealthComponent`
-- **Properties:** `max_health: float`, `current_health: float`, `invulnerable: bool`.
-- **Functions:** `take_damage(amount: float) -> void`, `heal(amount: float) -> void`, `set_invulnerable(duration: float) -> void`.
+#### `HealthComponent` (`scripts/combat/health_component.gd`)
+- **Properties:** `max_health: float`, `current_health: float`, `is_invulnerable: bool`.
+- **Functions:** `take_damage(amount: float) -> void`, `heal(amount: float) -> void`, `set_invulnerable(invulnerable: bool) -> void`, `reset() -> void`.
 - **Signals:** `health_changed(current, max)`, `damaged(amount)`, `healed(amount)`, `died`.
 
-#### `StaminaComponent`
-- **Properties:** `max_stamina: float`, `current_stamina: float`, `regen_rate: float`, `regen_delay: float`.
-- **Functions:** `consume(amount: float) -> bool`, `has_stamina(amount: float) -> bool`.
-- **Signals:** `stamina_changed(current, max)`, `exhausted`.
+#### `PoiseComponent` (`scripts/combat/poise_component.gd`)
+- **Properties:** `max_poise: float`, `current_poise: float`, `stagger_duration: float`, `poise_regen_delay: float`, `poise_regen_rate: float`, `is_staggered: bool`.
+- **Functions:** `take_poise_damage(amount: float) -> void`, `trigger_stagger() -> void`, `end_stagger() -> void`, `reset() -> void`.
+- **Signals:** `poise_changed(current, max)`, `poise_broken`, `stagger_started(duration)`, `stagger_ended`.
 
-#### `SpiritComponent`
-- **Properties:** `max_spirit: float`, `current_spirit: float`.
-- **Functions:** `gain_spirit(amount: float) -> void`, `consume_spirit(amount: float) -> bool`.
-- **Signals:** `spirit_changed(current, max)`, `spirit_full`.
+#### `Hitbox` (`scripts/combat/hitbox.gd`, `Area2D`)
+- **Collision Layer:** Configured to `PlayerHitbox` (Layer 4, bitmask 8) or `EnemyHitbox` (Layer 5, bitmask 16).
+- **Collision Mask:** Layer 7 (`EnemyHurtbox`, bitmask 64) or Layer 6 (`PlayerHurtbox`, bitmask 32).
+- **Responsibilities:** Monitors intersections with `Hurtbox`, prevents duplicate damage ticks per swing, and constructs `DamageInfo` payload.
 
-#### `HitboxComponent` (`Area2D`)
-- **Collision Layer:** Configured to `PlayerHitbox` (Layer 4) or `EnemyHitbox` (Layer 5).
-- **Properties:** `attack_data: AttackData` (Godot Resource).
-- **Responsibilities:** Monitors intersections with `HurtboxComponent` and passes `AttackData` payload.
-
-#### `HurtboxComponent` (`Area2D`)
-- **Collision Layer:** Configured to `PlayerHurtbox` (Layer 6) or `EnemyHurtbox` (Layer 7).
-- **Signals:** `hit_received(attack_data: AttackData)`.
-- **Responsibilities:** Validates if parent is dodging or invulnerable; if not, dispatches damage and poise reduction to `HealthComponent` and `StaggerComponent`.
-
-#### `StaggerComponent`
-- **Properties:** `max_poise: float`, `current_poise: float`, `poise_regen_delay: float`, `is_staggered: bool`.
-- **Responsibilities:** Accumulates poise damage. When poise hits zero, triggers guard-break / stagger state and emits `stagger_triggered(duration: float)`.
+#### `Hurtbox` (`scripts/combat/hurtbox.gd`, `Area2D`)
+- **Collision Layer:** Configured to `PlayerHurtbox` (Layer 6, bitmask 32) or `EnemyHurtbox` (Layer 7, bitmask 64).
+- **Collision Mask:** `0` (passive receiver).
+- **Responsibilities:** Receives `DamageInfo`, delegates damage and poise reduction to sibling `HealthComponent` and `PoiseComponent`, and imparts knockback impulse.
 
 ---
 
@@ -193,17 +197,20 @@ Attacks are strictly modeled as Godot `Resource` assets (`res://data/attacks/`):
 class_name AttackData
 extends Resource
 
-@export var attack_name: StringName = &""
+@export var attack_id: StringName = &""
+@export var display_name: String = ""
 @export var damage: float = 10.0
-@export var poise_damage: float = 15.0
-@export var stamina_cost: float = 12.0
-@export var spirit_gain: float = 8.0
-@export var knockback_force: Vector2 = Vector2(150.0, -50.0)
-@export var hitstop_frames: int = 4
-@export var screen_trauma: float = 0.15
-@export var hit_sound: AudioStream
-@export var hit_vfx_scene: PackedScene
-@export var is_unblockable: bool = false
+@export var poise_damage: float = 12.0
+@export var knockback_force: Vector2 = Vector2(120.0, -30.0)
+@export var startup_time: float = 0.067
+@export var active_time: float = 0.050
+@export var recovery_time: float = 0.133
+@export var combo_window_start: float = 0.050
+@export var combo_window_end: float = 0.220
+@export var next_attack_id: StringName = &""
+@export var forward_impulse: float = 30.0
+@export var hitstop_duration: float = 0.050
+@export var attack_priority: int = 1
 ```
 
 ### 4.2 Parry & Defense Pipeline

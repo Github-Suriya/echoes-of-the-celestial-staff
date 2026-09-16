@@ -15,6 +15,14 @@ func physics_update(_delta: float) -> void:
 	if movement == null:
 		return
 	
+	# Check combat triggers
+	if Input.is_action_just_pressed(&"light_attack"):
+		state_machine.change_state(&"Attack")
+		return
+	if Input.is_action_just_pressed(&"heavy_attack"):
+		state_machine.change_state(&"HeavyAttack")
+		return
+	
 	# Check jump trigger
 	if movement.has_method("consume_jump_intent") and movement.call("consume_jump_intent"):
 		state_machine.change_state(&"Jump")

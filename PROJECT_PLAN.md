@@ -84,16 +84,23 @@ gantt
 
 ---
 
-### Phase 3: Combat Foundation
-- **Objective:** Build the core decoupled damage and combat pipeline with basic light attack combos.
+### Phase 3: Combat Foundation (COMPLETE)
+- **Objective:** Build the core decoupled damage and combat pipeline with basic light attack combos and heavy attack foundation.
 - **Dependencies:** Phase 2 complete.
+- **Status:** Complete (91/91 automated combat tests passing, 48/48 Phase 2 regression passing, 45/45 Phase 1 regression passing).
 - **Key Deliverables:**
-  - Reusable `HealthComponent`, `StaminaComponent`, `HitboxComponent`, `HurtboxComponent`.
-  - `AttackData` custom Resource definition.
-  - 3-hit light attack string for Yuan with hitbox activation windows and recovery cancel points.
-  - Combat dummy entity to validate hit detection.
+  - `AttackData` custom Resource definition and 4 data-driven attacks (`light_1`, `light_2`, `light_3`, `heavy_1`).
+  - `DamageInfo` strongly-typed combat payload.
+  - Reusable `Hitbox` (`Area2D`, Layer 4) and `Hurtbox` (`Area2D`, Layer 6/7).
+  - Reusable `HealthComponent` and `PoiseComponent` (stagger threshold, guard break, poise recovery).
+  - `CombatController` handling 3-hit light combo, heavy finisher, input buffering (350ms), forward step impulses, and hitbox phase activation.
+  - State machine combat integration: `Attack` and `HeavyAttack` states.
+  - Facing direction alignment (+1 / -1 positioning without collision deformation).
+  - Hitstop integration via `GameManager.apply_hitstop()`.
+  - Combat testing dummy (`scenes/enemies/combat_test_dummy.tscn`) and test arena (`scenes/world/test_combat_room.tscn`).
+  - Comprehensive automated test runner (`tests/test_combat_runner.tscn`).
 - **Entry Criteria:** Player controller physics solid.
-- **Exit Criteria:** Hitboxes detect hurtboxes, deal damage, trigger stamina depletion, and emit EventBus signals reliably.
+- **Exit Criteria:** Hitboxes detect hurtboxes, deal damage and poise depletion, apply knockback, trigger hitstop, support buffered combos, and pass all automated tests with zero warnings/errors.
 
 ---
 

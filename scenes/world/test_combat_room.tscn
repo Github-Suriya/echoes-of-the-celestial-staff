@@ -1,0 +1,132 @@
+[gd_scene format=3 uid="uid://deo5iofg8bna3"]
+
+[ext_resource type="Script" path="res://scripts/world/test_combat_room.gd" id="1_room"]
+[ext_resource type="PackedScene" uid="uid://dakmsdllxvfyu" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://cx6dummycombtsc" path="res://scenes/enemies/combat_test_dummy.tscn" id="3_dummy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1400, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 600)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(240, 20)
+
+[node name="TestCombatRoom" type="Node2D"]
+script = ExtResource("1_room")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Environment"]
+offset_left = -300.0
+offset_top = -450.0
+offset_right = 1100.0
+offset_bottom = 200.0
+color = Color(0.08, 0.1, 0.13, 1)
+
+[node name="Floor" type="StaticBody2D" parent="Environment"]
+position = Vector2(400, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="ColorRect" parent="Environment/Floor"]
+offset_left = -700.0
+offset_top = -20.0
+offset_right = 700.0
+offset_bottom = 20.0
+color = Color(0.2, 0.22, 0.26, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(-300, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/LeftWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.14, 0.16, 0.19, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(1100, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/RightWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.14, 0.16, 0.19, 1)
+
+[node name="Platform" type="StaticBody2D" parent="Environment"]
+position = Vector2(650, -110)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="ColorRect" parent="Environment/Platform"]
+offset_left = -120.0
+offset_top = -10.0
+offset_right = 120.0
+offset_bottom = 10.0
+color = Color(0.26, 0.29, 0.34, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 0)
+
+[node name="CombatTestDummy" parent="." instance=ExtResource("3_dummy")]
+position = Vector2(300, 0)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="PanelContainer" parent="UI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 440.0
+offset_bottom = 140.0
+
+[node name="Margin" type="MarginContainer" parent="UI/Instructions"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="UI/Instructions/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "PHASE 3 — COMBAT LABORATORY"
+
+[node name="Desc1" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Light Attack String: J / LMB (3-Hit Combo)"
+
+[node name="Desc2" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Heavy Attack: K / RMB (Heavy Poise Damage & Knockback)"
+
+[node name="Desc3" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Reset Dummy: R | Toggle Telemetry: F3 | Pause: ESC"

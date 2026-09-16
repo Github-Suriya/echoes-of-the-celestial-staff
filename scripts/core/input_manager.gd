@@ -90,7 +90,7 @@ func set_gameplay_input_enabled(enabled: bool) -> void:
 		_debug_manager.log_info("Gameplay input enabled: %s" % str(enabled), "INPUT")
 
 func _ensure_default_action_mappings() -> void:
-	var defaults: Dictionary = {
+	var key_defaults: Dictionary = {
 		ACTION_MOVE_LEFT: [KEY_A, KEY_LEFT],
 		ACTION_MOVE_RIGHT: [KEY_D, KEY_RIGHT],
 		ACTION_JUMP: [KEY_SPACE, KEY_W],
@@ -108,11 +108,21 @@ func _ensure_default_action_mappings() -> void:
 		ACTION_PAUSE: [KEY_ESCAPE]
 	}
 	
+	var mouse_defaults: Dictionary = {
+		ACTION_LIGHT_ATTACK: [MOUSE_BUTTON_LEFT],
+		ACTION_HEAVY_ATTACK: [MOUSE_BUTTON_RIGHT]
+	}
+	
 	for action in ALL_ACTIONS:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
-			if defaults.has(action):
-				for key_code in defaults[action]:
-					var ev: InputEventKey = InputEventKey.new()
-					ev.physical_keycode = key_code
-					InputMap.action_add_event(action, ev)
+		if key_defaults.has(action):
+			for key_code in key_defaults[action]:
+				var ev: InputEventKey = InputEventKey.new()
+				ev.physical_keycode = key_code
+				InputMap.action_add_event(action, ev)
+		if mouse_defaults.has(action):
+			for mouse_btn in mouse_defaults[action]:
+				var mev: InputEventMouseButton = InputEventMouseButton.new()
+				mev.button_index = mouse_btn
+				InputMap.action_add_event(action, mev)

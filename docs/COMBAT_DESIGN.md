@@ -1,9 +1,16 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.0.0  
-**Phase:** Phase 0 (Architecture & Design)  
+**Document Version:** 1.1.0  
+**Phase Status:** Phase 3 — Combat Foundation (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
+
+---
+
+> [!NOTE]
+> **Phase 3 Implementation Status:**
+> - **COMPLETE:** Data-driven attacks (`AttackData`), 3-hit light combo (`L -> L -> L`), Heavy Attack foundation (`heavy_1`), Hitbox (`Area2D`, Layer 4), Hurtbox (`Area2D`, Layer 6/7), Damage payload (`DamageInfo`), HealthComponent, PoiseComponent / Stagger, Knockback, Hitstop (`GameManager.apply_hitstop`), Attack input buffering (350ms), Facing integration (+1 / -1 positioning), Combat test dummy, Combat test room.
+> - **FUTURE PHASES:** Charged strike, aerial combat, stances (Swift, Mountain, Storm), dodge / perfect dodge, parry / riposte, spirit arts, transformation, execution cinematics, full enemy AI.
 
 ---
 
