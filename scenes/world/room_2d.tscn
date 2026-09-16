@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://c8rm2dbasetpl"]
+
+[ext_resource type="Script" path="res://scripts/world/room_2d.gd" id="1_room"]
+
+[node name="Room2D" type="Node2D"]
+script = ExtResource("1_room")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="CameraBounds" type="ReferenceRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+border_color = Color(0.2, 0.7, 1, 0.5)
+editor_only = false
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="Default" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(100, 900)
+
+[node name="Entrances" type="Node2D" parent="."]
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="PersistentObjects" type="Node2D" parent="."]

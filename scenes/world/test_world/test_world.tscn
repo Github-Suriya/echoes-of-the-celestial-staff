@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://btestworld01"]
+
+[ext_resource type="Script" path="res://scripts/world/test_world.gd" id="1_tw"]
+[ext_resource type="Resource" uid="uid://rdrooma01" path="res://data/world/room_a.tres" id="2_ra"]
+[ext_resource type="Resource" uid="uid://rdroomb02" path="res://data/world/room_b.tres" id="3_rb"]
+[ext_resource type="Resource" uid="uid://rdroomc03" path="res://data/world/room_c.tres" id="4_rc"]
+[ext_resource type="PackedScene" uid="uid://dakmsdllxvfyu" path="res://scenes/player/player.tscn" id="5_player"]
+[ext_resource type="PackedScene" uid="uid://df5spirithudsc" path="res://scenes/ui/spirit_hud.tscn" id="6_hud"]
+
+[node name="TestWorld" type="Node2D"]
+script = ExtResource("1_tw")
+room_a_data = ExtResource("2_ra")
+room_b_data = ExtResource("3_rb")
+room_c_data = ExtResource("4_rc")
+
+[node name="RoomsContainer" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+position = Vector2(150, 950)
+
+[node name="SpiritHUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="DebugTelemetry" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="DebugTelemetry"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 380.0
+offset_bottom = 260.0
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugTelemetry/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugTelemetry/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="TelemetryLabel" type="Label" parent="DebugTelemetry/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "[WORLD TELEMETRY]"

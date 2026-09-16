@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://rdroomc03"]
+
+[ext_resource type="Script" path="res://scripts/world/room_data.gd" id="1_rdata"]
+
+[resource]
+script = ExtResource("1_rdata")
+room_id = &"room_c"
+display_name = "Awakening Chamber"
+scene_path = "res://scenes/world/test_world/room_c.tscn"
+room_bounds = Rect2(0, 0, 1920, 1080)
+spawn_point_ids = [&"from_room_a"]
+connections = {
+"exit_to_a": {
+"destination_room_id": &"room_a",
+"destination_spawn_id": &"from_room_c"
+}
+}

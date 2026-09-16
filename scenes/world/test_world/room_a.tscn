@@ -1,0 +1,188 @@
+[gd_scene format=3 uid="uid://twrooma01"]
+
+[ext_resource type="Script" path="res://scripts/world/room_2d.gd" id="1_room"]
+[ext_resource type="Script" path="res://scripts/world/room_exit.gd" id="2_exit"]
+[ext_resource type="Script" path="res://scripts/world/ability_gate.gd" id="3_gate"]
+[ext_resource type="Script" path="res://scripts/world/checkpoint.gd" id="4_cp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1920, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(400, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(60, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate_col"]
+size = Vector2(40, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate_trig"]
+size = Vector2(120, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cp"]
+size = Vector2(80, 100)
+
+[node name="RoomA" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"room_a"
+default_camera_bounds = Rect2(0, 0, 1920, 1080)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Geometry"]
+position = Vector2(960, 1040)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -960.0
+offset_top = -40.0
+offset_right = 960.0
+offset_bottom = 40.0
+color = Color(0.18, 0.22, 0.25, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(20, 540)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/LeftWall"]
+offset_left = -20.0
+offset_top = -540.0
+offset_right = 20.0
+offset_bottom = 540.0
+color = Color(0.14, 0.17, 0.2, 1)
+
+[node name="Ceiling" type="StaticBody2D" parent="Geometry"]
+position = Vector2(960, 20)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ceiling"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Ceiling"]
+offset_left = -960.0
+offset_top = -20.0
+offset_right = 960.0
+offset_bottom = 20.0
+color = Color(0.14, 0.17, 0.2, 1)
+
+[node name="Platform" type="StaticBody2D" parent="Geometry"]
+position = Vector2(960, 400)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform"]
+offset_left = -200.0
+offset_top = -15.0
+offset_right = 200.0
+offset_bottom = 15.0
+color = Color(0.24, 0.3, 0.35, 1)
+
+[node name="CameraBounds" type="ReferenceRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+border_color = Color(0.15, 0.7, 0.9, 0.5)
+editor_only = false
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="start" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(150, 950)
+
+[node name="from_room_b" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(1750, 950)
+
+[node name="from_room_c" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(960, 350)
+
+[node name="Entrances" type="Node2D" parent="."]
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="Exit_To_B" type="Area2D" parent="Exits"]
+position = Vector2(1890, 920)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_exit")
+exit_id = &"exit_to_b"
+destination_room_id = &"room_b"
+destination_spawn_id = &"from_room_a"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/Exit_To_B"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Exit_To_C" type="Area2D" parent="Exits"]
+position = Vector2(960, 100)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_exit")
+exit_id = &"exit_to_c"
+destination_room_id = &"room_c"
+destination_spawn_id = &"from_room_a"
+transition_direction = Vector2(0, -1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Exits/Exit_To_C"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="Gate_Celestial_Arc" type="StaticBody2D" parent="Doors"]
+position = Vector2(960, 260)
+collision_mask = 0
+script = ExtResource("3_gate")
+gate_id = &"gate_arc"
+required_ability = &"celestial_arc"
+gate_name = "Celestial Arc Gate"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/Gate_Celestial_Arc"]
+shape = SubResource("RectangleShape2D_gate_col")
+
+[node name="VisualBarrier" type="ColorRect" parent="Doors/Gate_Celestial_Arc"]
+offset_left = -20.0
+offset_top = -80.0
+offset_right = 20.0
+offset_bottom = 80.0
+color = Color(0.9, 0.7, 0.1, 0.85)
+
+[node name="TriggerArea" type="Area2D" parent="Doors/Gate_Celestial_Arc"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/Gate_Celestial_Arc/TriggerArea"]
+shape = SubResource("RectangleShape2D_gate_trig")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="Checkpoint_A" type="Area2D" parent="Checkpoints"]
+position = Vector2(500, 950)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_cp")
+checkpoint_id = &"checkpoint_a"
+room_id = &"room_a"
+spawn_point_id = &"start"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoints/Checkpoint_A"]
+shape = SubResource("RectangleShape2D_cp")
+
+[node name="VisualIndicator" type="ColorRect" parent="Checkpoints/Checkpoint_A"]
+offset_left = -25.0
+offset_top = -50.0
+offset_right = 25.0
+offset_bottom = 50.0
+color = Color(0.2, 0.6, 0.5, 0.6)
+
+[node name="PersistentObjects" type="Node2D" parent="."]

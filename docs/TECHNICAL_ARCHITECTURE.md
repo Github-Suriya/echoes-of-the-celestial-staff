@@ -369,20 +369,60 @@ The enemy architecture establishes a reusable, decoupled foundation for all non-
 
 ---
 
-## 5. World & Room Architecture
+---
 
-### 5.1 Room Chunking (`Room2D`)
-- Metroidvania areas are partitioned into individual `Room2D` scenes.
-- Each `Room2D` contains:
-  - `TileMapLayer` nodes (Background, Ground/Walls, Foreground Hazards).
-  - `Enemies` container node.
-  - `Collectibles` container node.
-  - `Doors` (`Area2D` triggers linked to target room and target entrance ID).
-  - `CameraBounds` (`ReferenceRect` defining the virtual camera clamping area).
+## 5. Metroidvania World System Architecture (Phase 10 Foundation)
 
-### 5.2 Room State Persistence
-- When an enemy or one-time collectible is picked up, it registers its unique GUID with `WorldManager`.
-- Upon re-entering a room, already collected items or triggered switches remain in their resolved state.
+### 5.1 `WorldController` (`res://scripts/world/world_controller.gd`)
+- Central in-world coordinator managing:
+  - Single active room lifecycle: unloads previous room before activating the new room to maintain low memory footprint.
+  - Room transitions via `request_room_transition(destination_room_id, destination_spawn_id)` with re-entrancy protection.
+  - Zero velocity drift: resets player velocity to zero upon room entry.
+  - Camera limit clamping: automatically assigns player camera `limit_left`, `limit_top`, `limit_right`, `limit_bottom` and calls `camera.reset_smoothing()` to prevent void panning.
+  - Checkpoint tracking and respawn management (`respawn_player_at_checkpoint()`).
+  - Safe player preservation: maintains the persistent `PlayerController` instance across room swaps without re-instantiation.
+
+### 5.2 `Room2D` Template & Lifecycle (`res://scripts/world/room_2d.gd`)
+- Standardized scene hierarchy:
+  ```
+  Room2D
+  ├── Geometry (StaticBody2D platforms, walls, ceiling)
+  ├── CameraBounds (ReferenceRect / Control)
+  ├── SpawnPoints (Marker2D spawn locations)
+  ├── Entrances (Node2D)
+  ├── Exits (RoomExit Area2D volumes)
+  ├── Doors (AbilityGate barriers)
+  ├── Enemies (Node2D)
+  ├── Checkpoints (Checkpoint Area2D shrines)
+  └── PersistentObjects (PersistentWorldObject nodes)
+  ```
+- Deterministic lifecycle state machine:
+  `UNLOADED` -> `LOADING` -> `LOADED` -> `ACTIVE` -> `EXITING` -> `UNLOADING` -> `UNLOADED`.
+
+### 5.3 `RoomData` Resource (`res://scripts/world/room_data.gd`)
+- Decoupled room configuration resource specifying:
+  - `room_id: StringName`
+  - `display_name: String`
+  - `scene_path: String`
+  - `room_bounds: Rect2`
+  - `spawn_point_ids: Array[StringName]`
+  - `connections: Dictionary` (mapping exit IDs to target destination room and spawn IDs)
+
+### 5.4 `WorldState` & Persistence (`res://scripts/world/world_state.gd`)
+- Deterministic String/StringName key-value flag persistence (`set_flag`, `get_flag`, `has_flag`, `clear_flag`).
+- Serializes cleanly into existing `SaveManager` versioned slots (`save_to_slot(slot, extra_data)`) without breaking schemas.
+- Synchronizes with `PersistentWorldObject` instances on room entry and exit.
+
+### 5.5 `PlayerCapabilities` & `AbilityGate` (`res://scripts/world/player_capabilities.gd` & `ability_gate.gd`)
+- Decouples Metroidvania progression unlocks (e.g. `celestial_arc`, `cloud_step`) from combat spirit abilities and resource consumption.
+- `AbilityGate`: Physical barrier on Layer 1 that dissolves when the player possesses the required progression capability or when persistent flag `&"gate_opened_" + gate_id` is set.
+
+### 5.6 `Checkpoint` System (`res://scripts/world/checkpoint.gd`)
+- Spirit shrines that update active respawn coordinates on `WorldController`, restore player Health and Spirit to 100%, and record persistent active state.
+
+### 5.7 Granite Abbot Boss Encounter Persistence
+- Defeating the Granite Abbot sets `"granite_abbot_defeated" = true` in `WorldState`.
+- Re-entering Room B (`res://scenes/world/test_world/room_b.tscn`) queries this flag, suppressing boss reactivation, disabling boss processing and collision, keeping barriers lowered, and disabling the encounter trigger.
 
 ---
 

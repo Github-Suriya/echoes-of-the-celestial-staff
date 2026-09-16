@@ -99,35 +99,29 @@ graph TD
 
 ### 5.1 Room Standard Dimensions
 - Standard single screen room: `1920 x 1080` (16:9 view).
-- Multi-screen rooms: Multiples of 1920 horizontally (e.g., `3840 x 1080` for corridor) or multiples of 1080 vertically (`1920 x 2160` for vertical shafts).
+- Multi-screen rooms: Multiples of 1920 horizontally (e.g., `2400 x 1080` for corridor) or multiples of 1080 vertically (`1920 x 2160` for vertical shafts).
 
 ### 5.2 Room Structure (`Room2D.tscn`)
 ```
-Room_Forest_01 (Node2D) [Room2D]
-├── WorldGeometry (StaticBody2D)
-│   ├── CollisionPolygon2D / TileMapLayer (Solid ground & walls)
-│   └── OneWayPlatforms (TileMapLayer)
-├── BackgroundParallax (ParallaxBackground)
-│   ├── FarLayer (0.2 scroll)
-│   ├── MidLayer (0.5 scroll)
-│   └── NearLayer (0.8 scroll)
-├── Spawners (Node2D)
-│   ├── EnemySpawner_A
-│   └── EnemySpawner_B
-├── Interactables (Node2D)
-│   ├── SpiritShrine
-│   └── ShortcutDoor
-├── CameraBounds (ReferenceRect)
-└── Exits (Node2D)
-    ├── Exit_Left (Area2D -> Target: Room_Village_05, Spawn: Right)
-    └── Exit_Right (Area2D -> Target: Room_Forest_02, Spawn: Left)
+Room2D (Node2D)
+├── Geometry (StaticBody2D solid ground, platforms, walls)
+├── CameraBounds (ReferenceRect defining virtual camera clamping area)
+├── SpawnPoints (Marker2D spawn locations)
+├── Entrances (Node2D)
+├── Exits (RoomExit Area2D volumes)
+├── Doors (AbilityGate progression barriers)
+├── Enemies (Node2D)
+├── Checkpoints (Checkpoint Area2D shrines)
+└── PersistentObjects (PersistentWorldObject nodes)
 ```
 
-### 5.3 Room Transition Mechanics
-- When player enters an `Exit Area2D`, `SceneManager` executes:
-  1. Freeze player physics and input.
-  2. Fade screen to black (0.2s duration).
-  3. Swap active `Room2D` scene via threaded loader.
-  4. Position player at the linked `SpawnPoint2D`.
-  5. Clamp camera to new room's `CameraBounds`.
-  6. Fade screen from black (0.2s duration) and restore player control.
+### 5.3 Room Transition Mechanics (Phase 10 Foundation)
+- Managed by `WorldController` (`res://scripts/world/world_controller.gd`):
+  1. Re-entrancy guard rejects duplicate transition requests.
+  2. Player linear velocity is zeroed (`player.velocity = Vector2.ZERO`) to prevent unintended transition drift.
+  3. Current room records persistent object states to `WorldState` before lifecycle shifts to `UNLOADING` and queue_free.
+  4. Destination room (`RoomData`) is loaded and instantiated under `RoomsContainer`.
+  5. Player position is updated to destination `Marker2D` spawn point coordinates without duplicating or re-instantiating the player.
+  6. Player's `Camera2D` limits (`limit_left`, `limit_top`, `limit_right`, `limit_bottom`) are clamped to room bounds and `camera.reset_smoothing()` is called.
+  7. Persistent objects in destination room are synchronized with `WorldState`.
+  8. Destination room transitions to `ACTIVE`, and `EventBus.room_activated` is emitted.

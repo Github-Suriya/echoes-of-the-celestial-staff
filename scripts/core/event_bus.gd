@@ -55,6 +55,13 @@ signal scene_loaded(scene_path: String)
 signal scene_unloaded(scene_path: String)
 signal checkpoint_activated(checkpoint_id: String)
 signal ability_unlocked(ability_id: String)
+signal room_loading_started(room_id: StringName)
+signal room_loaded(room_id: StringName)
+signal room_activated(room_id: StringName)
+signal room_exit_started(from_room_id: StringName, to_room_id: StringName)
+signal room_unloaded(room_id: StringName)
+signal world_flag_changed(flag_name: StringName, value: bool)
+signal ability_gate_opened(gate_id: StringName)
 
 func _ready() -> void:
 	if is_inside_tree() and has_node("/root/DebugManager"):

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RoomData" format=3 uid="uid://rdroomb02"]
+
+[ext_resource type="Script" path="res://scripts/world/room_data.gd" id="1_rdata"]
+
+[resource]
+script = ExtResource("1_rdata")
+room_id = &"room_b"
+display_name = "Granite Passage"
+scene_path = "res://scenes/world/test_world/room_b.tscn"
+room_bounds = Rect2(0, 0, 2400, 1080)
+spawn_point_ids = [&"from_room_a"]
+connections = {
+"exit_to_a": {
+"destination_room_id": &"room_a",
+"destination_spawn_id": &"from_room_b"
+}
+}
