@@ -6,6 +6,7 @@ extends Node
 ## Drives facing direction, squash/stretch, color flashes, and telegraph indicators.
 
 @export var visuals_root: Node2D = null
+@export var animated_sprite: AnimatedSprite2D = null
 @export var body_rect: ColorRect = null
 @export var eye_rect: ColorRect = null
 @export var arm_rect: ColorRect = null
@@ -21,6 +22,8 @@ func _ready() -> void:
 		visuals_root = owner.get_node("Visuals") as Node2D
 	
 	if visuals_root != null:
+		if animated_sprite == null and visuals_root.has_node("AnimatedSprite2D"):
+			animated_sprite = visuals_root.get_node("AnimatedSprite2D") as AnimatedSprite2D
 		if body_rect == null and visuals_root.has_node("Body"):
 			body_rect = visuals_root.get_node("Body") as ColorRect
 		if eye_rect == null and visuals_root.has_node("Eye"):
@@ -32,6 +35,22 @@ func _ready() -> void:
 	
 	if indicator_rect != null:
 		indicator_rect.visible = false
+	
+	_sync_sprite_visibility()
+
+func _sync_sprite_visibility() -> void:
+	if animated_sprite != null and animated_sprite.sprite_frames != null:
+		if body_rect != null:
+			body_rect.visible = false
+		if eye_rect != null:
+			eye_rect.visible = false
+		if arm_rect != null:
+			arm_rect.visible = false
+
+func _play_sprite_anim(anim_name: String) -> void:
+	if animated_sprite != null and animated_sprite.sprite_frames != null:
+		if animated_sprite.sprite_frames.has_animation(anim_name):
+			animated_sprite.play(anim_name)
 
 func set_base_color(color: Color) -> void:
 	base_color = color
@@ -47,12 +66,14 @@ func update_facing(direction: int) -> void:
 	visuals_root.scale.x = target_scale_x
 
 func play_idle() -> void:
+	_play_sprite_anim("idle")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	if body_rect != null:
 		body_rect.color = base_color
 
 func play_walk() -> void:
+	_play_sprite_anim("move")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	if body_rect != null:
@@ -77,6 +98,7 @@ func play_attack_telegraph() -> void:
 		body_rect.color = Color(1.0, 0.55, 0.2, 1.0)
 
 func play_attack_active() -> void:
+	_play_sprite_anim("attack")
 	if indicator_rect != null:
 		indicator_rect.visible = true
 		indicator_rect.color = Color(1.0, 0.1, 0.1, 1.0) # Bright red strike
@@ -84,12 +106,14 @@ func play_attack_active() -> void:
 		body_rect.color = Color(0.95, 0.2, 0.15, 1.0)
 
 func play_attack_recovery() -> void:
+	_play_sprite_anim("idle")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	if body_rect != null:
 		body_rect.color = base_color
 
 func play_attack_interrupted() -> void:
+	_play_sprite_anim("stagger")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	
@@ -100,6 +124,7 @@ func play_attack_interrupted() -> void:
 		_tween.tween_property(body_rect, "color", base_color, 0.60)
 
 func play_hit() -> void:
+	_play_sprite_anim("hit")
 	_kill_tween()
 	if body_rect != null:
 		body_rect.color = Color(1.0, 1.0, 1.0, 1.0) # Hit flash
@@ -113,6 +138,7 @@ func play_hit() -> void:
 		squash_tween.tween_property(visuals_root, "scale", Vector2(current_scale_x, 1.0), 0.08)
 
 func play_stagger() -> void:
+	_play_sprite_anim("stagger")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	
@@ -121,10 +147,12 @@ func play_stagger() -> void:
 		body_rect.color = Color(1.0, 0.8, 0.1, 1.0) # Golden stagger
 
 func play_stagger_end() -> void:
+	_play_sprite_anim("idle")
 	if body_rect != null:
 		body_rect.color = base_color
 
 func play_death() -> void:
+	_play_sprite_anim("death")
 	if indicator_rect != null:
 		indicator_rect.visible = false
 	

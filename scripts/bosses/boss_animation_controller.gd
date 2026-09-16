@@ -7,6 +7,7 @@ extends Node
 ## deflection recoil, and Phase 2 stone resonance auras without sprite asset dependencies.
 
 @export var visuals_root: Node2D = null
+@export var animated_sprite: AnimatedSprite2D = null
 
 var _body_rect: ColorRect = null
 var _crest_rect: ColorRect = null
@@ -28,6 +29,9 @@ func _discover_visual_nodes() -> void:
 	if visuals_root == null:
 		return
 	
+	if animated_sprite == null and visuals_root.has_node("AnimatedSprite2D"):
+		animated_sprite = visuals_root.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	
 	if visuals_root.has_node("Body"):
 		_body_rect = visuals_root.get_node("Body") as ColorRect
 		if _body_rect != null:
@@ -44,6 +48,22 @@ func _discover_visual_nodes() -> void:
 		_aura_rect = visuals_root.get_node("Aura") as ColorRect
 		if _aura_rect != null:
 			_aura_rect.visible = false
+	
+	_sync_sprite_visibility()
+
+func _sync_sprite_visibility() -> void:
+	if animated_sprite != null and animated_sprite.sprite_frames != null:
+		if _body_rect != null:
+			_body_rect.visible = false
+		if _crest_rect != null:
+			_crest_rect.visible = false
+		if _staff_rect != null:
+			_staff_rect.visible = false
+
+func play_sprite_anim(anim_name: String) -> void:
+	if animated_sprite != null and animated_sprite.sprite_frames != null:
+		if animated_sprite.sprite_frames.has_animation(anim_name):
+			animated_sprite.play(anim_name)
 
 func update_facing(direction: int) -> void:
 	if visuals_root == null:
@@ -52,6 +72,7 @@ func update_facing(direction: int) -> void:
 	visuals_root.scale.x = absf(visuals_root.scale.x) * dir_sign
 
 func play_intro(duration: float = 1.5) -> void:
+	play_sprite_anim("idle")
 	if visuals_root == null:
 		return
 	
@@ -66,6 +87,7 @@ func play_intro(duration: float = 1.5) -> void:
 		_active_tween.tween_property(visuals_root, "modulate", Color.WHITE, duration)
 
 func play_attack_telegraph(duration: float = 0.5) -> void:
+	play_sprite_anim("idle")
 	if visuals_root == null:
 		return
 	
@@ -79,6 +101,7 @@ func play_attack_telegraph(duration: float = 0.5) -> void:
 			_active_tween.tween_property(_staff_rect, "rotation_degrees", -25.0, duration)
 
 func play_attack_active(duration: float = 0.15) -> void:
+	play_sprite_anim("attack")
 	if visuals_root == null:
 		return
 	
@@ -92,6 +115,7 @@ func play_attack_active(duration: float = 0.15) -> void:
 			_active_tween.tween_property(_staff_rect, "rotation_degrees", 45.0, duration)
 
 func play_attack_recovery(duration: float = 0.45) -> void:
+	play_sprite_anim("idle")
 	if visuals_root == null:
 		return
 	
@@ -104,6 +128,7 @@ func play_attack_recovery(duration: float = 0.45) -> void:
 			_active_tween.tween_property(_staff_rect, "rotation_degrees", 0.0, duration)
 
 func play_attack_interrupted(duration: float = 0.45) -> void:
+	play_sprite_anim("stagger")
 	if visuals_root == null:
 		return
 	
@@ -120,6 +145,7 @@ func play_attack_interrupted(duration: float = 0.45) -> void:
 			_active_tween.tween_property(_staff_rect, "rotation_degrees", -40.0, 0.15)
 
 func play_hit_flash(duration: float = 0.15) -> void:
+	play_sprite_anim("hit")
 	if visuals_root == null:
 		return
 	
@@ -130,6 +156,7 @@ func play_hit_flash(duration: float = 0.15) -> void:
 		_active_tween.tween_property(visuals_root, "modulate", Color.WHITE, duration)
 
 func play_stagger(duration: float = 1.8) -> void:
+	play_sprite_anim("stagger")
 	if visuals_root == null:
 		return
 	
@@ -145,6 +172,7 @@ func play_stagger(duration: float = 1.8) -> void:
 			_active_tween.tween_property(_staff_rect, "rotation_degrees", 80.0, 0.3)
 
 func play_phase_transition(aura_color: Color, duration: float = 1.8) -> void:
+	play_sprite_anim("transition")
 	if visuals_root == null:
 		return
 	
@@ -162,6 +190,7 @@ func play_phase_transition(aura_color: Color, duration: float = 1.8) -> void:
 		_active_tween.tween_property(visuals_root, "modulate", Color.WHITE, duration)
 
 func play_defeat(duration: float = 2.0) -> void:
+	play_sprite_anim("death")
 	if visuals_root == null:
 		return
 	

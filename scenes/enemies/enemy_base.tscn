@@ -41,6 +41,9 @@ shape = SubResource("CapsuleShape2D_body")
 
 [node name="Visuals" type="Node2D" parent="."]
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+position = Vector2(0, -10)
+
 [node name="Body" type="ColorRect" parent="Visuals"]
 offset_left = -11.0
 offset_top = -48.0
@@ -114,9 +117,10 @@ script = ExtResource("5_movement")
 script = ExtResource("6_combat")
 hitbox = NodePath("../../Combat/EnemyHitbox")
 
-[node name="EnemyAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root", "body_rect", "eye_rect", "arm_rect", "indicator_rect")]
+[node name="EnemyAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root", "animated_sprite", "body_rect", "eye_rect", "arm_rect", "indicator_rect")]
 script = ExtResource("7_anim")
 visuals_root = NodePath("../../Visuals")
+animated_sprite = NodePath("../../Visuals/AnimatedSprite2D")
 body_rect = NodePath("../../Visuals/Body")
 eye_rect = NodePath("../../Visuals/Eye")
 arm_rect = NodePath("../../Visuals/Arm")

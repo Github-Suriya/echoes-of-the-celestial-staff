@@ -1,22 +1,28 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
 [ext_resource type="Resource" path="res://data/enemies/enemy_thorn_beast.tres" id="2_data"]
+[ext_resource type="SpriteFrames" path="res://assets/art/enemies/thorn_beast_sprites.tres" id="3_sf"]
 
 [node name="ThornBeast" instance=ExtResource("1_base")]
 enemy_data = ExtResource("2_data")
 
-[node name="Body" parent="Visuals" index="0"]
+[node name="AnimatedSprite2D" parent="Visuals" index="0"]
+position = Vector2(0, -18)
+sprite_frames = ExtResource("3_sf")
+animation = &"idle"
+
+[node name="Body" parent="Visuals" index="1"]
 offset_left = -15.0
 offset_right = 15.0
 color = Color(0.32, 0.25, 0.18, 1)
 
-[node name="Eye" parent="Visuals" index="1"]
+[node name="Eye" parent="Visuals" index="2"]
 offset_left = 3.0
 offset_right = 9.0
 color = Color(0.9, 0.55, 0.1, 1)
 
-[node name="Arm" parent="Visuals" index="2"]
+[node name="Arm" parent="Visuals" index="3"]
 offset_left = 13.0
 offset_right = 21.0
 color = Color(0.24, 0.18, 0.12, 1)

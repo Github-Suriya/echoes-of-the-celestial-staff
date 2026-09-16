@@ -157,6 +157,10 @@ func _update_health_display(cur: float, max_v: float) -> void:
 	if health_bar != null:
 		health_bar.max_value = max_v
 		health_bar.value = cur
+		if cur <= max_v * 0.25:
+			health_bar.modulate = Color(1.0, 0.35, 0.35)
+		else:
+			health_bar.modulate = Color.WHITE
 	if health_label != null:
 		health_label.text = "HP %d / %d" % [int(cur), int(max_v)]
 
@@ -213,3 +217,7 @@ func _update_boss_phase_label() -> void:
 		var pdata: BossPhaseData = _current_active_boss.phase_controller.current_phase_data
 		if pdata != null:
 			boss_phase_label.text = "PHASE %d: %s" % [pdata.phase_id, pdata.phase_name.to_upper()]
+			if pdata.phase_id >= 2:
+				boss_phase_label.modulate = Color(1.0, 0.25, 0.45)
+			else:
+				boss_phase_label.modulate = Color(0.9, 0.75, 0.30)

@@ -1,19 +1,25 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/bosses/boss_base.tscn" id="1_base"]
 [ext_resource type="Resource" path="res://data/bosses/boss_corrupted_forest_heart.tres" id="2_data"]
+[ext_resource type="SpriteFrames" path="res://assets/art/bosses/corrupted_forest_heart_sprites.tres" id="3_sf"]
 
 [node name="CorruptedForestHeart" instance=ExtResource("1_base")]
 boss_data = ExtResource("2_data")
 
-[node name="Body" parent="Visuals" index="1"]
+[node name="AnimatedSprite2D" parent="Visuals" index="0"]
+position = Vector2(0, -42)
+sprite_frames = ExtResource("3_sf")
+animation = &"idle"
+
+[node name="Body" parent="Visuals" index="2"]
 offset_left = -22.0
 offset_top = -76.0
 offset_right = 22.0
 offset_bottom = 0.0
 color = Color(0.25, 0.15, 0.2, 1)
 
-[node name="Crest" parent="Visuals" index="2"]
+[node name="Crest" parent="Visuals" index="3"]
 offset_left = -8.0
 offset_top = -66.0
 offset_right = 8.0

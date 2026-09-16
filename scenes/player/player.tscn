@@ -28,6 +28,8 @@
 [ext_resource type="Script" path="res://scripts/player/spirit_ability_controller.gd" id="26_spirit_ctrl"]
 [ext_resource type="Script" path="res://scripts/player/states/player_spirit_ability_state.gd" id="27_spirit_state"]
 [ext_resource type="Script" path="res://scripts/player/transformation_controller.gd" id="28_trans"]
+[ext_resource type="SpriteFrames" path="res://assets/art/characters/yuan_spritesheet.tres" id="29_yuan_sf"]
+[ext_resource type="Script" path="res://scripts/player/camera_shake_controller.gd" id="30_shake"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -53,6 +55,11 @@ position = Vector2(0, -23)
 shape = SubResource("CapsuleShape2D_player")
 
 [node name="Visuals" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+position = Vector2(0, -9)
+sprite_frames = ExtResource("29_yuan_sf")
+animation = &"idle"
 
 [node name="Body" type="ColorRect" parent="Visuals"]
 offset_left = -9.0
@@ -99,9 +106,10 @@ position_smoothing_speed = 8.0
 script = ExtResource("3_movement")
 config = ExtResource("2_config")
 
-[node name="PlayerAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root")]
+[node name="PlayerAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root", "animated_sprite")]
 script = ExtResource("4_anim")
 visuals_root = NodePath("../../Visuals")
+animated_sprite = NodePath("../../Visuals/AnimatedSprite2D")
 
 [node name="PlayerRespawn" type="Node" parent="Components"]
 script = ExtResource("5_respawn")
@@ -133,6 +141,10 @@ script = ExtResource("26_spirit_ctrl")
 
 [node name="TransformationController" type="Node" parent="Components"]
 script = ExtResource("28_trans")
+
+[node name="CameraShakeController" type="Node" parent="Components" node_paths=PackedStringArray("camera")]
+script = ExtResource("30_shake")
+camera = NodePath("../../Camera2D")
 
 [node name="Combat" type="Node2D" parent="."]
 

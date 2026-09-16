@@ -8,6 +8,7 @@ extends Node
 signal animation_played(anim_name: StringName)
 
 @export var visuals_root: Node2D
+@export var animated_sprite: AnimatedSprite2D
 
 var current_animation: StringName = &"idle"
 
@@ -15,14 +16,30 @@ func _ready() -> void:
 	if visuals_root == null and owner != null and owner.has_node("Visuals"):
 		visuals_root = owner.get_node("Visuals") as Node2D
 	
+	if animated_sprite == null and visuals_root != null and visuals_root.has_node("AnimatedSprite2D"):
+		animated_sprite = visuals_root.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	
+	_sync_sprite_visibility()
+	
 	# Connect to sibling StateMachine if present
 	var sm: StateMachine = _get_state_machine()
 	if sm != null:
 		sm.state_changed.connect(_on_state_changed)
 
+func _sync_sprite_visibility() -> void:
+	if animated_sprite != null and animated_sprite.sprite_frames != null and visuals_root != null:
+		for child in visuals_root.get_children():
+			if child is ColorRect:
+				child.visible = false
+
 func play_animation(anim_name: StringName) -> void:
 	current_animation = anim_name
 	animation_played.emit(anim_name)
+	
+	if animated_sprite != null and animated_sprite.sprite_frames != null:
+		var anim_str: String = String(anim_name)
+		if animated_sprite.sprite_frames.has_animation(anim_str):
+			animated_sprite.play(anim_str)
 	
 	# Procedural placeholder visual feedback (squash/stretch)
 	_apply_placeholder_feedback(anim_name)

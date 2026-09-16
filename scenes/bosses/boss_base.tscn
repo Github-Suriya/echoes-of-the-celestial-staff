@@ -44,6 +44,9 @@ shape = SubResource("CapsuleShape2D_body")
 
 [node name="Visuals" type="Node2D" parent="."]
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+position = Vector2(0, -32)
+
 [node name="Aura" type="ColorRect" parent="Visuals"]
 visible = false
 offset_left = -26.0
@@ -129,9 +132,10 @@ script = ExtResource("9_phase")
 [node name="BossTelegraphController" type="Node2D" parent="Components"]
 script = ExtResource("2_tele")
 
-[node name="BossAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root")]
+[node name="BossAnimationController" type="Node" parent="Components" node_paths=PackedStringArray("visuals_root", "animated_sprite")]
 script = ExtResource("10_anim")
 visuals_root = NodePath("../../Visuals")
+animated_sprite = NodePath("../../Visuals/AnimatedSprite2D")
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("11_sm")

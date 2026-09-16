@@ -11,6 +11,11 @@ extends Node2D
 @export var parry_spark_scene: PackedScene = preload("res://scenes/effects/vfx_parry_spark.tscn")
 @export var dodge_burst_scene: PackedScene = preload("res://scenes/effects/vfx_dodge_burst.tscn")
 @export var death_burst_scene: PackedScene = preload("res://scenes/effects/vfx_death_burst.tscn")
+@export var staff_trail_scene: PackedScene = preload("res://scenes/effects/vfx_staff_trail.tscn")
+@export var hit_flash_scene: PackedScene = preload("res://scenes/effects/vfx_hit_flash.tscn")
+@export var boss_telegraph_scene: PackedScene = preload("res://scenes/effects/vfx_boss_telegraph.tscn")
+@export var awakening_aura_scene: PackedScene = preload("res://scenes/effects/vfx_awakening_aura.tscn")
+@export var phase_transition_scene: PackedScene = preload("res://scenes/effects/vfx_phase_transition.tscn")
 
 func _ready() -> void:
 	_connect_bus_signals()
@@ -36,6 +41,12 @@ func _connect_bus_signals() -> void:
 	
 	if bus.has_signal("enemy_died") and not bus.enemy_died.is_connected(_on_enemy_died):
 		bus.enemy_died.connect(_on_enemy_died)
+	
+	if bus.has_signal("transformation_started") and not bus.transformation_started.is_connected(_on_transformation_started):
+		bus.transformation_started.connect(_on_transformation_started)
+	
+	if bus.has_signal("boss_phase_changed") and not bus.boss_phase_changed.is_connected(_on_boss_phase_changed):
+		bus.boss_phase_changed.connect(_on_boss_phase_changed)
 
 func spawn_effect(scene: PackedScene, at_position: Vector2, color_tint: Color = Color.WHITE) -> Node2D:
 	if scene == null:
@@ -79,3 +90,16 @@ func _on_dodge_started(entity: Node2D, _direction: int) -> void:
 func _on_enemy_died(enemy: Node2D, _bounty_qi: int) -> void:
 	if enemy != null and is_instance_valid(enemy):
 		spawn_effect(death_burst_scene, enemy.global_position + Vector2(0.0, -20.0))
+
+func _on_transformation_started() -> void:
+	# Find player or spawn at center
+	var bus: Node = get_node_or_null("/root/EventBus")
+	if bus != null and has_node("/root/GameManager"):
+		var p: Node2D = get_tree().get_first_node_in_group("player") as Node2D
+		if p != null:
+			spawn_effect(awakening_aura_scene, p.global_position + Vector2(0.0, -20.0))
+
+func _on_boss_phase_changed(_boss_id: StringName, _phase_id: int) -> void:
+	var boss: Node2D = get_tree().get_first_node_in_group("boss") as Node2D
+	var pos: Vector2 = boss.global_position + Vector2(0.0, -30.0) if boss != null else Vector2(1200, 800)
+	spawn_effect(phase_transition_scene, pos)

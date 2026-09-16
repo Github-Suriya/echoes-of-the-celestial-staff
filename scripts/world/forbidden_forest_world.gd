@@ -36,6 +36,8 @@ func _ready() -> void:
 		var gm: Node = get_node("/root/GameManager")
 		if gm != null and gm.has_method("set_game_state"):
 			gm.set_game_state(2) # GameState.PLAYING
+	
+	_update_audio_for_current_room()
 
 func _process(_delta: float) -> void:
 	_update_telemetry()
@@ -76,6 +78,26 @@ func _register_all_rooms() -> void:
 		if rd != null:
 			register_room(rd)
 
+func _update_audio_for_current_room() -> void:
+	if not has_node("/root/AudioManager"):
+		return
+	var am: Node = get_node("/root/AudioManager")
+	if am == null:
+		return
+	
+	match current_room_id:
+		&"room_01_forest_entrance", &"room_02_ancient_grove":
+			am.play_ambience_by_name(&"forest_wind")
+		&"room_03_bamboo_path":
+			am.play_ambience_by_name(&"bamboo_rustle")
+		&"room_04_forgotten_shrine":
+			am.play_ambience_by_name(&"shrine_hum")
+		&"room_05_forest_heart":
+			am.play_ambience_by_name(&"corrupted_heart")
+	
+	if not world_state.has_flag(&"chapter_1_completed"):
+		am.play_music_by_name(&"exploration")
+
 func _connect_boss_signals() -> void:
 	if not has_node("/root/EventBus"):
 		return
@@ -86,6 +108,9 @@ func _connect_boss_signals() -> void:
 	
 	if bus.has_signal("boss_started") and not bus.boss_started.is_connected(_on_boss_started):
 		bus.boss_started.connect(_on_boss_started)
+	
+	if bus.has_signal("boss_phase_changed") and not bus.boss_phase_changed.is_connected(_on_boss_phase_changed):
+		bus.boss_phase_changed.connect(_on_boss_phase_changed)
 	
 	if bus.has_signal("boss_defeated") and not bus.boss_defeated.is_connected(_on_boss_defeated):
 		bus.boss_defeated.connect(_on_boss_defeated)
@@ -98,6 +123,21 @@ func _on_boss_started(boss_name: String) -> void:
 	var boss: BossController = _find_active_boss(active_room)
 	if boss != null and chapter_hud != null:
 		chapter_hud.bind_boss(boss)
+	
+	if has_node("/root/AudioManager"):
+		var am: Node = get_node("/root/AudioManager")
+		if am != null:
+			if boss_name == "Corrupted Forest Heart":
+				am.play_music_by_name(&"final_boss_p1")
+			else:
+				am.play_music_by_name(&"intermediate_boss")
+
+func _on_boss_phase_changed(boss_id: StringName, phase_id: int) -> void:
+	if has_node("/root/AudioManager"):
+		var am: Node = get_node("/root/AudioManager")
+		if am != null:
+			if boss_id == &"corrupted_forest_heart" and phase_id == 2:
+				am.play_music_by_name(&"final_boss_p2")
 
 func _on_boss_defeated(boss_name: String) -> void:
 	if chapter_hud != null:
@@ -107,6 +147,15 @@ func _on_boss_defeated(boss_name: String) -> void:
 		world_state.set_flag(&"chapter_1_completed", true)
 		if chapter_hud != null:
 			chapter_hud.show_chapter_complete()
+		if has_node("/root/AudioManager"):
+			var am: Node = get_node("/root/AudioManager")
+			if am != null:
+				am.play_music_by_name(&"chapter_complete")
+	else:
+		if has_node("/root/AudioManager"):
+			var am: Node = get_node("/root/AudioManager")
+			if am != null:
+				am.play_music_by_name(&"exploration")
 
 func _find_active_boss(node: Node) -> BossController:
 	if node is BossController:

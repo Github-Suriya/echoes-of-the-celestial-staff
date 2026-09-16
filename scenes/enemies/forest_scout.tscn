@@ -1,16 +1,21 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_base.tscn" id="1_base"]
 [ext_resource type="Resource" path="res://data/enemies/enemy_forest_scout.tres" id="2_data"]
+[ext_resource type="SpriteFrames" path="res://assets/art/enemies/forest_scout_sprites.tres" id="3_sf"]
 
 [node name="ForestScout" instance=ExtResource("1_base")]
 enemy_data = ExtResource("2_data")
 
-[node name="Body" parent="Visuals" index="0"]
+[node name="AnimatedSprite2D" parent="Visuals" index="0"]
+sprite_frames = ExtResource("3_sf")
+animation = &"idle"
+
+[node name="Body" parent="Visuals" index="1"]
 color = Color(0.22, 0.48, 0.28, 1)
 
-[node name="Eye" parent="Visuals" index="1"]
+[node name="Eye" parent="Visuals" index="2"]
 color = Color(0.95, 0.2, 0.2, 1)
 
-[node name="Arm" parent="Visuals" index="2"]
+[node name="Arm" parent="Visuals" index="3"]
 color = Color(0.18, 0.38, 0.22, 1)
