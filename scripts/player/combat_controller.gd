@@ -2,12 +2,14 @@ class_name CombatController
 extends Node
 
 ## CombatController
-## Orchestrates player weapon attacks, combo chains, input buffering, hitbox activation, and attack timers.
+## Orchestrates player weapon attacks, combo chains, input buffering, hitbox activation,
+## aerial combat, charged heavy attacks, and attack cancellation windows.
 
 signal attack_started(attack: AttackData)
 signal attack_phase_changed(phase: int)
 signal attack_finished()
 signal attack_hit_connected(target: Area2D, damage_info: DamageInfo)
+signal charge_updated(charge_ratio: float)
 
 enum AttackPhase {
 	NONE,
@@ -31,6 +33,12 @@ var has_buffered_attack: bool = false
 var buffered_is_heavy: bool = false
 var is_combo_window_open: bool = false
 
+# Heavy Attack Charging State
+var is_charging_heavy: bool = false
+var charge_timer: float = 0.0
+var charge_multiplier: float = 1.0
+var poise_charge_multiplier: float = 1.0
+
 var _input_buffer_timer: float = 0.0
 var _attacks: Dictionary = {} # Dictionary[StringName, AttackData]
 
@@ -53,7 +61,8 @@ func _load_attack_resources() -> void:
 		&"light_1": "res://data/attacks/attack_light_1.tres",
 		&"light_2": "res://data/attacks/attack_light_2.tres",
 		&"light_3": "res://data/attacks/attack_light_3.tres",
-		&"heavy_1": "res://data/attacks/attack_heavy_1.tres"
+		&"heavy_1": "res://data/attacks/attack_heavy_1.tres",
+		&"air_1": "res://data/attacks/attack_air_1.tres"
 	}
 	
 	for id in paths:
@@ -64,7 +73,7 @@ func _load_attack_resources() -> void:
 				_attacks[id] = res
 
 func is_attacking() -> bool:
-	return current_phase != AttackPhase.NONE
+	return current_phase != AttackPhase.NONE or is_charging_heavy
 
 func get_current_attack() -> AttackData:
 	return current_attack
@@ -73,6 +82,8 @@ func get_attack_phase() -> AttackPhase:
 	return current_phase
 
 func get_attack_phase_name() -> String:
+	if is_charging_heavy:
+		return "CHARGING"
 	match current_phase:
 		AttackPhase.STARTUP:
 			return "STARTUP"
@@ -86,6 +97,9 @@ func get_attack_phase_name() -> String:
 func get_combo_index() -> int:
 	return combo_index
 
+func can_cancel_attack() -> bool:
+	return current_phase == AttackPhase.RECOVERY
+
 func start_light_attack() -> bool:
 	if not _attacks.has(&"light_1"):
 		return false
@@ -96,7 +110,69 @@ func start_heavy_attack() -> bool:
 	if not _attacks.has(&"heavy_1"):
 		return false
 	
+	charge_multiplier = 1.0
+	poise_charge_multiplier = 1.0
 	return _execute_attack(_attacks[&"heavy_1"], 0)
+
+func start_heavy_charge() -> bool:
+	if not _attacks.has(&"heavy_1"):
+		return false
+	
+	var attack_data: AttackData = _attacks[&"heavy_1"]
+	if not attack_data.is_chargeable:
+		return start_heavy_attack()
+	
+	is_charging_heavy = true
+	charge_timer = 0.0
+	charge_multiplier = 1.0
+	poise_charge_multiplier = 1.0
+	
+	_notify_animation_charge()
+	return true
+
+func update_heavy_charge(delta: float) -> void:
+	if not is_charging_heavy or not _attacks.has(&"heavy_1"):
+		return
+	
+	var attack_data: AttackData = _attacks[&"heavy_1"]
+	charge_timer = minf(attack_data.maximum_charge_time, charge_timer + delta)
+	
+	var ratio: float = get_charge_ratio()
+	charge_multiplier = lerpf(1.0, attack_data.maximum_damage_multiplier, ratio)
+	poise_charge_multiplier = lerpf(1.0, attack_data.maximum_poise_multiplier, ratio)
+	
+	charge_updated.emit(ratio)
+
+func release_heavy_attack() -> bool:
+	if not _attacks.has(&"heavy_1"):
+		is_charging_heavy = false
+		return false
+	
+	var attack_data: AttackData = _attacks[&"heavy_1"]
+	is_charging_heavy = false
+	
+	var success: bool = _execute_attack(attack_data, 0)
+	if success and hitbox != null:
+		hitbox.damage_multiplier = charge_multiplier
+		hitbox.poise_multiplier = poise_charge_multiplier
+	return success
+
+func get_charge_ratio() -> float:
+	if not _attacks.has(&"heavy_1"):
+		return 0.0
+	var attack_data: AttackData = _attacks[&"heavy_1"]
+	var total_span: float = attack_data.maximum_charge_time - attack_data.minimum_charge_time
+	if total_span <= 0.0:
+		return 1.0 if charge_timer >= attack_data.minimum_charge_time else 0.0
+	return clampf((charge_timer - attack_data.minimum_charge_time) / total_span, 0.0, 1.0)
+
+func start_air_attack() -> bool:
+	if not _attacks.has(&"air_1"):
+		return false
+	
+	charge_multiplier = 1.0
+	poise_charge_multiplier = 1.0
+	return _execute_attack(_attacks[&"air_1"], 0)
 
 func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 	current_attack = attack_data
@@ -111,6 +187,8 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 	
 	if hitbox != null:
 		hitbox.deactivate()
+		hitbox.damage_multiplier = charge_multiplier
+		hitbox.poise_multiplier = poise_charge_multiplier
 		_update_hitbox_facing()
 	
 	# Apply forward movement impulse
@@ -126,7 +204,7 @@ func _execute_attack(attack_data: AttackData, next_combo_index: int) -> bool:
 	return true
 
 func process_combat(delta: float) -> bool:
-	if not is_attacking():
+	if not is_attacking() or is_charging_heavy:
 		return false
 	
 	combo_timer += delta
@@ -153,6 +231,8 @@ func process_combat(delta: float) -> bool:
 				phase_timer = current_attack.active_time - overflow
 				if hitbox != null:
 					_update_hitbox_facing()
+					hitbox.damage_multiplier = charge_multiplier
+					hitbox.poise_multiplier = poise_charge_multiplier
 					hitbox.activate(current_attack, player)
 				attack_phase_changed.emit(current_phase)
 			
@@ -229,6 +309,9 @@ func finish_combat() -> void:
 	has_buffered_attack = false
 	_input_buffer_timer = 0.0
 	is_combo_window_open = false
+	is_charging_heavy = false
+	charge_multiplier = 1.0
+	poise_charge_multiplier = 1.0
 	
 	if hitbox != null:
 		hitbox.deactivate()
@@ -243,6 +326,12 @@ func _notify_animation_start(attack_id: StringName) -> void:
 		var anim: Node = player.get_node("Components/PlayerAnimationController")
 		if anim != null and anim.has_method("play_attack_animation"):
 			anim.play_attack_animation(attack_id)
+
+func _notify_animation_charge() -> void:
+	if player != null and player.has_node("Components/PlayerAnimationController"):
+		var anim: Node = player.get_node("Components/PlayerAnimationController")
+		if anim != null and anim.has_method("play_charge_animation"):
+			anim.play_charge_animation()
 
 func _on_hitbox_connected(target_hurtbox: Area2D, damage_info: DamageInfo) -> void:
 	attack_hit_connected.emit(target_hurtbox, damage_info)

@@ -21,6 +21,11 @@ func physics_update(_delta: float) -> void:
 		state_machine.change_state(&"Jump")
 		return
 	
+	# Check air attack trigger
+	if Input.is_action_just_pressed(&"light_attack"):
+		state_machine.change_state(&"AirAttack")
+		return
+	
 	# Ground impact
 	if player.is_on_floor():
 		state_machine.change_state(&"Land")

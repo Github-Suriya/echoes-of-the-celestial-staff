@@ -104,16 +104,24 @@ gantt
 
 ---
 
-### Phase 4: Advanced Combat
-- **Objective:** Implement heavy strikes, charged attacks, aerial combat, perfect dodge, parry deflection, and poise stagger.
+### Phase 4: Advanced Combat (COMPLETE)
+- **Objective:** Implement heavy strikes, charged attacks, aerial combat, perfect dodge, parry deflection, attack interruption, and recovery cancellation.
 - **Dependencies:** Phase 3 complete.
+- **Status:** Complete (84/84 automated advanced combat tests passing, 91/91 Phase 3 regression passing, 48/48 Phase 2 regression passing, 45/45 Phase 1 regression passing -> 268/268 total tests passing).
 - **Key Deliverables:**
-  - `StaggerComponent` managing poise and guard-break states.
-  - `ParrySystem` detecting precision deflection frames (5-frame window).
-  - `DodgeSystem` granting invulnerability frames and detecting Perfect Dodge (4-frame window).
-  - Hitstop controller (`Engine.time_scale` freeze frames) and execution strike trigger.
+  - `DefenseController` component managing ground dodge (I-frames, perfect dodge) and ground parry (deflection, perfect parry).
+  - Defensive signals on `EventBus` (`dodge_started`, `dodge_completed`, `perfect_dodge`, `parry_started`, `parry_success`, `perfect_parry`, `attack_interrupted`).
+  - `Hurtbox` interception pipeline querying `DefenseController.try_intercept_hit()`.
+  - States: `PlayerDodgeState`, `PlayerParryState`, `PlayerAirAttackState`.
+  - Aerial Attack: Celestial Falling Strike (`attack_air_1.tres`) with mid-air glide and floor landing truncation.
+  - Charged Heavy Attack: Hold-to-charge input scaling damage and poise multipliers up to 2.0x.
+  - Attack cancellation framework: instant recovery phase cancellation into Dodge or Parry.
+  - Deterministic testing: `CombatTrainingAttacker` (`scenes/enemies/combat_training_attacker.tscn`).
+  - Interactive arena: `TestDefenseRoom` (`scenes/world/test_defense_room.tscn`).
+  - Live diagnostics: `PlayerDebugOverlay` telemetry for Dodge, Parry, I-frames, and Charge ratio.
+  - Automated test suite: `tests/test_defense_runner.tscn` validating all 42 requirements.
 - **Entry Criteria:** Combat foundation active.
-- **Exit Criteria:** Perfect parry and dodge triggers function consistently; poise break triggers vulnerable punish window.
+- **Exit Criteria:** Perfect parry and dodge triggers function consistently; poise break triggers vulnerable punish window; 100% tests passing with zero errors/warnings.
 
 ---
 

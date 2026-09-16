@@ -18,3 +18,15 @@ extends Resource
 @export var forward_impulse: float = 30.0
 @export var hitstop_duration: float = 0.050
 @export var attack_priority: int = 1
+
+# Defensive Compatibility
+@export var is_parryable: bool = true
+@export var is_dodgeable: bool = true
+@export var is_interruptible: bool = true
+
+# Heavy Attack Charging Foundation
+@export var is_chargeable: bool = false
+@export var minimum_charge_time: float = 0.15
+@export var maximum_charge_time: float = 0.75
+@export var maximum_damage_multiplier: float = 2.0
+@export var maximum_poise_multiplier: float = 2.0

@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://cx618k4mb7x3p"]
+
+[ext_resource type="Script" path="res://scripts/enemies/combat_training_attacker.gd" id="1_attacker"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://scripts/combat/poise_component.gd" id="3_poise"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="4_hitbox"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="5_hurtbox"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 11.0
+height = 48.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(40, 34)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 13.0
+height = 48.0
+
+[node name="CombatTrainingAttacker" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_attacker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -24)
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -11.0
+offset_top = -48.0
+offset_right = 11.0
+color = Color(0.85, 0.45, 0.15, 1)
+
+[node name="Eye" type="ColorRect" parent="Visuals"]
+offset_left = -7.0
+offset_top = -42.0
+offset_right = -1.0
+offset_bottom = -36.0
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="Arm" type="ColorRect" parent="Visuals"]
+offset_left = -16.0
+offset_top = -32.0
+offset_right = -10.0
+offset_bottom = -16.0
+color = Color(0.7, 0.35, 0.1, 1)
+
+[node name="Indicator" type="ColorRect" parent="Visuals"]
+visible = false
+offset_left = -14.0
+offset_top = -62.0
+offset_right = 14.0
+offset_bottom = -54.0
+color = Color(1, 0.8, 0, 1)
+
+[node name="Components" type="Node" parent="."]
+
+[node name="HealthComponent" type="Node" parent="Components"]
+script = ExtResource("2_health")
+max_health = 100.0
+
+[node name="PoiseComponent" type="Node" parent="Components"]
+script = ExtResource("3_poise")
+max_poise = 40.0
+stagger_duration = 1.6
+
+[node name="Combat" type="Node2D" parent="."]
+
+[node name="EnemyHitbox" type="Area2D" parent="Combat"]
+position = Vector2(-22, -24)
+collision_layer = 16
+collision_mask = 32
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/EnemyHitbox"]
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "poise_component")]
+position = Vector2(0, -24)
+collision_layer = 64
+collision_mask = 0
+script = ExtResource("5_hurtbox")
+health_component = NodePath("../Components/HealthComponent")
+poise_component = NodePath("../Components/PoiseComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="StatusLabel" type="Label" parent="."]
+offset_left = -90.0
+offset_top = -96.0
+offset_right = 90.0
+offset_bottom = -64.0
+theme_override_font_sizes/font_size = 11
+text = "HP: 100/100 | Poise: 40/40
+[IDLE]"
+horizontal_alignment = 1
+vertical_alignment = 1

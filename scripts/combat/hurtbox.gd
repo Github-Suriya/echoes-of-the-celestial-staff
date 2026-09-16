@@ -2,13 +2,15 @@ class_name Hurtbox
 extends Area2D
 
 ## Hurtbox
-## Combat Area2D that receives DamageInfo payloads from Hitboxes and routes to Health/Poise components.
+## Combat Area2D that receives DamageInfo payloads from Hitboxes,
+## queries DefenseController for parry/dodge interception, and routes to Health/Poise components.
 
 signal hit_received(damage_info: DamageInfo)
 
 @export var owner_actor: Node2D = null
 @export var health_component: HealthComponent = null
 @export var poise_component: PoiseComponent = null
+@export var defense_controller: DefenseController = null
 
 var is_invulnerable: bool = false
 
@@ -30,6 +32,12 @@ func receive_hit(damage_info: DamageInfo) -> void:
 	
 	if health_component != null and health_component.is_invulnerable:
 		return
+	
+	# Evaluate defensive interception (Dodge / Parry / Perfect Dodge / Perfect Parry)
+	if defense_controller != null:
+		var intercept_result: int = defense_controller.try_intercept_hit(damage_info)
+		if intercept_result != DefenseController.DefenseResult.NONE:
+			return # Intercepted without taking damage or knockback
 	
 	# Apply damage
 	if health_component != null:
@@ -72,3 +80,9 @@ func _find_components() -> void:
 			poise_component = target.get_node("Components/PoiseComponent") as PoiseComponent
 		elif target.has_node("PoiseComponent"):
 			poise_component = target.get_node("PoiseComponent") as PoiseComponent
+	
+	if defense_controller == null:
+		if target.has_node("Components/DefenseController"):
+			defense_controller = target.get_node("Components/DefenseController") as DefenseController
+		elif target.has_node("DefenseController"):
+			defense_controller = target.get_node("DefenseController") as DefenseController

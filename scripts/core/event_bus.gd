@@ -24,6 +24,15 @@ signal poise_broken(target: Node2D)
 signal hitstop_requested(duration_frames: int)
 signal screen_shake_requested(trauma: float, duration: float)
 
+# --- Defensive Combat Signals ---
+signal dodge_started(entity: Node2D, direction: int)
+signal dodge_completed(entity: Node2D)
+signal perfect_dodge(entity: Node2D, attacker: Node2D)
+signal parry_started(entity: Node2D)
+signal parry_success(defender: Node2D, attacker: Node2D)
+signal perfect_parry(defender: Node2D, attacker: Node2D)
+signal attack_interrupted(target: Node2D, reason: StringName)
+
 # --- Enemy & Boss Domain Signals ---
 signal enemy_died(enemy: Node2D, bounty_qi: int)
 signal boss_started(boss_name: String)

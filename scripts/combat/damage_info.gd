@@ -12,3 +12,9 @@ var attack_id: StringName = &""
 var attacker: Node2D = null
 var source_hitbox: Area2D = null
 var hitstop_duration: float = 0.0
+
+# Defensive and Charging Payload Metadata
+var is_parryable: bool = true
+var is_dodgeable: bool = true
+var is_charge_attack: bool = false
+var attack_data: AttackData = null

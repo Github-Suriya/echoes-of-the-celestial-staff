@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://df708kspwe42q"]
+
+[ext_resource type="Script" path="res://scripts/world/test_defense_room.gd" id="1_room"]
+[ext_resource type="PackedScene" uid="uid://dakmsdllxvfyu" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://cx618k4mb7x3p" path="res://scenes/enemies/combat_training_attacker.tscn" id="3_attacker"]
+[ext_resource type="PackedScene" uid="uid://ch8f0dm5awnig" path="res://scenes/enemies/combat_test_dummy.tscn" id="4_dummy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1600, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 600)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(240, 20)
+
+[node name="TestDefenseRoom" type="Node2D"]
+script = ExtResource("1_room")
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Environment"]
+offset_left = -400.0
+offset_top = -450.0
+offset_right = 1200.0
+offset_bottom = 200.0
+color = Color(0.06, 0.08, 0.12, 1)
+
+[node name="Floor" type="StaticBody2D" parent="Environment"]
+position = Vector2(400, 20)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Visual" type="ColorRect" parent="Environment/Floor"]
+offset_left = -800.0
+offset_top = -20.0
+offset_right = 800.0
+offset_bottom = 20.0
+color = Color(0.18, 0.2, 0.24, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(-400, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/LeftWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.12, 0.14, 0.17, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(1200, -280)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Visual" type="ColorRect" parent="Environment/RightWall"]
+offset_left = -20.0
+offset_top = -300.0
+offset_right = 20.0
+offset_bottom = 300.0
+color = Color(0.12, 0.14, 0.17, 1)
+
+[node name="Platform" type="StaticBody2D" parent="Environment"]
+position = Vector2(750, -110)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform"]
+shape = SubResource("RectangleShape2D_plat")
+
+[node name="Visual" type="ColorRect" parent="Environment/Platform"]
+offset_left = -120.0
+offset_top = -10.0
+offset_right = 120.0
+offset_bottom = 10.0
+color = Color(0.24, 0.27, 0.32, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 0)
+
+[node name="CombatTrainingAttacker" parent="." instance=ExtResource("3_attacker")]
+position = Vector2(300, 0)
+
+[node name="CombatTestDummy" parent="." instance=ExtResource("4_dummy")]
+position = Vector2(550, 0)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="PanelContainer" parent="UI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 480.0
+offset_bottom = 180.0
+
+[node name="Margin" type="MarginContainer" parent="UI/Instructions"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="UI/Instructions/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "PHASE 4 — DEFENSE & ADVANCED COMBAT ARENA"
+
+[node name="Desc1" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Dodge: SHIFT (Invulnerability frames + Perfect Dodge window)"
+
+[node name="Desc2" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Parry: Q (Active deflection + Perfect Parry posture break)"
+
+[node name="Desc3" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Aerial Strike: J in mid-air (Celestial Falling Strike)"
+
+[node name="Desc4" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• Charged Heavy: Hold K / RMB to charge (Scales damage & poise)"
+
+[node name="Desc5" type="Label" parent="UI/Instructions/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• T: Trigger Swing | Y: Auto Swing | R: Reset Arena | F3: Telemetry"

@@ -24,6 +24,15 @@ func physics_update(delta: float) -> void:
 	
 	var combat: CombatController = _get_combat_controller()
 	if combat != null:
+		# Check cancellation into Dodge or Parry during recovery phase
+		if combat.can_cancel_attack():
+			if Input.is_action_just_pressed(&"dodge"):
+				state_machine.change_state(&"Dodge")
+				return
+			if Input.is_action_just_pressed(&"parry"):
+				state_machine.change_state(&"Parry")
+				return
+		
 		var still_attacking: bool = combat.process_combat(delta)
 		
 		# Check branching to HeavyAttack if heavy attack was buffered

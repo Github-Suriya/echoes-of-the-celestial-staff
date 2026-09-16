@@ -30,6 +30,24 @@ func play_animation(anim_name: StringName) -> void:
 func play_attack_animation(attack_id: StringName) -> void:
 	play_animation(attack_id)
 
+func play_dodge_animation() -> void:
+	play_animation(&"dodge")
+
+func play_perfect_dodge_feedback() -> void:
+	play_animation(&"perfect_dodge")
+
+func play_parry_animation() -> void:
+	play_animation(&"parry")
+
+func play_perfect_parry_feedback() -> void:
+	play_animation(&"perfect_parry")
+
+func play_air_attack_animation() -> void:
+	play_animation(&"air_1")
+
+func play_charge_animation() -> void:
+	play_animation(&"charge_heavy")
+
 func play_hit_reaction() -> void:
 	play_animation(&"hit_reaction")
 
@@ -48,6 +66,12 @@ func _on_state_changed(_old_state: StringName, new_state: StringName) -> void:
 			play_animation(&"fall")
 		&"Land":
 			play_animation(&"land")
+		&"Dodge":
+			play_dodge_animation()
+		&"Parry":
+			play_parry_animation()
+		&"AirAttack":
+			play_air_attack_animation()
 
 func _apply_placeholder_feedback(anim_name: StringName) -> void:
 	if visuals_root == null:
@@ -90,6 +114,30 @@ func _apply_placeholder_feedback(anim_name: StringName) -> void:
 			var tween: Tween = create_tween()
 			visuals_root.scale = Vector2(facing_sign * 1.15, 0.75)
 			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.20)
+		&"dodge":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.3, 0.7)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.25)
+		&"perfect_dodge":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.45, 0.6)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.18)
+		&"parry":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.9, 1.15)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.15)
+		&"perfect_parry":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.3, 1.3)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.15)
+		&"air_1":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.85, 1.25)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.16)
+		&"charge_heavy":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.92, 1.1)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
 
 func _get_state_machine() -> StateMachine:
 	if owner != null and owner.has_node("StateMachine"):

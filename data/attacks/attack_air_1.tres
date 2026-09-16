@@ -4,24 +4,24 @@
 
 [resource]
 script = ExtResource("1_attack")
-attack_id = &"heavy_1"
-display_name = "Heavy Overhead Smash"
-damage = 25.0
-poise_damage = 35.0
-knockback_force = Vector2(240, -80)
-startup_time = 0.233
-active_time = 0.083
-recovery_time = 0.3
+attack_id = &"air_1"
+display_name = "Celestial Falling Strike"
+damage = 14.0
+poise_damage = 16.0
+knockback_force = Vector2(120, 60)
+startup_time = 0.067
+active_time = 0.067
+recovery_time = 0.133
 combo_window_start = 0.0
 combo_window_end = 0.0
 next_attack_id = &""
-forward_impulse = 40.0
-hitstop_duration = 0.12
-attack_priority = 2
+forward_impulse = 20.0
+hitstop_duration = 0.06
+attack_priority = 1
 is_parryable = true
 is_dodgeable = true
 is_interruptible = true
-is_chargeable = true
+is_chargeable = false
 minimum_charge_time = 0.15
 maximum_charge_time = 0.75
 maximum_damage_multiplier = 2.0

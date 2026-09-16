@@ -129,6 +129,7 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
 │   ├── PlayerAnimationController [scripts/player/player_animation_controller.gd]
 │   ├── PlayerRespawn [scripts/player/player_respawn.gd]
 │   ├── CombatController [scripts/player/combat_controller.gd]
+│   ├── DefenseController [scripts/player/defense_controller.gd]
 │   ├── HealthComponent [scripts/combat/health_component.gd]
 │   └── PoiseComponent [scripts/combat/poise_component.gd]
 ├── Combat (Node2D)
@@ -141,7 +142,10 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
 │   ├── Fall (Node) [scripts/player/states/player_fall_state.gd]
 │   ├── Land (Node) [scripts/player/states/player_land_state.gd]
 │   ├── Attack (Node) [scripts/player/states/player_attack_state.gd]
-│   └── HeavyAttack (Node) [scripts/player/states/player_heavy_attack_state.gd]
+│   ├── HeavyAttack (Node) [scripts/player/states/player_heavy_attack_state.gd]
+│   ├── Dodge (Node) [scripts/player/states/player_dodge_state.gd]
+│   ├── Parry (Node) [scripts/player/states/player_parry_state.gd]
+│   └── AirAttack (Node) [scripts/player/states/player_air_attack_state.gd]
 └── DebugOverlay (CanvasLayer) [scripts/player/player_debug_overlay.gd]
     └── PanelContainer / DebugLabel (Toggleable via F3)
 ```
@@ -154,12 +158,14 @@ Player (CharacterBody2D) [scripts/player/player_controller.gd]
    - Implements coyote time (0.12s) and jump buffering (0.12s).
 2. **`PlayerAnimationController` (`scripts/player/player_animation_controller.gd`):**
    - Decouples visual presentation from physics; applies squash/stretch feedback to placeholder visuals preserving facing scale.
-   - Exposes combat hooks: `play_attack_animation(id)`, `play_hit_reaction()`, `play_stagger()`.
+   - Exposes combat & defense hooks: `play_attack_animation(id)`, `play_dodge_animation()`, `play_perfect_dodge_feedback()`, `play_parry_animation()`, `play_perfect_parry_feedback()`, `play_air_attack_animation()`, `play_charge_animation()`, `play_hit_reaction()`, `play_stagger()`.
 3. **`PlayerRespawn` (`scripts/player/player_respawn.gd`):**
    - Tracks spawn position; resets velocity, position, and state upon falling below `fall_death_y = 1200.0`.
 4. **`CombatController` (`scripts/player/combat_controller.gd`):**
-   - Coordinates attack strings, combo window timing, input buffering (350ms window), and hitbox activation/deactivation during phases.
-5. **`PlayerController` (`scripts/player/player_controller.gd`):**
+   - Coordinates attack strings, combo window timing, input buffering (350ms window), aerial strikes, hold-to-charge scaling, recovery cancellation, and hitbox activation/deactivation during phases.
+5. **`DefenseController` (`scripts/player/defense_controller.gd`):**
+   - Coordinates ground dodge (0.35s duration, 0.033s-0.200s I-frames, 0.033s-0.100s perfect window), ground parry (0.033s startup, 0.033s-0.253s active, 0.033s-0.116s perfect window), poise break on perfect parry, attacker strike interruption, and hit interception prior to damage resolution.
+6. **`PlayerController` (`scripts/player/player_controller.gd`):**
    - Central facing API (`facing_direction`: +1 for Right, -1 for Left; `get_facing_direction()`, `is_facing_left()`, `is_facing_right()`).
    - Locks facing mid-swing to prevent hitbox jitter.
    - Camera look-ahead interpolation.

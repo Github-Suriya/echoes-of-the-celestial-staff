@@ -13,6 +13,11 @@ func physics_update(_delta: float) -> void:
 	if player == null:
 		return
 	
+	# Check air attack trigger
+	if Input.is_action_just_pressed(&"light_attack"):
+		state_machine.change_state(&"AirAttack")
+		return
+	
 	# Transition to Fall as soon as upward velocity reaches apex
 	if player.velocity.y >= 0.0:
 		state_machine.change_state(&"Fall")

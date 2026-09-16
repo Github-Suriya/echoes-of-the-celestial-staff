@@ -23,6 +23,14 @@ func physics_update(_delta: float) -> void:
 		state_machine.change_state(&"HeavyAttack")
 		return
 	
+	# Check defense triggers
+	if Input.is_action_just_pressed(&"dodge"):
+		state_machine.change_state(&"Dodge")
+		return
+	if Input.is_action_just_pressed(&"parry"):
+		state_machine.change_state(&"Parry")
+		return
+	
 	# Check jump trigger
 	if movement.has_method("consume_jump_intent") and movement.call("consume_jump_intent"):
 		state_machine.change_state(&"Jump")

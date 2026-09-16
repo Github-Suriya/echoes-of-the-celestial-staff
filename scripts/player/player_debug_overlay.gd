@@ -36,6 +36,10 @@ func _process(_delta: float) -> void:
 	if _player.has_node("StateMachine"):
 		state_machine = _player.get_node("StateMachine")
 	
+	var defense: DefenseController = null
+	if _player.has_node("Components/DefenseController"):
+		defense = _player.get_node("Components/DefenseController") as DefenseController
+	
 	var fps: float = Performance.get_monitor(Performance.TIME_FPS)
 	var pos: Vector2 = _player.global_position
 	var vel: Vector2 = _player.velocity
@@ -53,6 +57,7 @@ func _process(_delta: float) -> void:
 	var combo_idx: int = 0
 	var hitbox_active: bool = false
 	var in_hitstop: bool = false
+	var charge_info: String = "OFF"
 	
 	if combat != null:
 		if combat.get_current_attack() != null:
@@ -62,23 +67,40 @@ func _process(_delta: float) -> void:
 		combo_idx = combat.get_combo_index()
 		if combat.hitbox != null:
 			hitbox_active = combat.hitbox.is_active
+		if combat.is_charging_heavy:
+			charge_info = "CHARGING (%.0f%%, dmg x%.2f)" % [combat.get_charge_ratio() * 100.0, combat.charge_multiplier]
+	
+	# Defense metrics
+	var dodge_info: String = "IDLE"
+	var parry_info: String = "IDLE"
+	if defense != null:
+		if defense.is_dodging:
+			var iframes: String = "IFRAME" if defense.is_invulnerable_to_damage else "VULN"
+			var perf: String = " [PERFECT]" if defense.is_in_perfect_dodge_window() else ""
+			dodge_info = "%s%s (t=%.2fs)" % [iframes, perf, defense.dodge_timer]
+		if defense.is_parrying:
+			var p_window: String = "ACTIVE" if defense.is_in_parry_window() else "RECOVERY"
+			var p_perf: String = " [PERFECT]" if defense.is_in_perfect_parry_window() else ""
+			parry_info = "%s%s (t=%.2fs)" % [p_window, p_perf, defense.parry_timer]
 	
 	if has_node("/root/GameManager"):
 		var gm: Node = get_node("/root/GameManager")
 		if gm != null and gm.has_method("is_in_hitstop"):
 			in_hitstop = gm.is_in_hitstop()
 	
-	_label.text = """[COMBAT & MOVEMENT DEBUG (F3)]
+	_label.text = """[COMBAT & DEFENSE DEBUG (F3)]
 FPS: %.1f | Hitstop: %s
 State: %s | Facing: %s
-Attack: %s (Phase: %s, %.3fs)
+Attack: %s (Phase: %s, %.3fs) | Charge: %s
 Combo Index: %d | Hitbox: %s
+Dodge: %s | Parry: %s
 Pos: (%.1f, %.1f) | Vel: (%.1f, %.1f)
 Grounded: %s | Coyote: %.3fs""" % [
 		fps, str(in_hitstop),
 		state_name, facing,
-		attack_id, attack_phase, phase_timer_val,
+		attack_id, attack_phase, phase_timer_val, charge_info,
 		combo_idx, "ACTIVE" if hitbox_active else "OFF",
+		dodge_info, parry_info,
 		pos.x, pos.y, vel.x, vel.y,
 		str(grounded), coyote
 	]
