@@ -72,6 +72,18 @@ func play_hit_reaction() -> void:
 func play_stagger() -> void:
 	play_animation(&"stagger")
 
+func play_celestial_arc() -> void:
+	play_animation(&"ability_celestial_arc")
+
+func play_heavenly_pulse() -> void:
+	play_animation(&"ability_heavenly_pulse")
+
+func play_cloud_step() -> void:
+	play_animation(&"ability_cloud_step")
+
+func play_spirit_fail_feedback() -> void:
+	play_animation(&"ability_fail")
+
 func _on_state_changed(_old_state: StringName, new_state: StringName) -> void:
 	match new_state:
 		&"Idle":
@@ -168,6 +180,22 @@ func _apply_placeholder_feedback(anim_name: StringName) -> void:
 			var tween: Tween = create_tween()
 			visuals_root.scale = Vector2(facing_sign * 0.92, 1.12)
 			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
+		&"ability_celestial_arc":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.25, 0.85)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.12)
+		&"ability_heavenly_pulse":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.35, 0.70)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.15)
+		&"ability_cloud_step":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 1.50, 0.65)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.18)
+		&"ability_fail":
+			var tween: Tween = create_tween()
+			visuals_root.scale = Vector2(facing_sign * 0.92, 0.92)
+			tween.tween_property(visuals_root, "scale", Vector2(facing_sign, 1.0), 0.10)
 
 func _get_state_machine() -> StateMachine:
 	if owner != null and owner.has_node("StateMachine"):

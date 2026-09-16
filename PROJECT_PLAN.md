@@ -148,15 +148,22 @@ gantt
 
 ---
 
-### Phase 6: Spirit Abilities
-- **Objective:** Implement the Spirit energy system and equippable active martial arts.
+### Phase 6: Spirit Abilities (COMPLETE)
+- **Objective:** Implement the Spirit energy system, equippable active martial arts, casting lifecycle, and combat integration.
 - **Dependencies:** Phase 5 complete.
+- **Status:** Complete (95/95 automated spirit ability tests passing, 64/64 Phase 5 regression passing, 84/84 Phase 4 regression passing, 91/91 Phase 3 regression passing, 48/48 Phase 2 regression passing, 45/45 Phase 1 regression passing -> 427/427 total tests passing).
 - **Key Deliverables:**
-  - `SpiritComponent` tracking Spirit generated via attacks/parries.
-  - Active Spirit Arts (`Spirit Wave`, `Astral Mirror`, `Ascending Dragon`).
-  - Cooldown and spirit cost validation pipeline.
+  - `SpiritComponent` attached to Player managing 100 max Spirit, transactional consumption (`consume_spirit()`), clamped restoration (`restore_spirit()`), and combat restoration hooks (light +4, heavy +8, perfect parry +10).
+  - `SpiritAbilityData` custom `Resource` definition and three prototype abilities (`ability_celestial_arc.tres`, `ability_heavenly_pulse.tres`, `ability_cloud_step.tres`).
+  - `SpiritAbilityController` managing 3 equipped ability slots, cooldown countdown timers, phase lifecycle (`READY`, `STARTUP`, `ACTIVE`, `RECOVERY`, `COOLDOWN`), and execution delegates.
+  - `SpiritProjectile` scene and script for directional piercing projectiles on Layer 4 (`PlayerHitbox`) with single-hit hurtbox tracking.
+  - `PlayerSpiritAbilityState` state machine node decoupled from weapon attacks, supporting recovery cancellation into Dodge or Parry.
+  - Gatekeeping rules: Casting blocked during attack startup/active, dodge I-frames, and active parry frames; allowed during locomotion and attack recovery.
+  - Development UI & Telemetry: `SpiritHUD` with live Spirit gauge and ability slot cards; `PlayerDebugOverlay` telemetry.
+  - Interactive arena: `TestSpiritRoom` (`scenes/world/test_spirit_room.tscn`) with Player, 3 test dummies, training attacker, obstacle wall, and HUD.
+  - Automated test suite: `tests/test_spirit_runner.tscn` validating all 38 requirements.
 - **Entry Criteria:** Stance system complete.
-- **Exit Criteria:** Spirit accumulates correctly on combat hits and discharges properly when activating abilities.
+- **Exit Criteria:** Spirit accumulates correctly on combat hits and discharges properly when activating abilities; 100% tests passing with zero errors/warnings.
 
 ---
 

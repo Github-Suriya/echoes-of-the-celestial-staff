@@ -24,6 +24,9 @@
 [ext_resource type="Script" path="res://scripts/player/states/player_parry_state.gd" id="22_parry"]
 [ext_resource type="Script" path="res://scripts/player/states/player_air_attack_state.gd" id="23_air"]
 [ext_resource type="Script" path="res://scripts/player/stance_controller.gd" id="24_stance"]
+[ext_resource type="Script" path="res://scripts/player/spirit_component.gd" id="25_spirit"]
+[ext_resource type="Script" path="res://scripts/player/spirit_ability_controller.gd" id="26_spirit_ctrl"]
+[ext_resource type="Script" path="res://scripts/player/states/player_spirit_ability_state.gd" id="27_spirit_state"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -121,6 +124,12 @@ script = ExtResource("20_defense")
 [node name="StanceController" type="Node" parent="Components"]
 script = ExtResource("24_stance")
 
+[node name="SpiritComponent" type="Node" parent="Components"]
+script = ExtResource("25_spirit")
+
+[node name="SpiritAbilityController" type="Node" parent="Components"]
+script = ExtResource("26_spirit_ctrl")
+
 [node name="Combat" type="Node2D" parent="."]
 
 [node name="PlayerHitbox" type="Area2D" parent="Combat"]
@@ -179,6 +188,9 @@ script = ExtResource("22_parry")
 
 [node name="AirAttack" type="Node" parent="StateMachine"]
 script = ExtResource("23_air")
+
+[node name="SpiritAbility" type="Node" parent="StateMachine"]
+script = ExtResource("27_spirit_state")
 
 [node name="DebugOverlay" type="CanvasLayer" parent="."]
 script = ExtResource("19_debug")

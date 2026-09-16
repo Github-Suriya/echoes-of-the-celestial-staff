@@ -100,6 +100,13 @@ func can_change_stance() -> bool:
 					if phase == CombatController.AttackPhase.STARTUP or phase == CombatController.AttackPhase.ACTIVE:
 						return false
 	
+	# 4. Check SpiritAbilityController state (blocked during startup and active)
+	if player.has_node("Components/SpiritAbilityController"):
+		var ability_ctrl: SpiritAbilityController = player.get_node("Components/SpiritAbilityController") as SpiritAbilityController
+		if ability_ctrl != null and ability_ctrl.is_casting:
+			if ability_ctrl.current_phase == SpiritAbilityController.AbilityPhase.STARTUP or ability_ctrl.current_phase == SpiritAbilityController.AbilityPhase.ACTIVE:
+				return false
+	
 	return true
 
 func set_stance(new_stance: int) -> bool:

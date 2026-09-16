@@ -44,6 +44,14 @@ func _process(_delta: float) -> void:
 	if _player.has_node("Components/StanceController"):
 		stance = _player.get_node("Components/StanceController") as StanceController
 	
+	var spirit_comp: SpiritComponent = null
+	if _player.has_node("Components/SpiritComponent"):
+		spirit_comp = _player.get_node("Components/SpiritComponent") as SpiritComponent
+	
+	var ability_ctrl: SpiritAbilityController = null
+	if _player.has_node("Components/SpiritAbilityController"):
+		ability_ctrl = _player.get_node("Components/SpiritAbilityController") as SpiritAbilityController
+	
 	var fps: float = Performance.get_monitor(Performance.TIME_FPS)
 	var pos: Vector2 = _player.global_position
 	var vel: Vector2 = _player.velocity
@@ -52,7 +60,6 @@ func _process(_delta: float) -> void:
 	
 	var facing: String = "RIGHT (+1)" if _player.get("facing_direction") == 1 else "LEFT (-1)"
 	var coyote: float = movement.get_coyote_timer() if movement != null and movement.has_method("get_coyote_timer") else 0.0
-	var buffer: float = movement.get_jump_buffer_timer() if movement != null and movement.has_method("get_jump_buffer_timer") else 0.0
 	
 	# Stance metrics
 	var stance_info: String = "NONE"
@@ -66,6 +73,22 @@ func _process(_delta: float) -> void:
 			stance.get_poise_damage_multiplier(),
 			stance.get_dodge_distance_multiplier()
 		]
+	
+	# Spirit metrics
+	var spirit_str: String = "N/A"
+	if spirit_comp != null:
+		spirit_str = "%.0f / %.0f (%.0f%%)" % [spirit_comp.get_spirit(), spirit_comp.get_max_spirit(), spirit_comp.get_spirit_ratio() * 100.0]
+	
+	# Ability metrics
+	var ability_str: String = "IDLE"
+	var cd_str: String = "[1] Arc: READY | [2] Pulse: READY | [3] Step: READY"
+	if ability_ctrl != null:
+		if ability_ctrl.is_casting and ability_ctrl.current_ability != null:
+			ability_str = "%s (%s, %.3fs)" % [ability_ctrl.current_ability.display_name, ability_ctrl.get_phase_name(), ability_ctrl.phase_timer]
+		var cd1: String = "READY" if ability_ctrl.is_ability_ready(&"celestial_arc") else "%.1fs" % ability_ctrl.get_cooldown_remaining(&"celestial_arc")
+		var cd2: String = "READY" if ability_ctrl.is_ability_ready(&"heavenly_pulse") else "%.1fs" % ability_ctrl.get_cooldown_remaining(&"heavenly_pulse")
+		var cd3: String = "READY" if ability_ctrl.is_ability_ready(&"cloud_step") else "%.1fs" % ability_ctrl.get_cooldown_remaining(&"cloud_step")
+		cd_str = "[1] Arc: %s | [2] Pulse: %s | [3] Step: %s" % [cd1, cd2, cd3]
 	
 	# Combat metrics
 	var attack_id: String = "NONE"
@@ -105,11 +128,14 @@ func _process(_delta: float) -> void:
 		if gm != null and gm.has_method("is_in_hitstop"):
 			in_hitstop = gm.is_in_hitstop()
 	
-	_label.text = """[COMBAT & STANCE DEBUG (F3)]
+	_label.text = """[COMBAT, STANCE & SPIRIT DEBUG (F3)]
 FPS: %.1f | Hitstop: %s
 State: %s | Facing: %s
 Stance: %s
 %s
+Spirit: %s
+Ability: %s
+CD: %s
 Attack: %s (Phase: %s, %.3fs) | Charge: %s
 Combo Index: %d | Hitbox: %s
 Dodge: %s | Parry: %s
@@ -119,6 +145,9 @@ Grounded: %s | Coyote: %.3fs""" % [
 		state_name, facing,
 		stance_info,
 		stance_mults,
+		spirit_str,
+		ability_str,
+		cd_str,
 		attack_id, attack_phase, phase_timer_val, charge_info,
 		combo_idx, "ACTIVE" if hitbox_active else "OFF",
 		dodge_info, parry_info,

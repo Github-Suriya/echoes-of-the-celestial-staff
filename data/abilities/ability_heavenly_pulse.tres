@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SpiritAbilityData" format=3 uid="uid://dce2pulsespiritres"]
+
+[ext_resource type="Script" path="res://scripts/abilities/spirit_ability_data.gd" id="1_ability_data"]
+
+[resource]
+script = ExtResource("1_ability_data")
+ability_id = &"heavenly_pulse"
+display_name = "Heavenly Pulse"
+description = "Drives spiritual force through the staff to unleash an expanding 360-degree shockwave."
+ability_type = 1
+spirit_cost = 30.0
+cooldown = 4.0
+startup_time = 0.12
+active_time = 0.10
+recovery_time = 0.22
+damage = 24.0
+poise_damage = 35.0
+knockback_force = Vector2(180, -40)
+hitstop_duration = 0.08
+is_parryable = true
+is_dodgeable = true
+can_use_grounded = true
+can_use_airborne = true
+interruptible = false
+movement_multiplier = 1.0

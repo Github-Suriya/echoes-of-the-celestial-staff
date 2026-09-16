@@ -1,7 +1,7 @@
 # Echoes of the Celestial Staff — Combat Design Specification
 
-**Document Version:** 1.3.0  
-**Phase Status:** Phase 5 — Combat Stances (Implemented)  
+**Document Version:** 1.4.0  
+**Phase Status:** Phase 6 — Spirit Abilities (Implemented)  
 **Target Engine:** Godot 4.7.2 Stable  
 **Combat Philosophy:** High Responsiveness, Uncompromising Readability, Tactical Stance Switching  
 
@@ -12,7 +12,8 @@
 > - **PHASE 3 COMPLETE:** Data-driven attacks (`AttackData`), 3-hit light combo (`L -> L -> L`), Heavy Attack foundation (`heavy_1`), Hitbox (`Area2D`, Layer 4), Hurtbox (`Area2D`, Layer 6/7), Damage payload (`DamageInfo`), HealthComponent, PoiseComponent / Stagger, Knockback, Hitstop (`GameManager.apply_hitstop`), Attack input buffering (350ms), Facing integration (+1 / -1 positioning), Combat test dummy, Combat test room.
 > - **PHASE 4 COMPLETE:** Defensive components (`DefenseController`), ground dodge with active I-frames (`0.033s - 0.200s`), perfect dodge window (`0.033s - 0.100s`), ground parry with deflection window (`0.033s - 0.253s`), perfect parry with poise interruption (`25.0` poise damage), aerial light attack (`attack_air_1.tres`), charged heavy strike (`attack_heavy_1.tres`, 1.0x to 2.0x scaling), recovery cancellation framework (`can_cancel_attack()`), `CombatTrainingAttacker` enemy prototype, `test_defense_room.tscn`.
 > - **PHASE 5 COMPLETE:** Three Combat Stances (`SWIFT`, `MOUNTAIN`, `STORM`), `StanceData` resources, `StanceController` component, dynamic runtime multiplier pipeline (movement speed, acceleration, attack speed, damage, poise damage, dodge velocity, dodge recovery), strict parry window preservation (`1.00x`), state machine gatekeeping rules (safe switching during recovery/locomotion; blocked during startup/active/I-frames/heavy charge), zero base resource mutation, visual color flash & procedural squash/stretch feedback, `test_stance_room.tscn`.
-> - **FUTURE PHASES:** Spirit arts, transformation, full enemy AI, boss encounters, Metroidvania progression.
+> - **PHASE 6 COMPLETE:** Data-driven Spirit Ability framework (`SpiritAbilityData`), `SpiritComponent` (100 max, transactional consumption, combat replenishment hooks: Light +4, Heavy +8, Parry +10), `SpiritAbilityController` (3 slots, cooldown timers, phase lifecycle), `PlayerSpiritAbilityState` (cancellable into dodge/parry during recovery), 3 prototype abilities (`Celestial Arc` projectile, `Heavenly Pulse` 64px AoE, `Cloud Step` 550 px/s mobility burst), `SpiritHUD`, `test_spirit_room.tscn`.
+> - **FUTURE PHASES:** Transformation, full enemy AI, boss encounters, Metroidvania progression.
 
 ---
 
@@ -177,10 +178,34 @@ Yuan can switch stances seamlessly during neutral or combo recovery by pressing 
 ## 6. Spirit Arts & Divine Transformation
 
 ### 6.1 Spirit Arts (Active Skills)
-Consumes chunks of the 100-point Spirit Meter:
-1. **Spirit Wave (Cost: 25 Spirit):** A horizontal sweeping arc of pure celestial qi slicing through multiple targets at mid-range.
-2. **Astral Mirror (Cost: 35 Spirit):** Summons a stationary celestial mirror decoy that explodes when struck by an enemy, freezing them in time for 2 seconds.
-3. **Ascending Dragon (Cost: 50 Spirit):** A spiraling vertical staff drill that launches Yuan and all nearby foes into the air.
+Powered by the 100-point Spirit Meter (`SpiritComponent`). Spirit does not passively regenerate, reinforcing proactive aggressive martial combat.
+- **Combat Replenishment Pipeline:**
+  - Light Attack Hit: `+4.0 Spirit`
+  - Heavy Attack Hit: `+8.0 Spirit`
+  - Perfect Parry: `+10.0 Spirit`
+
+#### Implemented Abilities (Phase 6 Prototypes):
+1. **Celestial Arc (`ability_celestial_arc.tres`):**
+   - **Type:** `PROJECTILE`
+   - **Cost:** 20 Spirit | **Cooldown:** 2.0s
+   - **Damage:** 18.0 | **Poise Damage:** 15.0 | **Speed:** 480 px/s | **Lifetime:** 1.2s
+   - **Mechanics:** Piercing crescent blade fired on Layer 4 (`PlayerHitbox`). Tracks hit hurtboxes to guarantee single-hit rule.
+2. **Heavenly Pulse (`ability_heavenly_pulse.tres`):**
+   - **Type:** `AREA`
+   - **Cost:** 30 Spirit | **Cooldown:** 4.0s
+   - **Damage:** 24.0 | **Poise Damage:** 35.0 | **Radius:** 64px
+   - **Mechanics:** Ground/aerial radiating shockwave. Hits all enemies within 64px radius simultaneously, inflicting massive poise damage and knockback. Single-hit per activation.
+3. **Cloud Step (`ability_cloud_step.tres`):**
+   - **Type:** `MOBILITY`
+   - **Cost:** 25 Spirit | **Cooldown:** 5.0s
+   - **Burst Velocity:** 550 px/s | **Active Duration:** 0.20s
+   - **Mechanics:** High-speed horizontal martial dash along facing vector. Does not grant unconditional I-frames or corrupt world collision geometry. Provides agile gap closing or repositioning.
+
+#### Casting Safety & Gatekeeping Rules:
+- Blocked during weapon attack `Startup` and `Active` frames.
+- Blocked during active Dodge I-frames and active Parry frames.
+- Allowed during locomotion (`Idle`, `Run`, `Jump`, `Fall`) and attack `Recovery` frames.
+- Ability recovery frames can be cancelled into Dodge or Parry for high-level evasion.
 
 ### 6.2 Celestial Awakening (Transformation)
 - **Trigger:** When both Spirit and Awakening meters are maxed, press `L2 + R2` (or `Q + E`).

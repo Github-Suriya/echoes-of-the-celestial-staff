@@ -266,6 +266,36 @@ Combat stances adhere strictly to the principle of **"One Combat System, Three C
   - Stance switching is permitted during `IDLE`, `RUN`, `FALL`, and attack `RECOVERY` frames (enabling stance-cancel combo routing).
   - Transition state persistence: Player health, poise, world position, and linear velocity are fully preserved across stance switches.
 
+### 4.4 Spirit Ability Subsystem (`SpiritComponent`, `SpiritAbilityData`, `SpiritAbilityController`)
+The Spirit Ability framework introduces active martial powers powered by combat-earned Spirit:
+- **`SpiritComponent` (`scripts/player/spirit_component.gd`):**
+  - Tracks player's Spirit meter (`current_spirit`, `max_spirit = 100.0`).
+  - Strict transactional consumption (`consume_spirit(amount) -> bool`) ensuring abilities only fire if sufficient Spirit exists.
+  - Clamped replenishment (`restore_spirit(amount)`) bounded by `[0.0, max_spirit]`.
+  - Combat restoration hooks: Light attack hit (+4.0), Heavy attack hit (+8.0), Perfect parry (+10.0). Emits `player_spirit_changed(current, max)`.
+- **`SpiritAbilityData` (`scripts/abilities/spirit_ability_data.gd`):**
+  - Custom data-driven `Resource` defining:
+    - `ability_id: String`, `ability_name: String`, `ability_type: AbilityType` (`PROJECTILE`, `AREA`, `MOBILITY`, `BUFF`).
+    - Timing parameters: `startup_time: float`, `active_time: float`, `recovery_time: float`, `cooldown: float`.
+    - Cost & combat parameters: `spirit_cost: float`, `damage: float`, `poise_damage: float`, `knockback_force: Vector2`, `hitstop_duration: float`, `screenshake_intensity: float`.
+    - Mobility/spatial parameters: `burst_velocity: float`, `area_radius: float`, `can_use_airborne: bool`, `projectile_scene: PackedScene`.
+- **`SpiritAbilityController` (`scripts/player/spirit_ability_controller.gd`):**
+  - Manages equipped ability loadout (Array of 3 `SpiritAbilityData` slots).
+  - Cooldown tracking per slot using countdown timers.
+  - Phase lifecycle: `READY` -> `STARTUP` -> `ACTIVE` -> `RECOVERY` -> `COOLDOWN`.
+  - Casting gatekeeping: Rejects activation during weapon attack `STARTUP`/`ACTIVE`, dodge invulnerability, active parry frames, or when insufficient Spirit or active cooldown.
+  - Execution delegates:
+    - `PROJECTILE` (e.g. Celestial Arc): Spawns `SpiritProjectile` on Layer 4 (`PlayerHitbox`) at cast point, applying direction-aware velocity, damage, and single-hit hurtbox tracking.
+    - `AREA` (e.g. Heavenly Pulse): Performs zero-allocation shape query / distance-based hurtbox scan within `area_radius` (64px) on Layer 7 (`EnemyHurtbox`), delivering heavy damage (24.0) and high poise damage (35.0).
+    - `MOBILITY` (e.g. Cloud Step): Injects horizontal burst velocity (550.0 px/s) along facing vector without granting unconditional invulnerability or corrupting world collision masks.
+- **`PlayerSpiritAbilityState` (`scripts/player/states/player_spirit_ability_state.gd`):**
+  - Dedicated State Machine state node. Decoupled from weapon attacks.
+  - Handles ground decelerations or aerial gravity during casting.
+  - Permits early recovery cancellation into Dodge or Parry.
+- **HUD & Telemetry:**
+  - `SpiritHUD` (`scripts/ui/spirit_hud.gd`): Real-time Spirit gauge, slot labels, and radial/fill cooldown overlays.
+  - `PlayerDebugOverlay`: Real-time telemetry displaying current Spirit and cooldown timers.
+
 ---
 
 ## 5. World & Room Architecture
